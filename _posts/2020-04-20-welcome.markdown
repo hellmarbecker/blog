@@ -1,0 +1,9 @@
+---
+layout: post
+title:  "Welcome"
+categories: all blog
+---
+Welcome to my personal blog. Here I am going to write about some of my private projects with open source software, interspersed with random thoughts.
+
+This blog uses [Jekyll](https://jekyllrb.com) to generate content as a static website. No fancy CMS, no databases.
+
