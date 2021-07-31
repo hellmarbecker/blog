@@ -29,6 +29,7 @@ GEM
       rouge (~> 3.0)
       safe_yaml (~> 1.0)
       terminal-table (~> 1.8)
+    jekyll-analytics (0.1.14)
     jekyll-archives (2.2.1)
       jekyll (>= 3.6, < 5.0)
     jekyll-feed (0.13.0)
@@ -84,6 +85,7 @@ PLATFORMS
 
 DEPENDENCIES
   jekyll (~> 4.0.0)
+  jekyll-analytics
   jekyll-feed (~> 0.12)
   jekyll-whiteglass
   minima (~> 2.5)

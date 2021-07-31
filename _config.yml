@@ -33,6 +33,7 @@ plugins:
   - jekyll-archives
   - jekyll-paginate
   - jekyll-sitemap
+  - jekyll-analytics
 
 permalink: /:year/:month/:day/:title/
 paginate_path: /posts/:num/
@@ -46,6 +47,11 @@ jekyll-archives:
   permalinks:
     category: /categories/:name/
     tag: /tags/:name/
+
+jekyll_analytics:
+  Matomo:
+    url: matomo.hellmar-becker.de
+    siteId: "1"
 
 # Exclude from processing.
 # The following items will not be processed, by default.

@@ -14,7 +14,7 @@ In his blog, Gilles included [a step-by-step explanation](https://poolp.org/post
 
 [OpenSMTPD](https://www.opensmtpd.org/) is really great, it offers up-to-date
 security features and its configuration is much simpler than for other SMTP servers. Alas,
-things are not as easy as they look. OpenSMTPD has been developed fo OpenBSD, and while
+things are not as easy as they look. OpenSMTPD has been developed for OpenBSD, and while
 there are ports to Linux, getting the latest stack up and running is not totally trivial.
 
 ## The First Attempt
