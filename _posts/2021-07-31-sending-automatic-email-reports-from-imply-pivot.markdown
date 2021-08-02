@@ -45,6 +45,9 @@ mailTransportOptions:
     pass: 'password'
 ```
 
+Pivot uses [Nodemailer](https://nodemailer.com/about/) behing the scenes: you can look up the full list of available options [here](https://nodemailer.com/smtp/#general-options).
+
+
 ## Default sender
 
 You have to set the default mail sender. This will appear in the `From:` field of emailed reports.
