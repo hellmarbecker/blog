@@ -13,7 +13,7 @@ The reports feature needs to be enabled in the license. If you are running the 3
 
 ## Configuration settings
 
-All settings need to be entered in `pivot/config.yaml`. For quickstart, the full path would be `imply-2021-07/quickstart/pivot/config.yaml`.
+All settings need to be entered in `pivot/config.yaml`. For quickstart, the full path would be `imply-2021-07/conf-quickstart/pivot/config.yaml`.
 
 ## User management
 
