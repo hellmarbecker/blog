@@ -12,4 +12,13 @@ categories: blog apache druid imply
 
 Let's get started!
 
+## What are multi-value dimensions?
 
+A multi-value dimension is created when Druid ingests a dimension field that is in itself organized as a list, or an array. Some possible examples:
+- In a JSON data set, the dimension value is a JSON array
+- In a delimited file (CSV or TSV), values within one field are subdivided by a secondary delimiter
+Currently, multi-value dimensions are supported only for string values.
+
+## Why would you use multi-value dimensions?
+
+There are a number of use cases where multi-value dimensions come in handy. For instance, imagine you run a video streaming service. Each movie can have multiple tags, or keywords associated with it.
