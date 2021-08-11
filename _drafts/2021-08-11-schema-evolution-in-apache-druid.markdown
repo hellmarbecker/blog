@@ -9,7 +9,7 @@ We are going to create a very simplistic data source. It is going to have just t
 
 Create an inline data source in the Druid Wizard and paste the following bit of data:
 ```
-ts, value
+ts,value
 2021-01-01,1
 2021-01-02,2
 ```
@@ -17,7 +17,7 @@ Go through all the steps of schema creation, accepting the defaults. Choose week
 
 Repeat these steps with a similar data set:
 ```
-ts, value
+ts,value
 2021-02-01,1
 2021-02-02,2
 ```
@@ -25,19 +25,19 @@ and you will be left with a data source that has 4 rows of data ans is arguably 
 
 Now, let's try something different. The column names will be the same but the _value_ field now contains a string rather than a number.
 ```
-ts, value
+ts,value
 2021-03-01,aaa1
 2021-03-02,aaa2
 ```
 Data set number four is going to have floating point numbers:
 ```
-ts, value
+ts,value
 2021-04-01,1.4
 2021-04-02,2.5
 ```
 Finally, let's ingest another segment with string values. This one, however, has [multi-value dimensions](https://blog.hellmar-becker.de/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/).
 ```
-ts, value
+ts,value
 2021-05-01,a|b
 2021-05-02,c|d
 ```
