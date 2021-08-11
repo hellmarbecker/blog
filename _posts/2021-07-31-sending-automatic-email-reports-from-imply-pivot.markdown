@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Sending automatic email reports from Imply Pivot"
-categories: blog imply druid business_intelligence
+categories: blog imply druid business-intelligence
 ---
 [Imply Pivot](https://docs.imply.io/latest/pivot-overview/) has the built in capability to send scheduled email reports on a regular basis. However, a few things need to be configured correctly in order to make this work. Here is a comprehensive list of the required settings.
 
