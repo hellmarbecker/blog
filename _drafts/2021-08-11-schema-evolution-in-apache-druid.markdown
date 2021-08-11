@@ -13,7 +13,11 @@ ts,value
 2021-01-01,1
 2021-01-02,2
 ```
-Go through all the steps of schema creation, accepting the defaults. Choose weekly segments, because we want to add more data in the next steps. Again, continue through all the steps, accepting the defaults. Submit the ingestion task and wait untiil it is finished.
+Go through all the steps of schema creation, accepting the defaults. Choose weekly segments, because we want to add more data in the next steps. Again, continue through all the steps, accepting the defaults.
+
+Pick a meaningful name for your data source, for instance `schema_evolution`. By default, Imply suggests `inline_data` as the data source name for pasted data, which makes it too easy to mix up data from different experiments, creating a lot more schema evolution than you probably want to handle.
+
+Submit the ingestion task and wait until it is finished.
 
 Repeat these steps with a similar data set:
 ```
