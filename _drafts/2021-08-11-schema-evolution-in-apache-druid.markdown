@@ -17,6 +17,8 @@ Go through all the steps of schema creation, accepting the defaults. Choose week
 
 Pick a meaningful name for your data source, for instance `schema_evolution`. By default, Imply suggests `inline_data` as the data source name for pasted data, which makes it too easy to mix up data from different experiments, creating a lot more schema evolution than you probably want to handle.
 
+<img src="/assets/2021-08-11-ds-name.jpg" alt="Data Source Name" style="height:200px; width:300px;"/>
+
 Submit the ingestion task and wait until it is finished.
 
 Repeat these steps with a similar data set:
