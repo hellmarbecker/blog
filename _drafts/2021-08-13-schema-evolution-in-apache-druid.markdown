@@ -17,7 +17,7 @@ Go through all the steps of schema creation, accepting the defaults. Choose week
 
 Pick a meaningful name for your datasource, for instance `schema_evolution`. By default, Druid suggests `inline_data` as the data source name for pasted data, which makes it too easy to mix up data from different experiments, creating a lot more schema evolution than you probably want to handle.
 
-![Data Source Name](/assets/2021-08-11-ds-name.jpg)
+![Data Source Name](/assets/2021-08-13-ds-name.jpg)
 
 Submit the ingestion task and wait until it is finished.
 
@@ -48,5 +48,5 @@ ts,value
 2021-05-02,c|d
 ```
 Here's how to configure the parser.
-![CSV Parser configuration](/assets/2021-08-11-configure-parser.jpg)
+![CSV Parser configuration](/assets/2021-08-13-configure-parser.jpg)
 
