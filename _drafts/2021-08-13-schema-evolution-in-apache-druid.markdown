@@ -50,3 +50,11 @@ ts,value
 Here's how to configure the parser.
 ![CSV Parser configuration](/assets/2021-08-13-configure-parser.jpg)
 
+## Learnings
+
+Druid is amazingly flexible with regards to schema evolution. Often times, this is handled quietly without problems. In case of type conflicts:
+
+- When segments have columns of the same name but a different type, the data dictionary will record the last column type that was ingested.
+- If you have to run a SQL query that spans across such segments, in many cases you can get away with implicit type conversions.
+- You can always get at the original data that is stored in a segment, using a [CAST](https://druid.apache.org/docs/latest/querying/sql.html#other-scalar-functions) function.
+- If you have difficulty extracting values from a multivalue dimension, [array functions](https://druid.apache.org/docs/latest/misc/math-expr.html#array-functions) are your friend.
