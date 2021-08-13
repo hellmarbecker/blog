@@ -7,13 +7,15 @@ categories: blog apache druid imply data-governance
 
 We are going to create a very simplistic [datasource (that's what we call the tables inside Druid](https://docs.imply.io/latest/druid/ingestion/#datasources)). It is going to have just two rows of data and two columns: a timestamp and an integer.
 
+## Getting Started
+
 Create an inline datasource in the Druid Wizard and paste the following bit of data:
 ```
 ts,value
 2021-01-01,1
 2021-01-02,2
 ```
-Go through all the steps of schema creation, accepting the defaults. Choose weekly segments, because we want to add more data in the next steps. Again, continue through all the steps, accepting the defaults.
+Go through all the steps of schema creation. Make sure you use the CSV parser (see blow for an example); otherwise, accept the defaults. Choose monthly segments, because we want to add more data in the next steps. Again, continue through all the steps, accepting the defaults.
 
 Pick a meaningful name for your datasource, for instance `schema_evolution`. By default, Druid suggests `inline_data` as the data source name for pasted data, which makes it too easy to mix up data from different experiments, creating a lot more schema evolution than you probably want to handle.
 
@@ -21,31 +23,42 @@ Pick a meaningful name for your datasource, for instance `schema_evolution`. By 
 
 Submit the ingestion task and wait until it is finished.
 
-Repeat these steps with a similar data set:
-```
-ts,value
-2021-02-01,1
-2021-02-02,2
-```
-and you will be left with a datasource that has 4 rows of data ans is arguably not particularly interesting.
+You just created a datasource that has 2 rows of data and is arguably not particularly interesting. Let's run a simple query:
 
-Now, let's try something different. The column names will be the same but the _value_ field now contains a string rather than a number.
+![Integer Query](/assets/2021-08-13-integer-query.jpg)
+
+Note how the `AVG()` function yields an integer value. This is actually expected behavior because the `value` column itself is integer. We can fix the query by writing
+```sql
+SELECT
+  DATE_TRUNC('MONTH',__time),
+  AVG(CAST("value" AS DOUBLE))
+FROM schema_evolution
+GROUP BY 1
+```
+
+## Schema Evolution! 
+
+Now, let's try something different. The column names will be the same but the `value` field now contains a string rather than a number. This is conveniently handled by using `Continue fom previous spec` in the data loader, and pasting the new values:
 ```
 ts,value
-2021-03-01,aaa1
-2021-03-02,aaa2
+2021-02-01,aaa1
+2021-02-02,aaa2
 ```
+If you move forward to the `Configure schema` tab, you may notice that Druid still thinks of `value` as a `long`, and shows _null_ values. Uncheck the `Explicitly specify dimension list` switch to enable automatic type detection:
+![Adjust data type](/assets/2021-08-13-data-type.jpg)
+
+
 Data set number four is going to have floating point numbers:
 ```
 ts,value
-2021-04-01,1.4
-2021-04-02,2.5
+2021-03-01,1.4
+2021-03-02,2.5
 ```
 Finally, let's ingest another set of data with string values. This one, however, has [multi-value dimensions](https://blog.hellmar-becker.de/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/).
 ```
 ts,value
-2021-05-01,a|b
-2021-05-02,c|d
+2021-04-01,a|b
+2021-04-02,c|d
 ```
 Here's how to configure the parser.
 ![CSV Parser configuration](/assets/2021-08-13-configure-parser.jpg)
