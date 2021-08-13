@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Schema Evolution in Apache Druid"
+title:  "Experiments with Schema Evolution in Apache Druid"
 categories: blog apache druid imply data-governance
 ---
 [Apache Druid](https://druid.apache.org/) is known for its ability to handle schema changes during data ingestion and query in an extraordinarily flexible way. Normally, you don't even need to worry because everything is handled automatically for you. However, there are a few edge cases that data engineers and data analysts should be aware of. Let's have a look.
@@ -45,23 +45,51 @@ ts,value
 2021-02-02,aaa2
 ```
 If you move forward to the `Configure schema` tab, you may notice that Druid still thinks of `value` as a `long`, and shows _null_ values. Uncheck the `Explicitly specify dimension list` switch to enable automatic type detection:
+
 ![Adjust data type](/assets/2021-08-13-data-type.jpg)
 
+After the ingestion task finishes, move back to the Query tab. Look at the table metadata: The `value` column has a string type now! Let's run the same query as before.
 
-Data set number four is going to have floating point numbers:
+![Query 2](/assets/2021-08-13-q2.jpg)
+
+We can still get the numeric aggregate functions out of our datasource, because Druid SQL inserts an implicit type conversion for us. However, if you try this instead:
+```sql
+SELECT
+  DATE_TRUNC('MONTH',__time),
+  MAX("value")
+FROM schema_evolution
+GROUP BY 1
 ```
-ts,value
-2021-03-01,1.4
-2021-03-02,2.5
-```
+you get an exception because Druid cannot map the argument to a unique type. You have to write `MAX(CAST("value" AS double))` in order to make the query work.
+
 Finally, let's ingest another set of data with string values. This one, however, has [multi-value dimensions](https://blog.hellmar-becker.de/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/).
 ```
 ts,value
-2021-04-01,a|b
-2021-04-02,c|d
+2021-03-01,a|b
+2021-03-02,c|d
 ```
 Here's how to configure the parser.
 ![CSV Parser configuration](/assets/2021-08-13-configure-parser.jpg)
+
+Finish the ingestion and try the query again:
+```sql
+SELECT
+   DATE_TRUNC('MONTH',__time),
+  AVG("value")
+FROM schema_evolution
+GROUP BY 1
+```
+Oh no! We get a Java exception. Let's fix the query by picking the first element of each multivalue array only:
+```sql
+SELECT
+   DATE_TRUNC('MONTH',__time),
+   AVG(MV_OFFSET("value", 0))
+FROM schema_evolution
+GROUP BY 1
+```
+And this way, the query works!
+
+You are encouraged to do more experiments with schema evolution. For instance, if you change a column from string to number type, the string values will all appear as _null_. But they are still there! `CAST("value" AS VARCHAR)` will bring them back.
 
 ## Learnings
 
