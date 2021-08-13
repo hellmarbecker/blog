@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Experiments with Schema Evolution in Apache Druid"
-categories: blog apache druid imply data-governance
+categories: blog apache druid imply tutorial
 ---
 [Apache Druid](https://druid.apache.org/) is known for its ability to handle schema changes during data ingestion and query in an extraordinarily flexible way. Normally, you don't even need to worry because everything is handled automatically for you. However, there are a few edge cases that data engineers and data analysts should be aware of. Let's have a look.
 
@@ -15,7 +15,7 @@ ts,value
 2021-01-01,1
 2021-01-02,2
 ```
-Go through all the steps of schema creation. Make sure you use the CSV parser (see blow for an example); otherwise, accept the defaults. Choose monthly segments, because we want to add more data in the next steps. Again, continue through all the steps, accepting the defaults.
+Go through all the steps of schema creation. Make sure you use the CSV parser (see below for an example); otherwise, accept the defaults. Choose monthly segments, because we want to add more data in the next steps. Again, continue through all the steps, accepting the defaults.
 
 Pick a meaningful name for your datasource, for instance `schema_evolution`. By default, Druid suggests `inline_data` as the data source name for pasted data, which makes it too easy to mix up data from different experiments, creating a lot more schema evolution than you probably want to handle.
 
@@ -62,7 +62,7 @@ GROUP BY 1
 ```
 you get an exception because Druid cannot map the argument to a unique type. You have to write `MAX(CAST("value" AS double))` in order to make the query work.
 
-Finally, let's ingest another set of data with string values. This one, however, has [multi-value dimensions](https://blog.hellmar-becker.de/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/).
+Finally, let's ingest another set of data with string values. This one, however, has a [multi-value dimension](https://blog.hellmar-becker.de/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/).
 ```
 ts,value
 2021-03-01,a|b
