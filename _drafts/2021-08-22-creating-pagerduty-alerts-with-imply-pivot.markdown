@@ -44,6 +44,8 @@ The URL for the Events API is `https://events.pagerduty.com/v2/enqueue` and your
   "event_action": "trigger"
 }
 ```
+Note how Pivot uses a placeholder to encode the report summary. You can find a list of the supported placeholders [in the documentation](https://docs.imply.io/latest/alerts/#configure-a-slack-webhook-url).
+
 You can set this up during alert creation, or edit an existing alert and configure the Delivery options. You also have the opportunity to send a test alert:
 
 ![Pivot Alert Delivery Options](/assets/2021-08-22-pivot.jpg)
@@ -51,3 +53,9 @@ You can set this up during alert creation, or edit an existing alert and configu
 If you got everything right, you can see the alerts coming into your PagerDuty account:
 
 ![Alerts incoming](/assets/2021-08-22-pdalert.jpg)
+
+## Learnings
+
+- The webhook delivery mechanism of Imply Pivot is a powerful way to connect Pivot alerts to almost any application that supports a REST API.
+- Alert content is encoded in placeholders.
+- Some preparation is required on the PagerDuty side in order to receive Pivot alerts.
