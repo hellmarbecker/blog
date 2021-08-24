@@ -61,7 +61,7 @@ I've configured three settings here:
 - Set _Find columns from Header_ to True
 - Set _List delimiter_ to `|` (the pipe or vertical bar)
 
-From here, click through the screens without making any changes except on the Partition pagem where you select daily segments.
+From here, click through the screens without making any changes except on the Partition page where you select daily segments.
 ![Partition](/assets/2021-08-07-08-partition.jpeg)
 Submit the ingestion task and wait until it is done. When it has finished, click the magnifying glass icon next to the task status:
 ![View Job](/assets/2021-08-07-09-magnifying-glass.jpeg)
