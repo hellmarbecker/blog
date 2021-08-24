@@ -69,7 +69,7 @@ Here you can learn a lot about the task that just finished. The popup is also go
 ![Payload](/assets/2021-08-07-10-payload.jpeg)
 This is interesting: In the ingestion spec, all of a sudden a new field `"multivalueHandling"` came into life. In the future, we will have to examine what this field does and how it can benefit us.
 
-But for now, let's start querying these data. Go to the query wizaard and issue a GROUP BY query like below.
+But for now, let's start querying these data. Go to the query wizard and issue a GROUP BY query like below.
 ![SQL Query](/assets/2021-08-07-11-query.jpg)
 Notice how the _tags_ dimension behaves:
 - Each occurrence of a tag is counted in the GROUP BY.
@@ -85,7 +85,7 @@ Let's try another one:
 
 - Multi-value dimensions are string lists in a table (kind of).
 - Without GROUP BY, they are displayed as lists. But you can filter by single values.
-- WITH GROUP BY, multi-value dimensions behave more as if you have one row for each occurrence of a value.
+- With GROUP BY, multi-value dimensions behave more as if you have one row for each occurrence of a value.
 - We found some hints in the JSON spec that may point to ways to modify the behavior.
 
 Stay tuned for more! 
