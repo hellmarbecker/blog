@@ -4,7 +4,7 @@ title:  "Creating PagerDuty Alerts with Imply Pivot"
 categories: blog apache druid imply tutorial pivot operations
 ---
 
-In an [earlier post](https://blog.hellmar-becker.de/2021/07/31/sending-automatic-email-reports-from-imply-pivot/) I discussed how to enable the [alerting](https://docs.imply.io/latest/alerts/) capabilities of [Imply Pivot](https://imply.io/product/imply-pivot) and send out alerts via email.
+In an [earlier post](/2021/07/31/sending-automatic-email-reports-from-imply-pivot/) I discussed how to enable the [alerting](https://docs.imply.io/latest/alerts/) capabilities of [Imply Pivot](https://imply.io/product/imply-pivot) and send out alerts via email.
 
 Today I am going to connect Pivot to [PagerDuty](https://www.pagerduty.com/), as an example of a custom [webhook](https://web.archive.org/web/20120413121142/http://wiki.webhooks.org/w/page/13385124/FrontPage) configuration. You need a PagerDuty account for this, but you can use the free 14 day trial for the tutorial. You also need to set up a few things in PagerDuty so you can use the Events API to receive alerts.
 
