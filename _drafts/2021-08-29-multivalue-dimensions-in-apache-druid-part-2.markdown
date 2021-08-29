@@ -67,7 +67,7 @@ Submit the ingestion job and see what you get:
 
 ![Query Result](/assets/2021-08-29-query.jpg)
 
-This is especially neat when you need to deduplicate tag values.
+This is great when you need to deduplicate tag values.
 
 ## Learnings
 
