@@ -4,6 +4,8 @@ title:  "Geospatial Data in Apache Druid - Ingestion"
 categories: blog apache druid imply
 ---
 
+![Map](/assets/2021-09-05-map.png)
+
 A lesser known feature of Apache Druid is the ability to handle [spatial data](https://docs.imply.io/latest/druid/development/geo/#spatial-indexing) directly. There are a number of built in functions that allow query filtering on spatial structures like rectangles or polygons. Also, there is a data type for spatial coordinates which you can specify in the ingestion spec.
 
 Let's look at a simple example. I am going to take a list of German cities that I generated using the Python [Faker](https://faker.readthedocs.io/en/master/index.html) module:
