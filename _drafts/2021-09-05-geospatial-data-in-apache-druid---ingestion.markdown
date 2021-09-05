@@ -83,3 +83,8 @@ I created an ingestion spec for these data:
 ```
 Note how we have a `spatialDimensions` spec besides the regular dimensions.
 
+Let's query the data!
+[GeoQuery](/assets/2021-09-05-geo1.jpg)
+
+
+
