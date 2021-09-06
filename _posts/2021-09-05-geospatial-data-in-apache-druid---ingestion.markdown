@@ -91,6 +91,7 @@ Let's query the data!
 Aha! The spatial data seems to be represented internally as a string dimension, but unfortunately our original coordinate fields are gone. As a general rule, in Druid, you can use each data field only once as a dimension. If you want to use the same field twice, you need to declare a logical duplicate using a transform spec.
 
 Let's try this:
+
 ```json
 {
   "type": "index_parallel",
@@ -123,8 +124,8 @@ Let's try this:
           {
             "dimName": "coordinates",
             "dims": [
-              "latitude",
-              "longitude"
+              "lat1",
+              "lon1"
             ]
           }
         ],
@@ -146,6 +147,20 @@ Let's try this:
         "queryGranularity": "none",
         "rollup": false,
         "segmentGranularity": "day"
+      },
+      "transformSpec": {
+        "transforms": [
+          {
+            "type": "expression",
+            "expression": "longitude",
+            "name": "lon1"
+          },
+          {
+            "type": "expression",
+            "expression": "latitude",
+            "name": "lat1"
+          }
+        ]
       }
     }
   }
