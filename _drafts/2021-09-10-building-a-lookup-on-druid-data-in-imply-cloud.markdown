@@ -17,6 +17,8 @@ Upload the truststore JKS to a S3 bucket that the cluster can access
 
 Add it to the custom files for the cluster
 
+Extract the JDBC URL from the API page. You need to add the truststore information to the URL because Imply Cloud uses a self signed certificate.
+
 ```
 {
   "type": "cachedNamespace",
