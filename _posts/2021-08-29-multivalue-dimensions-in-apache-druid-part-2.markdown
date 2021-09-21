@@ -75,5 +75,5 @@ This is great when you need to deduplicate tag values.
 - Alternatives are unsorted arrays and sets.
 - Sets are especially neat because they have deduplication built in.
 - As of now, you need to specify the handling manually in the JSON spec.
-- Documentation of thie feature is somewhat terse, although it is going to improve soon.
+- Documentation of this feature is somewhat terse, although it is going to improve soon.
 
