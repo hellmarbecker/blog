@@ -73,12 +73,12 @@ How many distinct customers ordered each dish?
 
 ![](-4-groupby-set)
 
-But note: A multi-value dimension exhibits special behavior in GROUP BY queries. It is counted as if there is a row for each field in the multi-value dimension.
+Note: A multi-value dimension exhibits special behavior in GROUP BY queries. It is counted as if there is a row for each field in the multi-value dimension.
 
 What if we have different questions? Like:
 - How many customers had the same items ordered (but not necessarily in the same order)
 - How many customers had the exact same menu sequence?
 
-We can do this but we need multi-value aggregate functions and multi-value handling.
+We can do this but for these queries, we need to aggregate the orders into a string.
 
 
