@@ -87,6 +87,8 @@ I answer this question using the `SORTED_SET` handling.
 
 Note: A multi-value dimension exhibits special behavior in GROUP BY queries. It is counted as if there is a row for each field in the multi-value dimension.
 
+## More advanced queries
+
 What if we have different questions? Like:
 - How many customers had the same items ordered (but not necessarily in the same order)
 - How many customers had the exact same menu sequence?
