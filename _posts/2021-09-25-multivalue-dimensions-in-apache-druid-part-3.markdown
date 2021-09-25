@@ -4,11 +4,13 @@ title:  "Multi-Value Dimensions in Apache Druid (Part 3)"
 categories: blog apache druid imply
 ---
 
-In which we continue the quest about multi-value handling and try to answer the question: Why are we even doing this?
+In which we continue the quest about multi-value handling and try to answer the question: _Why are we even doing this?_
 
 This is part 3 of the miniseries about multi-value dimensions in Apache Druid. The previous posts can be found here:
 - [part 1](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)
 - [part 2](/2021/08/29/multivalue-dimensions-in-apache-druid-part-2/)
+
+After part 2 of the multi-value series, one reader asked what the difference between the types of handling is and why he would even bother about it. Let's look at some scenarios.
 
 Let's assume I am running an Italian restaurant. Each time one of my patrons visits, I am noting down which items they consume as part of a menu, in order.
 
@@ -89,7 +91,7 @@ What if we have different questions? Like:
 - How many customers had the same items ordered (but not necessarily in the same order)
 - How many customers had the exact same menu sequence?
 
-We can do this; but for these queries, we need to aggregate the orders into a string. Let's find out how to do this.
+We can do this; but for those queries, we need to aggregate the orders into a string. Let's find out how to do this.
 
 There are various functions in Druid to handle multi-value dimensions. Do not confuse them with aggregation functions that operate on the result of a GROUP BY query, like `ARRAY_AGG` or the new `STRING_AGG`. Those are not what we need here. They may be interesting to look at in one of the next posts, though.
 
@@ -121,3 +123,5 @@ Here we go:
 - Multi-value handling strategy can enable a lot of interesting analytics use cases.
 - Use unsorted arrays if you want to keep the original order of items.
 - Don't confuse array aggregation functions and multi-value functions.
+
+Next time, let's find out not only how many orders matched a certain list, but also who were the customers behind these orders. Here, the `STRING_AGG` function will come in handy. See you then!
