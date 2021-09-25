@@ -29,7 +29,56 @@ Ingest this data sample into Druid by copypasting it into the inline ingestion w
 
 Create virtual copies of the `orders` dimension using the transform step:
 
-![](-transform)
+![](-1-transform)
 
-Don't worry that the order of the fields looks all messed up, we'll fix that in a moment. Continue the ingestion wizard, entering `day` as the segment granularity value, and proceed all the way to the screen where you can edit the JSON spec.
+Don't worry that the order of the fields looks all messed up, we'll fix that in a moment. Continue the ingestion wizard, entering `day` as the segment granularity value, set the datasource name to `ristorante`, and proceed all the way to the screen where you can edit the JSON spec.
+
+Find the `dimensionSpec` part and replace the dimension list by this snippet:
+```json
+        "dimensions": [
+          "customer",
+          {
+            "type": "string",
+            "name": "orders",
+            "multiValueHandling": "SORTED_ARRAY",
+            "createBitmapIndex": true
+          },
+          {
+            "type": "string",
+            "name": "orders_unsorted",
+            "multiValueHandling": "ARRAY",
+            "createBitmapIndex": true
+          },
+          {
+            "type": "string",
+            "name": "orders_set",
+            "multiValueHandling": "SORTED_SET",
+            "createBitmapIndex": true
+          }
+        ]
+ ```
+The result looks similar to this:
+
+![](-2-jsonspec)
+
+
+
+Let's run a few queries.
+
+How many of each dish did I sell?
+
+![](-3-groupby-unsorted)
+
+How many distinct customers ordered each dish?
+
+![](-4-groupby-set)
+
+But note: A multi-value dimension exhibits special behavior in GROUP BY queries. It is counted as if there is a row for each field in the multi-value dimension.
+
+What if we have different questions? Like:
+- How many customers had the same items ordered (but not necessarily in the same order)
+- How many customers had the exact same menu sequence?
+
+We can do this but we need multi-value aggregate functions and multi-value handling.
+
 
