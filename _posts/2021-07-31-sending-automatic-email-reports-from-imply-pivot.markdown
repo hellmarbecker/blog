@@ -83,7 +83,7 @@ emailTemplates:
       </html>
 ```
 
-Now you are ready to start Imply. Proceed with the quickstart until you have the Wikipedia cube ready and open in Pivot. Create a simple view, for instance Number of Events over Time. From here, go to "..." menu and select "Schedule Report":
+Now you are ready to start Imply. Proceed with the quickstart until you have the Wikipedia cube ready and open in Pivot. Create a simple view, for instance Number of Events over Time. From here, go to the `...` menu and select "Schedule Report":
 
 ![Report view in Pivot](/assets/2021-07-31-report-view.png)
 
