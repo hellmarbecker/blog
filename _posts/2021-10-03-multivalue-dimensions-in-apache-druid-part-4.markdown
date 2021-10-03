@@ -27,7 +27,7 @@ Let's find out who the customers were that ordered each basket. I hinted at it l
 
 And just like that, we got the list of customers for each dish!
 
-SQL arrays can be a bit unwieldy, though. For client software that cannot handle those, there is the new `STRING AGG` function in Druid that concatenates the values into a string, using a configurable delimiter.
+SQL arrays can be a bit unwieldy, though. For client software that cannot handle those, there is the new `STRING_AGG` function in Druid that concatenates the values into a string, using a configurable delimiter.
 
 ![](/assets/2021-10-03-3-groupby-orders_set-with-string_agg.jpeg)
 
