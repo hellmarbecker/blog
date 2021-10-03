@@ -19,17 +19,17 @@ Let's see if Druid could help a marketeer!
 
 We are using the `ristorante` datasource from [part 3](/2021/09/25/multivalue-dimensions-in-apache-druid-part-3/), and start with the analysis how many customers bought each item:
 
-![](/assets/2021-10-03-1-groupby-orders_set.jpeg]
+![](/assets/2021-10-03-1-groupby-orders_set.jpeg)
 
 Let's find out who the customers were that ordered each basket. I hinted at it last time: this is where array aggregation functions come in. The `ARRAY_AGG` function creates a SQL array from all the values in a group by bucket:
 
-![](/assets/2021-10-03-2-groupby-orders_set-with-array_agg.jpeg]
+![](/assets/2021-10-03-2-groupby-orders_set-with-array_agg.jpeg)
 
 And just like that, we got the list of customers for each dish!
 
 SQL arrays can be a bit unwieldy, though. For client software that cannot handle those, there is the new `STRING AGG` function in Druid that concatenates the values into a string, using a configurable delimiter.
 
-![](/assets/2021-10-03-3-groupby-orders_set-with-string_agg.jpeg]
+![](/assets/2021-10-03-3-groupby-orders_set-with-string_agg.jpeg)
 
 And this solves the mystery of the `STRING_AGG` function!
 
