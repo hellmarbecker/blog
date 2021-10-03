@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Multi-Value Dimensions in Apache Druid (Part 3)"
+title:  "Multi-Value Dimensions in Apache Druid (Part 4)"
 categories: blog apache druid imply
 ---
 
