@@ -22,6 +22,8 @@ Let's enter this in Pivot:
 
 ![Regex filter with negative lookahead](/assets/2021-10-10-2-exclude-dynamic.jpeg)
 
+You can experiment with more complex exclusion rules: for instance, you could include wildcards or character lists to match the same prefix in other languages too!
+
 ## Learnings
 
 - Regular expressions are a powerful way of filtering string dimensions in Pivot.
