@@ -16,7 +16,7 @@ If you want to have an attribute that changes over time, you need a way to refer
 
 (It is also possible, and often makes sense, to apply a lookup at ingestion time. But that is a story for another time.)
 
-So, Peter's question is: can you apply lookups with [multi-value dimensions](https://blog.hellmar-becker.de/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)?
+So, Peter's question is: can you apply lookups with [multi-value dimensions](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)?
 
 ## Real life example
 
@@ -48,14 +48,32 @@ Here's our data snippet for today's tutorial:
 { "ts": "2021-10-14 10:40:00", "customer": "Jessy", "basket": [ "0003", "0005", "0006" ] }
 { "ts": "2021-10-14 10:50:00", "customer": "Gian", "basket": [ "0005", "0006" ] }
 ```
-And the product catalog lookup definition:
-```json
-{
-  "0001": "Mug O'Grog",
-  "0002": "Red Herring",
-  "0003": "Root Beer",
-  "0004": "Staple Remover",
-  "0005": "Breath Mints",
-  "0006": "Fabulous Idol"
-}
-```
+Ingest these data into Druid, set the segment granularity to `day`, and name the datasource `eshop`. Time for some fun queries!
+
+The first query I am going to run is a plain scan query. Here is the SQL:
+
+![Scan query with lookup](/assets/2021-10-14-2-query-plain.jpeg)
+
+Surprisingly, this works! Every single SKU in the basket is replaced with the product name, the result is an array again.
+
+Next, let's `GROUP BY` the basket dimension. If you have been following my blog, you know that this breaks down the multi-value field as if you had applied an `EXPLODE` or `UNNEST` function, before doing the aggregation. In Druid, this compiles into a TopN query.
+
+![Group by query with lookup](/assets/2021-10-14-3-query-groupby.jpeg)
+
+Again, every single item in the basket dimension is replaced by the looked-up value and then the query continues as expected.
+
+Can we `JOIN` the multi-value field against the lookup? Alas, no. While in most other scenarios the `JOIN` and `LOOKUP` syntax give the same result, `JOIN` with a multi-value field is unsupported and causes the query to fail.
+
+It is however possible to create an exploded view of the main table by `GROUP`ing by all the fields in the table. You can then join the result and query it like this:
+
+![Nested query with Join](/assets/2021-10-14-4-query-nested.jpeg)
+
+That you can, doesn't necessarily mean you should, though. Complex joins and subqueries often use a lot of resources and in many cases, can be restated in such a way that the capabilities of the Druid engine come to their best use.
+
+## Learnings
+
+- Druid lookups can be used to emulate type 1 slowly changing dimensions.
+- They work with multi-value dimensions.
+- This comes in handy when you have requirements such as shopping basket analysis.
+
+
