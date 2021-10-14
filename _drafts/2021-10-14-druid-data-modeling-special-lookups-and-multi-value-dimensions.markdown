@@ -4,7 +4,7 @@ title:  "Druid Data Modeling Special: Lookups and Multi-value Dimensions"
 categories: blog imply druid
 ---
 
-The other day, [Peter Marshall](https://www.petermarshall.io/) brought up the question: Do lookups work with multi-value dimensions in Druid? Spoiler alert: They do, in fact! But let's first take a quick look at what lookups are.
+The other day, [Peter Marshall](https://www.petermarshall.io/) brought up a question: Do lookups work with multi-value dimensions in Druid? Spoiler alert: They do, in fact! But let's first take a quick look at what lookups are.
 
 ## Dimensional Modeling in Apache Druid
 
