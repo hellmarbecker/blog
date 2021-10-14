@@ -35,7 +35,7 @@ In fact, this is just the format for defining an inline lookup. From the Druid c
 
 <img src="/assets/2021-10-14-1-create-lookup.jpg" width="50%" />
 
-(In real life, you might populate a lookup from a file that you keep for instance in Amazon S3, or from a database via JDBC. You can even have a lookup that automatically receives up-to-date information via [Kafka](https://kafka.apache.org/)!)
+(In real life, you might populate a lookup from a file that you keep for instance in Amazon S3, or from a database via JDBC. You can even have [a lookup that automatically receives up-to-date information via Kafka](https://druid.apache.org/docs/latest/development/extensions-core/kafka-extraction-namespace.html)!)
 
 Now, let's enter some transactions.
 
