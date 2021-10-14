@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Druid Data Modeling Special: Lookups and Multi-value Dimensions"
+title:  "Druid Data Modeling Special: Lookups and Multi-Value Dimensions"
 categories: blog imply druid
 ---
 
