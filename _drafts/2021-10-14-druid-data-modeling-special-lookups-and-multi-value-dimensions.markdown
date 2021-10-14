@@ -18,7 +18,24 @@ If you want to have an attribute that changes over time, you need a way to refer
 
 So, Peter's question is: can you apply lookups with [multi-value dimensions](https://blog.hellmar-becker.de/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)?
 
-## Real life example: 
+## Real life example
+
+Let's assume I am running an ecommerce shop. There's a number of items in my portfolio, and each of them has a SKU number and product name like so:
+```json
+{
+  "0001": "Mug O'Grog",
+  "0002": "Red Herring",
+  "0003": "Root Beer",
+  "0004": "Staple Remover",
+  "0005": "Breath Mints",
+  "0006": "Fabulous Idol"
+}
+```
+In fact, this just the format for defining an inline lookup. From the Druid console, navigate to the `Lookup` wizard, choose `Add lookup`, and paste the snippet from above into the `Map` input field. Name the lookup `eshop_sku`:
+
+![Create lookup](/assets/2021-10-14-1-create-lookup.jpg)
+
+Now, let's enter some transactions.
 
 Here's our data snippet for today's tutorial:
 ```json
