@@ -4,7 +4,7 @@ title:  "Multi-Value Dimensions in Apache Druid (Part 4)"
 categories: blog apache druid imply
 ---
 
-Let's do some customer segmentation in out little restaurant!
+Let's do some customer segmentation in our little restaurant!
 
 This is part 3 of the miniseries about multi-value dimensions in Apache Druid. The previous posts can be found here:
 - [part 1](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)
