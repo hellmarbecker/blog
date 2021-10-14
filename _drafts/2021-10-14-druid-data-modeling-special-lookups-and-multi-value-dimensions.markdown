@@ -14,7 +14,7 @@ But sometimes attribute values change over time. For instance, people tend to mo
 
 If you want to have an attribute that changes over time, you need a way to refer to that attribute's value at query time. [Druid lookups](https://druid.apache.org/docs/latest/querying/lookups.html) are a way to do this. A lookup maintains a key-value map that is stored in memory on all data nodes (historical and peon processes), and possibly updated periodically. In Druid SQL, the [LOOKUP()](https://druid.apache.org/docs/latest/querying/sql.html#string-functions) function replaces the key, which is a field or expression from your datasource, with the lookup value. This emulates what is known as a [type 1 slowly changing dimension](https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/type-1/).
 
-(It is also possible, and often makes sense, to apply a lookup at ingestion time. But thst is a story for another time.)
+(It is also possible, and often makes sense, to apply a lookup at ingestion time. But that is a story for another time.)
 
 So, Peter's question is: can you apply lookups with [multi-value dimensions](https://blog.hellmar-becker.de/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)?
 
@@ -31,9 +31,11 @@ Let's assume I am running an ecommerce shop. There's a number of items in my por
   "0006": "Fabulous Idol"
 }
 ```
-In fact, this just the format for defining an inline lookup. From the Druid console, navigate to the `Lookup` wizard, choose `Add lookup`, and paste the snippet from above into the `Map` input field. Name the lookup `eshop_sku`:
+In fact, this is just the format for defining an inline lookup. From the Druid console, navigate to the `Lookup` wizard, choose `Add lookup`, and paste the snippet from above into the `Map` input field. Name the lookup `eshop_sku`:
 
 <img src="/assets/2021-10-14-1-create-lookup.jpg" width="50%" />
+
+(In real life, you might populate a lookup from a file that you keep for instance in Amazon S3, or from a database via JDBC. You can even have a lookup that automatically receives up-to-date information via [Kafka](https://kafka.apache.org/)!)
 
 Now, let's enter some transactions.
 
