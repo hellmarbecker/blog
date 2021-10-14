@@ -33,7 +33,7 @@ Let's assume I am running an ecommerce shop. There's a number of items in my por
 ```
 In fact, this just the format for defining an inline lookup. From the Druid console, navigate to the `Lookup` wizard, choose `Add lookup`, and paste the snippet from above into the `Map` input field. Name the lookup `eshop_sku`:
 
-<img src="/assets/2021-10-14-1-create-lookup.jpg" width="40%" />
+<img src="/assets/2021-10-14-1-create-lookup.jpg" width="50%" />
 
 Now, let's enter some transactions.
 
