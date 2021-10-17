@@ -15,17 +15,23 @@ In order to parse Avro messages, you first have to [enable](https://druid.apache
 druid.extensions.loadList=["druid-hdfs-storage", "druid-kafka-indexing-service", "druid-datasketches", "druid-avro-extensions"]
 ```
 
+## Setting things up in Confluent Cloud
+
 - set up confluent cloud
   - create topic tut-avro with default parameters
   - create API key
     - choose granular key
     - create service account
     - set 2 acl's on the service account so that the account can read and write the topic
-    - note down the Kafka API key and secret
+    - note down the Kafka API key and secret, as well as the bootstrap server URL. You can find these if you go for example `Data integration` > `Clients` > `New client` > `Java`.
   - enable schema registry, otherwise avro won't work
     - create an API key and secret for SR too
     - note these down, and also the URL for SR
   - set up Kafka Connect with the managed Datagen connector. For this tutorial, we use the `CLICKSTREAM` data generator. Also, we want to generate Avro data, so select the format to be `AVRO`.
+
+If you have everything configured, you can peek into the topic in the Confluent Cloud GUI and verify that data is arriving.
+
+## First attempt to ingest these data into Druid
 
 in Druid, start the ingestion
 
@@ -39,8 +45,12 @@ Since Confluent Cloud secures access to Kafka, you need to paste the consumer pr
   "sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule  required username=\"<KAFKA API KEY>\" password=\"<KAFKA SECRET KEY>\";"
 } 
 ```
-This will automatically populate the bootstrap server field too. Enter `tut-avro` as the Kafka topic name and hit `Apply`, then `Next: Parse data`.
+This will automatically populate the bootstrap server field too. Enter `tut-avro` as the Kafka topic name and hit `Apply`. Druid does its best to give you a preview of the data but since it's a binary format the result looks like gibberish. Press `Next: Parse data`. And ... we get an error. This is because Avro needs a schema and we haven't specified one
 
+![](/assets/2021-10-17-1-load-gibberish.jpeg)
 
+Press `Next: Parse data`. And ... we get an error. This is because Avro needs a schema and we haven't specified one.
+
+## Fixing Schema Registry access
 
 
