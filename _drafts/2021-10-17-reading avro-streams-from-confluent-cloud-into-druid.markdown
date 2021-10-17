@@ -6,7 +6,7 @@ categories: blog imply druid
 
 - Use Druid 0.22 micro-quickstart
 
-In order to parse Avro messages, you first have to enable the Avro extension in the Druid configuration. For the `micro-quickstart` configuration, edit `conf/druid/single-server/micro-quickstart/_common/common.runtime.properties`:
+In order to parse Avro messages, you first have to [enable](https://druid.apache.org/docs/0.22.0/development/extensions.html#loading-extensions) the Avro extension in the Druid configuration. For the `micro-quickstart` configuration, edit `conf/druid/single-server/micro-quickstart/_common/common.runtime.properties`:
 
 ```properties
 # If you specify `druid.extensions.loadList=[]`, Druid won't load any extension from file system.
