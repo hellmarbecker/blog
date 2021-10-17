@@ -14,3 +14,33 @@ In order to parse Avro messages, you first have to [enable](https://druid.apache
 # More info: https://druid.apache.org/docs/latest/operations/including-extensions.html
 druid.extensions.loadList=["druid-hdfs-storage", "druid-kafka-indexing-service", "druid-datasketches", "druid-avro-extensions"]
 ```
+
+- set up confluent cloud
+  - create topic tut-avro with default parameters
+  - create API key
+    - choose granular key
+    - create service account
+    - set 2 acl's on the service account so that the account can read and write the topic
+    - note down the Kafka API key and secret
+  - enable schema registry, otherwise avro won't work
+    - create an API key and secret for SR too
+    - note these down, and also the URL for SR
+  - set up Kafka Connect with the managed Datagen connector. For this tutorial, we use the `CLICKSTREAM` data generator. Also, we want to generate Avro data, so select the format to be `AVRO`.
+
+in Druid, start the ingestion
+
+Since Confluent Cloud secures access to Kafka, you need to paste the consumer properties into the little window in the wizard
+
+```json
+{
+  "bootstrap.servers": "<KAFKA BOOTSTRAP SERVER>",
+  "security.protocol": "SASL_SSL",
+  "sasl.mechanism": "PLAIN",
+  "sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule  required username=\"<KAFKA API KEY>\" password=\"<KAFKA SECRET KEY>\";"
+} 
+```
+This will automatically populate the bootstrap server field too. Enter `tut-avro` as the Kafka topic name and hit `Apply`, then `Next: Parse data`.
+
+
+
+
