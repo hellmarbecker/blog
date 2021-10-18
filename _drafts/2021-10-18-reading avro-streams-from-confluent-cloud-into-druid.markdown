@@ -18,13 +18,12 @@ druid.extensions.loadList=["druid-hdfs-storage", "druid-kafka-indexing-service",
 ## Setting things up in Confluent Cloud
 
 For this tutorial, I am assuming you have a [Confluent Cloud](https://confluent.cloud) account, as well as an environment and a cluster to work with. We need to set up a few things here:
-- a topic that we are going to consume data from
-- a data generator that adds data to the topic, which is part of the managed Kafka Connect service in Confluent Cloud
-- a service account that will have access only to our tutorial topic
-- an API key and secret associated with that service account
-- a schema registry instance where we store the schema definition for our Avro records
-- another API key and secret to access the schema registry.
-- a data generator that adds data to the topic, which is part of the managed Kafka Connect service in Confluent Cloud
+- a _topic_ that we are going to consume data from
+- a _service account_ that will have access only to our tutorial topic
+- a _Kafka API key and secret_ associated with that service account
+- a _schema registry_ instance where we store the schema definition for our Avro records
+- a _schema registry API key and secret_ to access the schema registry.
+- and finally, a _data generator_ that adds data to the topic, which is part of the managed Kafka Connect service in Confluent Cloud
 
 ### Create a topic
 
