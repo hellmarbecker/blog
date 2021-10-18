@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Reading Avro Streams from Confluent Cloud into Druid"
-categories: blog imply druid
+categories: blog imply druid confluent kafka eventstreaming
 ---
 
 - Use Druid 0.22 micro-quickstart
@@ -55,7 +55,7 @@ Since Confluent Cloud secures access to Kafka, you need to paste the consumer pr
 ```
 This will automatically populate the bootstrap server field too. Enter `tut-avro` as the Kafka topic name and hit `Apply`. Druid does its best to give you a preview of the data but since it's a binary format the result looks like gibberish. Press `Next: Parse data`. And ... we get an error. This is because Avro needs a schema and we haven't specified one
 
-![](/assets/2021-10-17-1-load-gibberish.jpeg)
+![](/assets/2021-10-18-1-load-gibberish.jpeg)
 
 Press `Next: Parse data`. And ... we get an error. This is because Avro needs a schema and we haven't specified one.
 
