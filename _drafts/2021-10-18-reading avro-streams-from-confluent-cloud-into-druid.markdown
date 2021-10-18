@@ -48,25 +48,17 @@ Once again, download the API key and secret you just created.
 
 ### Data generator
 
-Use the menu navigation `Data integration` > `Connectors` > `Add connector` and select the `Datagen Source` connector. 
+Use the menu navigation `Data integration` > `Connectors` > `Add connector` and select the `Datagen Source` connector. Enter the _Kafka_ API key and secret you created earlier, and make the topic name `tut-avro`. Select `AVRO` as the output format.
 
-- set up confluent cloud
-  - create topic tut-avro with default parameters
-  - create API key
-    - choose granular key
-    - create service account
-    - set 2 acl's on the service account so that the account can read and write the topic
-    - note down the Kafka API key and secret, as well as the bootstrap server URL. You can find these if you go for example `Data integration` > `Clients` > `New client` > `Java`.
-  - enable schema registry, otherwise avro won't work
-    - create an API key and secret for SR too
-    - note these down, and also the URL for SR
-  - set up Kafka Connect with the managed Datagen connector. For this tutorial, we use the `CLICKSTREAM` data generator. Also, we want to generate Avro data, so select the format to be `AVRO`.
+Select `CLICKSTREAM` from the `Quickstart` menu, enter a message interval of 500 msec, and set the number of tasks to 1 - this will be enough for the experiment:
 
-If you have everything configured, you can peek into the topic in the Confluent Cloud GUI and verify that data is arriving.
+![](/assets/2021-10-18-1-confluent-cloud.jpeg)
+
+Start the connector and wait a moment until the topic begins to receive data. If you have everything configured, you can peek into the topic in the Confluent Cloud GUI and verify that data is arriving.
 
 ## First attempt to ingest these data into Druid
 
-in Druid, start the ingestion
+In Druid, start the ingestion from the [console](http://localhost:8888/unified-console.html#load-data).
 
 Since Confluent Cloud secures access to Kafka, you need to paste the consumer properties into the little window in the wizard
 
@@ -80,7 +72,7 @@ Since Confluent Cloud secures access to Kafka, you need to paste the consumer pr
 ```
 This will automatically populate the bootstrap server field too. Enter `tut-avro` as the Kafka topic name and hit `Apply`. Druid does its best to give you a preview of the data but since it's a binary format the result looks like gibberish. Press `Next: Parse data`. And ... we get an error. This is because Avro needs a schema and we haven't specified one
 
-![](/assets/2021-10-18-1-load-gibberish.jpeg)
+![](/assets/2021-10-18-2-load-gibberish.jpeg)
 
 Press `Next: Parse data`. And ... we get an error. This is because Avro needs a schema and we haven't specified one.
 
