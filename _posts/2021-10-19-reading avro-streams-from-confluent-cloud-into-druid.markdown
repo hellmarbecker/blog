@@ -4,7 +4,9 @@ title:  "Reading Avro Streams from Confluent Cloud into Apache Druid"
 categories: blog imply druid confluent kafka eventstreaming
 ---
 
-Today I am going to show how to get AVRO data from a schema aware [Confluent Cloud](https://confluent.cloud) cluster into Apache Druid. Use the Druid 0.22 [micro-quickstart](https://druid.apache.org/docs/latest/tutorials/index.html) setup for this exercise.
+Today I am going to show how to get [AVRO](https://avro.apache.org/) data from a [schema aware](https://docs.confluent.io/cloud/current/sr/schemas-manage.html) [Confluent Cloud](https://confluent.cloud) cluster into [Apache Druid](https://druid.apache.org/). Use the Druid 0.22 [micro-quickstart](https://druid.apache.org/docs/latest/tutorials/index.html) setup for this exercise.
+
+![Streaming analytics architecture](/assets/2021-10-19-0-architecture.png)
 
 ## Data Governance in Kafka and Druid: Enforcing a contract
 
@@ -38,8 +40,8 @@ For this tutorial, I am assuming you have a [Confluent Cloud](https://confluent.
 - a _service account_ that will have access only to our tutorial topic
 - a _Kafka API key and secret_ associated with that service account
 - a _schema registry_ instance where we store the schema definition for our Avro records
-- a _schema registry API key and secret_ to access the schema registry.
-- and finally, a _data generator_ that adds data to the topic, which is part of the managed Kafka Connect service in Confluent Cloud
+- a _schema registry API key and secret_ to access the schema registry
+- and finally, a _data generator_ that adds data to the topic, which is part of the managed Kafka Connect service in Confluent Cloud.
 
 ### Create a topic
 
@@ -120,9 +122,11 @@ replacing the placeholders with the appropriate credentials for your instance of
 
 This looks much better!
 
-From here, the rest is easy. Pick the `time` field as primary timestamp; this comes as seconds since the connector was started, so in a real world scenario you would want to add an offset, but for this tutorial you can leave it as is and interpret it as seconds since Epoch, creating dates in 1970:
+From here, the rest is easy. Pick the `time` field as primary timestamp; this comes as seconds since the connector was started, so in a real world scenario you would want to add an offset, but for this tutorial you can leave it as is and interpret it as seconds since Epoch, creating dates in 1970. Submit the spec, and after a short while you will see the first data coming in:
 
 ![Query](/assets/2021-10-19-5-query.jpeg)
+
+That's it! We have just integrated Druid with Confluent Schema Registry.
 
 ## Learnings
 
