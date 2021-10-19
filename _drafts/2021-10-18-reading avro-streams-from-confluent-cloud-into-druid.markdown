@@ -51,7 +51,7 @@ Use the menu navigation `Data integration` > `Connectors` > `Add connector` and 
 
 Select `CLICKSTREAM` from the `Quickstart` menu, enter a message interval of 500 msec, and set the number of tasks to 1 - this will be enough for the experiment:
 
-![](/assets/2021-10-18-1-confluent-cloud.jpeg)
+![](/assets/2021-10-19-1-confluent-cloud.jpeg)
 
 Start the connector and wait a moment until the topic begins to receive data. If you have everything configured, you can peek into the topic in the Confluent Cloud GUI and verify that data is arriving.
 
@@ -66,15 +66,34 @@ Since Confluent Cloud secures access to Kafka, you need to paste the consumer pr
   "bootstrap.servers": "<KAFKA BOOTSTRAP SERVER>",
   "security.protocol": "SASL_SSL",
   "sasl.mechanism": "PLAIN",
-  "sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule  required username=\"<KAFKA API KEY>\" password=\"<KAFKA SECRET KEY>\";"
+  "sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule  required username=\"<KAFKA API KEY>\" password=\"<KAFKA SECRET>\";"
 } 
 ```
-This will automatically populate the bootstrap server field too. Enter `tut-avro` as the Kafka topic name and hit `Apply`. Druid does its best to give you a preview of the data but since it's a binary format the result looks like gibberish. Press `Next: Parse data`. And ... we get an error. This is because Avro needs a schema and we haven't specified one.
+This will automatically populate the bootstrap server field too. Enter `tut-avro` as the Kafka topic name and hit `Apply`. Druid does its best to give you a preview of the data but since it's a binary format the result looks like gibberish.
 
-![](/assets/2021-10-18-2-load-gibberish.jpeg)
+![](/assets/2021-10-19-2-load-gibberish.jpeg)
 
-Press `Next: Parse data`. And ... we get an error. This is because Avro needs a schema and we haven't specified one.
+Press `Next: Parse data`. And ... we get the message `Error: Failed to sample data: null`. This is because Avro needs a schema and we haven't specified one.
 
 ## Fixing Schema Registry access
 
+We need to tell Druid where to find the schema associated with our Avro data: Navigate to `Edit spec` to the right
 
+![](/assets/2021-10-19-4-edit-spec.jpeg)
+
+and find the `inputFormat` section. Replace this by the following snippet:
+```json
+      "inputFormat": {
+        "type": "avro_stream",
+        "binaryAsString": false,
+        "avroBytesDecoder": {
+          "type": "schema_registry",
+          "url": "<SCHEMA REGISTRY API ENDPOINT URL>",
+          "config": {
+            "basic.auth.credentials.source": "USER_INFO",
+            "basic.auth.user.info": "<SCHEMA REGISTRY API KEY>:<SCHEMA REGISTRY SECRET>"
+          }
+        }
+      }
+```
+replacing the placeholders with the appropriate credentials for your instance of Schema Registry. Then go back to the `Parse Data` stage.
