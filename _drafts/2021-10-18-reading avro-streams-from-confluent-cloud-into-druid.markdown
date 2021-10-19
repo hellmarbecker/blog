@@ -104,7 +104,9 @@ replacing the placeholders with the appropriate credentials for your instance of
 
 This looks much better!
 
-From here, the rest is easy. Pick the `time` field as primary timestamp; this comes as seconds since the connector was started, so in a real world scenario you would want to add an offset, but for this tutorial you can leave it as is and interpret it as seconds since Epoch, creating dates in 1970.
+From here, the rest is easy. Pick the `time` field as primary timestamp; this comes as seconds since the connector was started, so in a real world scenario you would want to add an offset, but for this tutorial you can leave it as is and interpret it as seconds since Epoch, creating dates in 1970:
+
+![Query](/assets/2021-10-19-5-query.jpeg)
 
 ## Learnings
 
