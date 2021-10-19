@@ -51,7 +51,7 @@ Use the menu navigation `Data integration` > `Connectors` > `Add connector` and 
 
 Select `CLICKSTREAM` from the `Quickstart` menu, enter a message interval of 500 msec, and set the number of tasks to 1 - this will be enough for the experiment:
 
-![](/assets/2021-10-19-1-confluent-cloud.jpeg)
+![Confluent Cloud connector configuration](/assets/2021-10-19-1-confluent-cloud.jpeg)
 
 Start the connector and wait a moment until the topic begins to receive data. If you have everything configured, you can peek into the topic in the Confluent Cloud GUI and verify that data is arriving.
 
@@ -71,15 +71,17 @@ Since Confluent Cloud secures access to Kafka, you need to paste the consumer pr
 ```
 This will automatically populate the bootstrap server field too. Enter `tut-avro` as the Kafka topic name and hit `Apply`. Druid does its best to give you a preview of the data but since it's a binary format the result looks like gibberish.
 
-![](/assets/2021-10-19-2-load-gibberish.jpeg)
+![Raw Avro data](/assets/2021-10-19-2-load-gibberish.jpeg)
 
-Press `Next: Parse data`. And ... we get the message `Error: Failed to sample data: null`. This is because Avro needs a schema and we haven't specified one.
+Press `Next: Parse data`, and select the `avro_stream` input format. This didn't used to be supported by the Druid wizard, but the ability to parse Avro streams directly from the GUI was recently added.
+
+But what?? ... We get the message `Error: Failed to sample data: null`. This is because Avro needs a schema and we haven't specified one.
 
 ## Fixing Schema Registry access
 
 We need to tell Druid where to find the schema associated with our Avro data: Navigate to `Edit spec` to the right
 
-![](/assets/2021-10-19-4-edit-spec.jpeg)
+![Edit the inputFormat spec](/assets/2021-10-19-3-edit-spec.jpeg)
 
 and find the `inputFormat` section. Replace this by the following snippet:
 ```json
@@ -97,3 +99,9 @@ and find the `inputFormat` section. Replace this by the following snippet:
       }
 ```
 replacing the placeholders with the appropriate credentials for your instance of Schema Registry. Then go back to the `Parse Data` stage.
+
+![Parsed Avro](/assets/2021-10-19-4-load-parsed.jpeg)
+
+This looks much better!
+
+From here, the rest is easy. Pick the `time` field as primary timestamp; this comes as seconds since the connector was started, so in a real world scenario you would want to add an offset, but for this tutorial you can leave it as is and interpret it as seconds since Epoch, creating dates in 1970.
