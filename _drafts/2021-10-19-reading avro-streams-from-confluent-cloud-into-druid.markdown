@@ -1,10 +1,24 @@
 ---
 layout: post
-title:  "Reading Avro Streams from Confluent Cloud into Druid"
+title:  "Reading Avro Streams from Confluent Cloud into Apache Druid"
 categories: blog imply druid confluent kafka eventstreaming
 ---
 
-Today I am going to show how to get AVRO data from a schema aware Confluent Cloud cluster into Apache Druid. Use the Druid 0.22 [micro-quickstart](https://druid.apache.org/docs/latest/tutorials/index.html) setup for this exercise.
+Today I am going to show how to get AVRO data from a schema aware [Confluent Cloud](https://confluent.cloud) cluster into Apache Druid. Use the Druid 0.22 [micro-quickstart](https://druid.apache.org/docs/latest/tutorials/index.html) setup for this exercise.
+
+## Data Governance in Kafka and Druid: Enforcing a contract
+
+[Apache Druid](https://druid.apache.org/) can natively consume data out of a Kafka topic. It is also flexible in picking up new dimensions as they show up in the stream, [and can even do so automatically](https://druid.apache.org/docs/latest/ingestion/schema-design.html#schema-less-dimensions) to a certain extent.
+
+Likewise, on the lowest level, [Apache Kafka](https://kafka.apache.org/) just transmits the message content as a blob of data and does not care what's in it. However, in a microservices architecture sometimes a stricter control of the data format is desirable. For this, Confluent developed Schema Registry as an extension to Kafka. It is now possible to encode messages in the binary [AVRO](https://avro.apache.org/) format. (You can also use JSON or [Protobuf](https://developers.google.com/protocol-buffers/) with Schema Registry, but that's a story for another time.)
+
+An AVRO object is always accompanied by a schema definition which is itself written in JSON. In the simplest case, the schema definition is sent along with the binary data in each message, which mostly negates the advantages of having a highly compressed binary format.
+
+Therefore, you use AVRO with Kafka, each message is prepended by a schema ID that references an entry in Schema Registry. Clients can validate schema conformance of each message and make sure that contracts are honored. The exact binary format is documented [here](https://docs.confluent.io/platform/current/schema-registry/serdes-develop/index.html#wire-format).
+
+Druid can [read and parse AVRO messages](https://druid.apache.org/docs/latest/ingestion/data-formats.html#avro-stream) and their schemas. With this integration, Druid automatically picks up the schema definition and allows us to configure the ingestion spec accordingly.
+
+## Prerequisite: Configure Druid
 
 In order to parse Avro messages, you first have to [enable](https://druid.apache.org/docs/0.22.0/development/extensions.html#loading-extensions) the Avro extension in the Druid configuration. For the `micro-quickstart` configuration, edit `conf/druid/single-server/micro-quickstart/_common/common.runtime.properties`:
 
@@ -14,6 +28,8 @@ In order to parse Avro messages, you first have to [enable](https://druid.apache
 # More info: https://druid.apache.org/docs/latest/operations/including-extensions.html
 druid.extensions.loadList=["druid-hdfs-storage", "druid-kafka-indexing-service", "druid-datasketches", "druid-avro-extensions"]
 ```
+
+Then (re-)start Druid.
 
 ## Setting things up in Confluent Cloud
 
