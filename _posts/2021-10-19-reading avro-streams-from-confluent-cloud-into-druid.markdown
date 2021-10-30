@@ -16,7 +16,7 @@ Likewise, on the lowest level, [Apache Kafka](https://kafka.apache.org/) just tr
 
 An AVRO object is always accompanied by a schema definition which is itself written in JSON. In the simplest case, the schema definition is sent along with the binary data in each message, which mostly negates the advantages of having a highly compressed binary format.
 
-Therefore, you use AVRO with Kafka, each message is prepended by a schema ID that references an entry in Schema Registry. Clients can validate schema conformance of each message and make sure that contracts are honored. The exact binary format is documented [here](https://docs.confluent.io/platform/current/schema-registry/serdes-develop/index.html#wire-format).
+Therefore, if you use AVRO with Kafka, each message is prepended by a schema ID that references an entry in Schema Registry. Clients can validate schema conformance of each message and make sure that contracts are honored. The exact binary format is documented [here](https://docs.confluent.io/platform/current/schema-registry/serdes-develop/index.html#wire-format).
 
 Druid can [read and parse AVRO messages](https://druid.apache.org/docs/latest/ingestion/data-formats.html#avro-stream) and their schemas. With this integration, Druid automatically picks up the schema definition and allows us to configure the ingestion spec accordingly.
 
