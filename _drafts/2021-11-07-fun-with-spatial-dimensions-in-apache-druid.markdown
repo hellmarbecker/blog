@@ -1,3 +1,8 @@
+---
+layout: post
+title:  "Fun with Spatial Dimensions in Apache Druid"
+categories: blog apache druid imply
+---
 
 I took the example code from [](), and made it to accept the Druid geospatial format:
 
