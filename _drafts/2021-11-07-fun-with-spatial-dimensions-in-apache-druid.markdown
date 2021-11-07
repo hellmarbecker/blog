@@ -3,57 +3,76 @@ layout: post
 title:  "Fun with Spatial Dimensions in Apache Druid"
 categories: blog apache druid imply
 ---
+Today, I am going to look at geospatial data in Apache Druid in some more detail. [Back in September](/2021/09/05/geospatial-data-in-apache-druid-ingestion/), we learned how to ingest these data into Druid.
 
-I took the example code from [](), and made it to accept the Druid geospatial format:
+It turns out that a spatial dimension is in fact not much more than a string, in which x and y coordinate (or latitude and longitude) are separated by a comma.
 
-```javascript
-function encodeGeoHash(arg) {
-        var parts = arg.split(",");
-        var latitude = parts[0];
-        var longitude = parts[1];
-        const BITS = [16, 8, 4, 2, 1];
-        const BASE32 = "0123456789bcdefghjkmnpqrstuvwxyz";
-        var is_even=1;
-        var i=0;
-        var lat = []; var lon = [];
-        var bit=0;
-        var ch=0;
-        var precision = 12;
-        geohash = "";
+## Data Generation
 
-        lat[0] = -90.0;  lat[1] = 90.0;
-        lon[0] = -180.0; lon[1] = 180.0;
+Let's generate some test data. I am using the [Faker](https://faker.readthedocs.io/en/master/index.html) module in a small script like this:
 
-        while (geohash.length < precision) {
-          if (is_even) {
-                        mid = (lon[0] + lon[1]) / 2;
-            if (longitude > mid) {
-                                ch |= BITS[bit];
-                                lon[0] = mid;
-            } else
-                                lon[1] = mid;
-          } else {
-                        mid = (lat[0] + lat[1]) / 2;
-            if (latitude > mid) {
-                                ch |= BITS[bit];
-                                lat[0] = mid;
-            } else
-                                lat[1] = mid;
-          }
+```python
+import json
+from faker import Faker
 
-                is_even = !is_even;
-          if (bit < 4)
-                        bit++;
-          else {
-                        geohash += BASE32[ch];
-                        bit = 0;
-                        ch = 0;
-          }
-        }
-        return geohash;
-}
+fake = Faker()
+
+def main():
+
+    print("latitude,longitude,place_name,country_code,timezone")
+
+    for i in range(0, 10000):
+        place = fake.location_on_land()
+        print(','.join(place))
+
+if __name__ == "__main__":
+    main()
 ```
 
+Ingest these data into Druid as described in [my previous post](/2021/09/05/geospatial-data-in-apache-druid-ingestion/).
 
-In order to make this into an one-liner, a number of free compressors/obfuscators are available, for instance [this one](https://javascriptcompressor.com/). Then escape all the double quotes with a backslash `\`, cresting a code snippet ready to be inserted into the JSON configuration for the cube options.
+## Querying
+
+Let's start with a simple SQL query. I want a list of places with their coordinates, and how often they ocurred in my file:
+
+```sql
+SELECT
+  coordinates,
+  place_name,
+  COUNT(*)
+FROM 
+  geo_data_ww
+GROUP BY 1, 2
+```
+
+In order to do my spatial magic, I need to convert this SQL code to a Druid native query. This is an easy interactive process in the Druid query console.
+
+First, use the `Explain` function to show the Druid native query that is generated:
+
+[Explain](/assets/2021-11-07-1-explain.jpeg)
+
+Then, use the `Open Query` button to open the native query iin the editor, instead of the SQL
+
+[Open Query](/assets/2021/11-07-2-open-query.jpeg)
+
+# Spatial Filtering!
+
+Now, let's introduce a filter! I am going to try and select only the places within a rectangle that roughly contains my home country, Germany. So I want to cover an area from 47°N to 55°N latitude, and from 6°E to 15°E longitude.
+
+Find the place in the query where it says `"filter": null,` and replace it by the following snippet:
+```json
+  "filter": {
+    "type": "spatial",
+    "dimension": "coordinates",
+    "bound": {
+        "type": "rectangular",
+        "minCoords": [47.0, 6.0],
+        "maxCoords": [55.0, 15.0]
+    }
+  },
+```
+[Filter](/assets/2021/11-07-3-filter.jpeg)
+
+Note how the places listed are almost all in Germany! You can also define circle and polygon filters. Spatial dimensions and filters are documented in [https://druid.apache.org/docs/latest/development/geo.html#spatial-indexing].
+
 
