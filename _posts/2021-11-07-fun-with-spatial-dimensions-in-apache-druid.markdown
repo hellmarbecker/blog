@@ -62,7 +62,7 @@ Then, use the `Open Query` button to open the native query in the editor, instea
 
 Now, let's introduce a filter! I am going to try and select only the places within a rectangle that roughly contains my home country, Germany. So I want to cover an area from 47°N to 55°N latitude, and from 6°E to 15°E longitude.
 
-Find the place in the query where it says `"filter": null,` and replace it by the following snippet:
+Find the place in the query where it says `"filter": null`, and replace it by the following snippet:
 ```json
   "filter": {
     "type": "spatial",
@@ -72,7 +72,7 @@ Find the place in the query where it says `"filter": null,` and replace it by th
         "minCoords": [47.0, 6.0],
         "maxCoords": [55.0, 15.0]
     }
-  },
+  }
 ```
 ![Filter](/assets/2021-11-07-3-filter.jpeg)
 
