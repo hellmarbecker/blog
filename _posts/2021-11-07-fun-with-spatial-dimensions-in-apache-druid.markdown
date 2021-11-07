@@ -36,7 +36,7 @@ Ingest these data into Druid as described in [my previous post](/2021/09/05/geos
 
 ## Querying
 
-Let's start with a simple SQL query. I want a list of places with their coordinates, and how often they ocurred in my file:
+Let's start with a simple SQL query. I want a list of places with their coordinates, and how often they occurred in my file:
 
 ```sql
 SELECT
@@ -54,7 +54,7 @@ First, use the `Explain` function to show the Druid native query that is generat
 
 ![Explain](/assets/2021-11-07-1-explain.jpeg)
 
-Then, use the `Open Query` button to open the native query in the editor, instead of the SQL
+Then, use the `Open Query` button to open the native query in the editor, instead of the SQL.
 
 ![Open Query](/assets/2021-11-07-2-open-query.jpeg)
 
@@ -76,7 +76,7 @@ Find the place in the query where it says `"filter": null,` and replace it by th
 ```
 ![Filter](/assets/2021-11-07-3-filter.jpeg)
 
-Note how the places that are listed in the result are almost all in Germany! You can also define circle and polygon filters. Spatial dimensions and filters are documented in [https://druid.apache.org/docs/latest/development/geo.html#spatial-indexing].
+Note how the places that are listed in the result are almost all in Germany! You can also define circle and polygon filters. Spatial dimensions and filters are documented [here](https://druid.apache.org/docs/latest/development/geo.html#spatial-indexing).
 
 ## Learnings
 
