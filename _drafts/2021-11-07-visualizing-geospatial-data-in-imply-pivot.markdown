@@ -1,3 +1,9 @@
+---
+layout: post
+title:  "Visualizing Geospatial Data in Imply Pivot"
+categories: blog imply druid geospatial pivot
+---
+
 I took the example code from [Dave Troy's Github](https://github.com/davetroy/geohash-js), and modified it so as to accept the Druid geospatial format:
 
 ```javascript
