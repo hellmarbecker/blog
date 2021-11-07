@@ -1,8 +1,11 @@
 ---
 layout: post
 title:  "Fun with Spatial Dimensions in Apache Druid"
-categories: blog apache druid imply
+categories: blog apache druid imply spatial
 ---
+
+![Map](/assets/2021-11-07-0-map.jpg)
+
 Today, I am going to look at geospatial data in Apache Druid in some more detail. [Back in September](/2021/09/05/geospatial-data-in-apache-druid-ingestion/), we learned how to ingest these data into Druid.
 
 It turns out that a spatial dimension is in fact not much more than a string, in which x and y coordinate (or latitude and longitude) are separated by a comma. (You could also have more than two dimensions, but the filtering semantics are tailored for two dimensions.)
@@ -49,11 +52,11 @@ In order to do my spatial magic, I need to convert this SQL code to a Druid nati
 
 First, use the `Explain` function to show the Druid native query that is generated:
 
-[Explain](/assets/2021-11-07-1-explain.jpeg)
+![Explain](/assets/2021-11-07-1-explain.jpeg)
 
-Then, use the `Open Query` button to open the native query iin the editor, instead of the SQL
+Then, use the `Open Query` button to open the native query in the editor, instead of the SQL
 
-[Open Query](/assets/2021/11-07-2-open-query.jpeg)
+![Open Query](/assets/2021-11-07-2-open-query.jpeg)
 
 ## Spatial Filtering!
 
@@ -71,7 +74,7 @@ Find the place in the query where it says `"filter": null,` and replace it by th
     }
   },
 ```
-[Filter](/assets/2021/11-07-3-filter.jpeg)
+![Filter](/assets/2021-11-07-3-filter.jpeg)
 
 Note how the places that are listed in the result are almost all in Germany! You can also define circle and polygon filters. Spatial dimensions and filters are documented in [https://druid.apache.org/docs/latest/development/geo.html#spatial-indexing].
 
