@@ -3,6 +3,23 @@ layout: post
 title:  "Visualizing Geospatial Data in Imply Pivot"
 categories: blog imply druid geospatial pivot
 ---
+[Previously](/2021/11/07/fun-with-spatial-dimensions-in-apache-druid/), I looked at spatial dimensions in Apache Druid. Since [Imply](https://www.imply.io) created Pivot as a tailored visualization tool for Druid data, I would like to take advantage of the built-in map view to show my spatial dimensions on a map. How will we go about this?
+
+Pivot cannot display latitude/longitude coordinates directly on a map but it can interpret geocoded data in [Geohash](https://en.wikipedia.org/wiki/Geohash) format. If we could transform our coordinates into a geohash, sure we would be able to make the map visualization work!
+
+## Enabling Javascript transformations
+
+Druid can work with arbitrary transformation expressions that are supplied as Javascript functions. Pivot supports this functionality, too. You have to use the legacy Plywood cube format though, it does not work with SQL.
+
+Javascript is deactivated in Druid by default, but it can be enabled by setting
+```
+druid.javascript.enabled=true
+```
+in the common runtime properties for Druid. This is also a prerequisite for [working with Javascript transformations in Pivot](https://docs.imply.io/latest/dimensions/#custom-transformations). Here is how to do this in Imply Cloud:
+
+![Common properties](/assets/2021-11-08-2-common-properties.jpeg)
+
+Once Javascript is enabled, you can define custom transformations in the data cube options in Pivot. 
 
 I took the example code from [Dave Troy's Github](https://github.com/davetroy/geohash-js), and modified it so as to accept the Druid geospatial format:
 
@@ -69,3 +86,7 @@ In order to make this into an one-liner, a number of free compressors/obfuscator
   }
 }
 ```
+
+Copy and paste this into the cube options:
+
+![Cube Options](/assets/2021-11-08-3-cube-options.jpeg)
