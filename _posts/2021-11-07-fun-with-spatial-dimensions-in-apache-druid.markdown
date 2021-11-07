@@ -12,7 +12,7 @@ It turns out that a spatial dimension is in fact not much more than a string, in
 
 ## Data Generation
 
-First, we need to generate some test data. I am using the [Faker](https://faker.readthedocs.io/en/master/index.html) module in a small script like this:
+First, we need to generate some test data. I am using the Python [Faker](https://faker.readthedocs.io/en/master/index.html) module in a small script like this:
 
 ```python
 import json
