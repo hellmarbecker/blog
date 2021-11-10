@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Reading Avro Streams from Confluent Cloud into Apache Druid"
-categories: blog imply druid confluent kafka eventstreaming
+categories: blog imply druid confluent kafka eventstreaming tutorial
 ---
 
 Today I am going to show how to get [AVRO](https://avro.apache.org/) data from a [schema aware](https://docs.confluent.io/cloud/current/sr/schemas-manage.html) [Confluent Cloud](https://confluent.cloud) cluster into [Apache Druid](https://druid.apache.org/). Use the Druid 0.22 [micro-quickstart](https://druid.apache.org/docs/latest/tutorials/index.html) setup for this exercise.
