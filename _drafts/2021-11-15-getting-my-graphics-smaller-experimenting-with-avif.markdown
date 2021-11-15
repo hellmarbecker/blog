@@ -1,10 +1,10 @@
 ---
 layout: post
-title:  "Getting my Graphics Small - AVIF FTW"
+title:  "Getting My Graphics Smaller - Experimenting with AVIF"
 categories: blog image-compression
 ---
 
-I'm going to move from using JPEG images to [AVIF](https://en.wikipedia.org/wiki/AVIF) in my blog.
+I thought I was going to move from using JPEG images to [AVIF](https://en.wikipedia.org/wiki/AVIF) in my blog.
 
 ## Why JPEG in the first place?
 
@@ -14,8 +14,7 @@ While JPEG might not appear as a natural choice for screenshots, in the lowest q
 
 ## A Better Solution
 
-Then I cam across [this article](https://www.simplethread.com/why-your-website-should-not-use-dithered-images/) which has a comprehensive comparison of various image formats that offer superior compression and quality. It also links to a [free converter](https://squoosh.app/)! All the numbers in this benchmark are in favor of AVIF. Also, according to [Wikipedia](https://en.wikipedia.org/wiki/AVIF) most modern browsers support AVIF. But alas, not Safari!
-
+Then I cam across [this article](https://www.simplethread.com/why-your-website-should-not-use-dithered-images/) which has a comprehensive comparison of various image formats that offer superior compression and quality. It also links to a [free converter](https://squoosh.app/)! All the numbers in this benchmark are in favor of AVIF. 
 Here is one of the images from my previous blog post as JPEG:
 
 ![Screenshot as JPEG](/assets/2021-11-07-3-filter.jpeg)
@@ -27,3 +26,7 @@ And as AVIF:
 The AVIF version has a lot less visible artifacts, and it is more than 2/3 smaller (51 KB vs. 167 KB)!
 
 [Here](https://github.com/kornelski/cavif-rs) is a command line tool to convert PNG or JPEG files into AVIF.
+
+## Browser Support
+
+According to [Wikipedia](https://en.wikipedia.org/wiki/AVIF) most modern browsers support AVIF. But alas, not Safari! This is really a bummer. I will not be able to benefit from improved compression then.
