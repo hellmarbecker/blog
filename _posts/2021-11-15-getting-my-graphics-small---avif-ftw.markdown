@@ -4,11 +4,21 @@ title:  "Getting my Graphics Small - AVIF FTW"
 categories: blog image-compression
 ---
 
-I'm going to move from using JPEG images to AVIF in my blog.
+I'm going to move from using JPEG images to [AVIF](https://en.wikipedia.org/wiki/AVIF) in my blog.
 
 ## Why JPEG in the first place?
 
-Most of my blog images are screenshots, which can be quite big. On the other hand, one of my goals is to keep my blog website small and simple. (This is why I went for  Because of things like color gradients and antialiasing, lossless compression doesn't work quite as well as I originally expected on them.
-So, while JPEG might not appear as a natural choice for screenshots, 
+Most of my blog images are screenshots, which can be quite big. On the other hand, one of my goals is to keep my blog website small and simple. (This is why I went for [Jekyll](http://jekyllrb.com/) in the first place.) Because of things like color gradients and antialiasing, lossless compression doesn't work quite as well as I originally expected on those images.
+
+While JPEG might not appear as a natural choice for screenshots, in the lowest quality setting it offers a more than 50% average size reduction over PNG, and I found I could live with the compression artifacts.
+
+## A Better Solution
+
+Then I cam across [this article](https://www.simplethread.com/why-your-website-should-not-use-dithered-images/) which has a comprehensive comparison of various image formats that offer superior compression and quality. It also links to a [free converter](https://squoosh.app/)! All the numbers in this benchmark are in favor of AVIF. Also, according to [Wikipedia](https://en.wikipedia.org/wiki/AVIF) all modern browsers support AVIF.
+
+Here is one of the images from my previous blog post as JPEG:
+
+
+
 
 https://github.com/kornelski/cavif-rs
