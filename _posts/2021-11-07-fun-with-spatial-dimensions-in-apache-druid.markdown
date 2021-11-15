@@ -74,7 +74,7 @@ Find the place in the query where it says `"filter": null`, and replace it by th
     }
   }
 ```
-![Filter](/assets/2021-11-07-3-filter.avif)
+![Filter](/assets/2021-11-07-3-filter.jpeg)
 
 Note how the places that are listed in the result are almost all in Germany! You can also define circle and polygon filters. Spatial dimensions and filters are documented [here](https://druid.apache.org/docs/latest/development/geo.html#spatial-indexing).
 
