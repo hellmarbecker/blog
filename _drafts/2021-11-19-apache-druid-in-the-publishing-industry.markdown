@@ -3,7 +3,7 @@ layout: post
 title:  "Apache Druid in the Publishing Industry"
 categories: blog imply druid industry
 ---
-[Apache Druid](https://druid.apache.org/) is a high performance, distributed analytical datastore that has natural uses in many industries. Today, I am going to look at use cases in the publishing industry.
+[Apache Druid](https://druid.apache.org/) is a high performance, distributed analytical datastore that has natural uses in many industries. Today, I am going to look at use cases in the publishing (news) industry.
 
 ![](/assets/2021-11-19-newspaper_fire_orange.jpg)[^1]
 
@@ -29,7 +29,7 @@ Here are a few unique points about Druid:
 
 ## Self service analytics
 
-Druid's principle for data is "**F**resh, **F**ast, **F**or all". There are a number of [free](https://blog.allegro.tech/2018/10/turnilo-lets-change-the-way-people-explore-big-data.html) and [commercial](https://imply.io/post/hello-pivot) frontends that enable self service, exploratory analytics and interactive dashboarding on top of Druid - ensuring that each user gets snappy access to the data that was generated this very moment. 
+Druid's principle for data can be described by the "3F" of "**F**resh, **F**ast, **F**or all". There are a number of [free](https://blog.allegro.tech/2018/10/turnilo-lets-change-the-way-people-explore-big-data.html) and [commercial](https://imply.io/post/hello-pivot) frontends that enable self service, exploratory analytics and interactive dashboarding on top of Druid - ensuring that each user gets snappy access to the data that was generated this very moment. 
 
 ### Built to scale
 
