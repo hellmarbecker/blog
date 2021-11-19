@@ -5,7 +5,7 @@ categories: blog imply druid industry
 ---
 [Apache Druid](https://druid.apache.org/) is a high performance, distributed analytical datastore that has natural uses in many industries. Today, I am going to look at use cases in the publishing industry.
 
-![^1](/assets/2021-11-19-newspaper_fire_orange.jpg)
+![](/assets/2021-11-19-newspaper_fire_orange.jpg)[^1]
 
 ## Challenges in the Publishing Industry
 
@@ -19,7 +19,7 @@ Here are a few unique points about Druid:
 
 Druid is in itself a distributed system with built in service discovery and resiliency. It is unique in that it scales not only for large amounts of data, but also for a large amount of concurrent queries.
 
-This enables use cases in which a dashboard application fires lots of incremental queries
+This enables use cases in which a dashboard application fires lots of incremental queries [^2]
 
 ### Streaming ingestion
 
@@ -36,3 +36,5 @@ With the built in [multi-value dimensions](/2021/08/07/multivalue-dimensions-in-
 ## How does Druid help the Publishing Industry?
 
 [^1] Derived from: "Newspaper high contrast B&W" by NS Newsflash is licensed with CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/ 
+
+[^2] lorem ipsum
