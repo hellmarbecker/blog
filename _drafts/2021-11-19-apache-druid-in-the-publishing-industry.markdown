@@ -18,21 +18,30 @@ The publishing industry is experiencing a rapid change:
 To address these challenges, publishers are looking for new ways to ensure revenue:
 - Paid subscriptions are becoming more important
 - Cooperations with retailers are a new option, the publisher acts as a marketplace to sell certain items in a branded shop
-- [Native advertising and advertorials](https://www.youtube.com/watch?v=1SmlsfSqmOw)
+- [Native advertising and advertorials](https://www.youtube.com/watch?v=1SmlsfSqmOw) as a way to mitigate display ad fatigue and to attract readers' attention
+- Social media homepages (for instance on Facebook) and [dark social](https://www.brightervision.com/what-is-dark-social/) campaigns.
+
+Publishers are constantly looking for new ways to transform their business, because the traditional business models will not work in the future.
 
 ## Why Druid?
 
 Here are a few unique points about Druid:
 
+## Self service analytics
+
+Druid's principle for data is "**F**resh, **F**ast, **F**or all". There are a number of [free](https://blog.allegro.tech/2018/10/turnilo-lets-change-the-way-people-explore-big-data.html) and [commercial](https://imply.io/post/hello-pivot) frontends that enable self service, exploratory analytics and interactive dashboarding on top of Druid - ensuring that each user gets snappy access to the data that was generated this very moment. 
+
 ### Built to scale
 
 Druid is in itself a distributed system with built in service discovery and resiliency. It is unique in that it scales not only for large amounts of data, but also for a large amount of concurrent queries.
 
-This enables use cases in which a dashboard application fires lots of incremental queries [^2]
+This enables use cases in which a dashboard application fires lots of incremental queries. Ultimately, a user of Druid can explore data much like one would nowadays explore Google Maps: as they zoom out of the data area they are viewing, or drilling into more detail, Druid will be adding only the missing bits to the view by answering incremental queries.
 
 ### Streaming ingestion
 
-Druid connects directly to event streaming platforms like [Apache Kafka](https://kafka.apache.org/) and [AWS Kinesis](https://aws.amazon.com/kinesis/). With the proper frontend, this means you can get updated insights about your reader's behavior within seconds.
+Druid connects directly to event streaming platforms like [Apache Kafka](https://kafka.apache.org/) and [AWS Kinesis](https://aws.amazon.com/kinesis/). With the proper frontend, this means you can get updated insights about your reader's behavior within seconds. The [K2D](https://imply.io/Kafka-to-Druid_stack_architecture_solution_brief.pdf) architecture is becoming a standard for fast, near-real-time analytics.
+
+![K2D architecture overview](/assets/2021-10-19-0-architecture.png)
 
 ### Smart data lookups
 
@@ -44,10 +53,30 @@ With the built in [multi-value dimensions](/2021/08/07/multivalue-dimensions-in-
 
 ## How does Druid help the Publishing Industry?
 
-German publisher, Ippen Digital talked at [Druid Summit](https://druidsummit.org/) this year
+### Measuring conversions
+
+Druid integrateds all the sources of data, making it possible to attribute conversions, such as new paid subscriptions, to the campaign source and the content that motivated the conversion. It does theat for large amounts of data, with respoonse times of less than a second.
+
+### Measuring teaser placement success immediately
+
+With a small portion of the mobile page being so disproportionately valuable, it becomes crucial to beable to measure success of a teasr or headline very quickly after it is placed. If a placement is not successful, it needs to be changed quickly. Druid enables this kind of fast reaction.
+
+### Measuring paid vs. non paid performance
+
+How do you decide whether you place an article behind the paywall or not? Sometimes it may be beneficial to make paid content available for free for a limited time.
+
+### Enabling analysis by editors and content specialists
+
+Some of the publisher who use Druid have set up internal training programs, the main goal being to sensitivize non technical users for the benefits of using data driven analytics. With the interactive analytics capability of modern frontends, analytical work becomes a delightfule experience.
+
+### Hypothesis driven development
+
+Interactive analytics with Druid is so fast that various hypotheses (Is this placement going to be successful?) can be tested against real data within a very short time. The editor asks a question to the data, and if the answer is unclear or unsatisfying, she would refine or modify the question - within seconds!
+ 
+German publisher, Ippen Digital explained how Druid enabled them to switch from opinions to insights, at [Druid Summit](https://druidsummit.org/) this year: 
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/1ceY6iXgKug" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+
 [^1]: Derived from: "Newspaper high contrast B&W" by NS Newsflash is licensed with CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/ 
 
-[^2]: lorem ipsum
