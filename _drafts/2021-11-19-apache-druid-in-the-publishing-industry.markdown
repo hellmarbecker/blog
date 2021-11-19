@@ -65,6 +65,10 @@ With a small portion of the mobile page being so disproportionately valuable, it
 
 How do you decide whether you place an article behind the paywall or not? Sometimes it may be beneficial to make paid content available for free for a limited time.
 
+### Measuring SEO performance in near real time
+
+With data made available from third party crawling services, [SEO](https://en.wikipedia.org/wiki/Search_engine_optimization) statistics can be used to optimize headlines and asset tags. Druid can ingest these data together with clickstream data from user interactions and make SEO perfromance directly visible to editors.
+
 ### Enabling analysis by editors and content specialists
 
 Some of the publisher who use Druid have set up internal training programs, the main goal being to sensitivize non technical users for the benefits of using data driven analytics. With the interactive analytics capability of modern frontends, analytical work becomes a delightfule experience.
@@ -73,10 +77,11 @@ Some of the publisher who use Druid have set up internal training programs, the 
 
 Interactive analytics with Druid is so fast that various hypotheses (Is this placement going to be successful?) can be tested against real data within a very short time. The editor asks a question to the data, and if the answer is unclear or unsatisfying, she would refine or modify the question - within seconds!
  
-German publisher, Ippen Digital explained how Druid enabled them to switch from opinions to insights, at [Druid Summit](https://druidsummit.org/) this year: 
+German publisher, [Ippen](https://www.ippen-digital.de/) explained how Druid enabled them to switch from opinions to insights, at [Druid Summit](https://druidsummit.org/) this year: 
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/1ceY6iXgKug" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
+These are but a few of the use cases of Druid in the news and publishing industry. As this sector develops, there is more to come! 
 
 [^1]: Derived from: "Newspaper high contrast B&W" by NS Newsflash is licensed with CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/ 
 
