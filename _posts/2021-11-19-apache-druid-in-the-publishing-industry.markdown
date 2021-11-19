@@ -3,9 +3,9 @@ layout: post
 title:  "Apache Druid in the Publishing Industry"
 categories: blog imply druid industry
 ---
-[Apache Druid](https://druid.apache.org/) is a high performance, distributed analytical datastore that has natural uses in many industries. Today, I am going to look at use cases in the publishing (news) industry.
-
 ![](/assets/2021-11-19-newspaper_fire_orange.jpg)[^1]
+
+[Apache Druid](https://druid.apache.org/) is a high performance, distributed analytical datastore that has natural uses in many industries. Today, I am going to look at use cases in the publishing (news) industry.
 
 ## Challenges in the Publishing Industry
 
