@@ -35,6 +35,6 @@ With the built in [multi-value dimensions](/2021/08/07/multivalue-dimensions-in-
 
 ## How does Druid help the Publishing Industry?
 
-[^1] Derived from: "Newspaper high contrast B&W" by NS Newsflash is licensed with CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/ 
+[^1]: Derived from: "Newspaper high contrast B&W" by NS Newsflash is licensed with CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/ 
 
-[^2] lorem ipsum
+[^2]: lorem ipsum
