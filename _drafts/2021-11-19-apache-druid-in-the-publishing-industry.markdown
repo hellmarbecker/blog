@@ -11,7 +11,7 @@ categories: blog imply druid industry
 
 The publishing industry is experiencing a rapid change:
 - Print is on the decline: In the U.S., comparing 2020 numbers to 2019, [weekday print circulation decreased 19% and Sunday print circulation decreased 14%](https://www.pewresearch.org/journalism/fact-sheet/newspapers/). Publishing is increasingly digital.
-- Traditional monetization strategies using display ads are lless successful.
+- Traditional monetization strategies using display ads are less successful.
 - With Google dominating the search market, traditional SEO is getting more difficult.
 - With Mobile becoming an important delivery channel, publishers need to adapt to the smaller screen format of smartphones. This means that a small area on top of each page is prime real estate and placement of content is crucial.
 
@@ -59,7 +59,7 @@ Druid integrateds all the sources of data, making it possible to attribute conve
 
 ### Measuring teaser placement success immediately
 
-With a small portion of the mobile page being so disproportionately valuable, it becomes crucial to beable to measure success of a teasr or headline very quickly after it is placed. If a placement is not successful, it needs to be changed quickly. Druid enables this kind of fast reaction.
+With a small portion of the mobile page being so disproportionately valuable, it becomes crucial to beable to measure success of a teaser or headline very quickly after it is placed. If a placement is not successful, it needs to be changed quickly. Druid enables this kind of fast reaction.
 
 ### Measuring paid vs. non paid performance
 
@@ -71,17 +71,21 @@ With data made available from third party crawling services, [SEO](https://en.wi
 
 ### Enabling analysis by editors and content specialists
 
-Some of the publisher who use Druid have set up internal training programs, the main goal being to sensitivize non technical users for the benefits of using data driven analytics. With the interactive analytics capability of modern frontends, analytical work becomes a delightfule experience.
+Some of the publisher who use Druid have set up internal training programs, the main goal being to sensitivize non technical users for the benefits of using data driven analytics. With the interactive analytics capability of modern frontends, analytical work becomes a delightful experience.
 
 ### Hypothesis driven development
 
-Interactive analytics with Druid is so fast that various hypotheses (Is this placement going to be successful?) can be tested against real data within a very short time. The editor asks a question to the data, and if the answer is unclear or unsatisfying, she would refine or modify the question - within seconds!
+Interactive analytics with Druid is so fast that various hypotheses (_Is this placement going to be successful?_) can be tested against real data within a very short time. The editor asks a question to the data, and if the answer is unclear or unsatisfying, she would refine or modify the question - within seconds!
  
 German publisher, [Ippen](https://www.ippen-digital.de/) explained how Druid enabled them to switch from opinions to insights, at [Druid Summit](https://druidsummit.org/) this year: 
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/1ceY6iXgKug" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-These are but a few of the use cases of Druid in the news and publishing industry. As this sector develops, there is more to come! 
+## Conclusion
+
+With its fast, interactive, and scalable approach, Druid enables publishers to tackle the challenges of transformation in the 21st century.
+
+Above are but a few of the use cases of Druid in the news and publishing industry. As this sector develops, there is more to come! 
 
 [^1]: Derived from: "Newspaper high contrast B&W" by NS Newsflash is licensed with CC BY 2.0. To view a copy of this license, visit https://creativecommons.org/licenses/by/2.0/ 
 
