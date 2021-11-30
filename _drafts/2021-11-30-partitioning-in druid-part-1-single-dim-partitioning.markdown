@@ -1,8 +1,23 @@
 ---
 layout: post
-title:  "Partitioning in Druid"
+title:  "Partitioning in Druid - Part 1: Single Dim Partitioning"
 categories: blog apache druid imply
 ---
+
+In addition to segmenting data by time, Druid allows to introduce a secondary partitioning within each segment. There are (currently) three strategies:
+- dynamic partitioning
+- hash partitioning
+- single dim partitioning.
+
+### Dynamic Partitioning
+
+Generally speaking, dynamic partitioning does not do a lot to the data with regards to organizing or reordering them. You will get one or more partitions per input data blob for batch ingestion, and one or more partitions per Kafka partition for realtime Kafka ingestion. Often times, the resulting segment files are smaller than desired. The upside of this strategy is that ingestion with dynamic partitioning is faster than any other strategy, and it doesn't need to buffer or shuffle data. The downside is that it doesn't do anything to optimize query performance.
+
+### Hash Partitioning
+
+
+
+### Single Dim Partitioning
 
 Here's what I get with all data in one segment:
 ```
