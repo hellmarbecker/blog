@@ -1,12 +1,12 @@
 ---
 layout: post
-title:  "From the Druid Lab - Generating a Tag Cloud Using Rule Based Text Processing"
+title:  "Druid Lab - Generating a Tag Cloud Using Rule Based Text Processing"
 categories: blog apache druid imply
 ---
 
 Here's an interesting situation I came across in one of my projects:
 
-The customer has clickstream data in the broadest sense. For classifying the page clicks, they had a number of content groups and they wanted to count their metrics by content group.
+The client has clickstream data in the broadest sense. For classifying the page clicks, they had a number of content groups and they wanted to count their metrics by content group.
 
 What they did in their existing system looked something like this:
 
@@ -28,7 +28,9 @@ FROM cte
 GROUP BY keyword_group;
 ```
 
-It turns out that this type of query pattern can be very elegantly modeled in [Apache Druid](https://druid.apache.org/) with [mulit-value dimensions (MVD)](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)!
+So, there is a long list of conditional queries that are glued together by `UNION ALL` clauses. This was slow and hard to maintain.
+
+It turns out that this type of query pattern can be very elegantly modeled in [Apache Druid](https://druid.apache.org/) with [multi-value dimensions (MVD)](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)!
 
 Let's give it a try!
 
@@ -46,13 +48,17 @@ In the Transform wizard, hit `Add column transform`.
 
 ![](/assets/2021-12-02-2.jpg)
 
-Name the new transform `keyword_group`. For the transformation expression, enter this text:
+Name the new transform `keyword_group`.
+
+## Here comes the magic!
+
+For the transformation expression, enter this text:
 ```
 filter((x) -> x != null, array(
     if(contains_string(s1,'botzi'),'monkeyspeak',null),
     if(regexp_like(s1,'^\\\\S+?\\\\s\\\\S+$'),'digram',null),
     if(regexp_like(s1,'^\\\\S+?\\\\s\\\\S+?\\\\s\\\\S+$'),'trigram',null,
-    if(regexp_like(s1,'joppi|pimpelpup'),'fake_hungarian',null)
+    if(regexp_like(s1,'joppi|pimpelpup'),'alienspeak',null)
 ))
 ```
 
@@ -67,3 +73,10 @@ Look at the result:
 
 ![](/assets/2021-12-02-4.jpg)
 
+The original query has been much simplified!
+
+## Learnings
+
+- Multi-value dimensions can not only be parsed from the data - you can also generate your own!
+- Druid comes with powerful functions like `map` and `filter` which, together with lambda expressions, create an elegant way to manipulate multi-value dimensions.
+- This can greatly simplify common query patterns in analyzing online behavior data.
