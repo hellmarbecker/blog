@@ -30,9 +30,7 @@ GROUP BY keyword_group;
 
 So, there is a long list of conditional queries that are glued together by `UNION ALL` clauses. This was slow and hard to maintain.
 
-It turns out that this type of query pattern can be very elegantly modeled in [Apache Druid](https://druid.apache.org/) with [multi-value dimensions (MVD)](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)!
-
-Let's give it a try!
+It turns out that this type of query pattern can be very elegantly modeled in [Apache Druid](https://druid.apache.org/) with [multi-value dimensions (MVD)](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/). Let's give it a try!
 
 As usual, I am going to use a tiny dat a set that I am pasting directly into the wizard:
 
