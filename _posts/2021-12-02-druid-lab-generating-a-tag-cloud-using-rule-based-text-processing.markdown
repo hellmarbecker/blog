@@ -55,7 +55,7 @@ For the transformation expression, enter this text:
 filter((x) -> x != null, array(
     if(contains_string(s1,'botzi'),'monkeyspeak',null),
     if(regexp_like(s1,'^\\\\S+?\\\\s\\\\S+$'),'digram',null),
-    if(regexp_like(s1,'^\\\\S+?\\\\s\\\\S+?\\\\s\\\\S+$'),'trigram',null,
+    if(regexp_like(s1,'^\\\\S+?\\\\s\\\\S+?\\\\s\\\\S+$'),'trigram',null),
     if(regexp_like(s1,'joppi|pimpelpup'),'alienspeak',null)
 ))
 ```
