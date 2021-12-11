@@ -36,7 +36,7 @@ But once you configure the Parquet parser, it all looks fine:
 
 ## Flexible schemas!
 
-Because the data is semi-structured, we want to be able to [pick up any new or changed fields as they occur](/2021/08/13/experiments-with-schema-evolution-in-apache-druid/). This is called [schemaless ingestion](https://druid.apache.org/docs/latest/ingestion/ingestion-spec.html#inclusions-and-exclusions) in Druid and it is the most flexible way to handle semi-structured data. You can flexibly ingest any new fields, and they will be auromatically indexed too!
+Because the data is semi-structured, we want to be able to [pick up any new or changed fields as they occur](/2021/08/13/experiments-with-schema-evolution-in-apache-druid/). This is called [schemaless ingestion](https://druid.apache.org/docs/latest/ingestion/ingestion-spec.html#inclusions-and-exclusions) in Druid and it is the most flexible way to handle semi-structured data. You can flexibly ingest any new fields, and they will be automatically indexed too!
 
 In order to achieve this, in the `Configure schema` screen, switch the `Explicitly specify dimension list` toggle to the off position:
 
