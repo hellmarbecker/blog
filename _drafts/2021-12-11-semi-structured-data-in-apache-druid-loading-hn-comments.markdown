@@ -36,13 +36,13 @@ But once you configure the Parquet parser, it all looks fine:
 
 ## Flexible schemas!
 
-Because the data is semi-structured, we want to be able to pick up any new or changed fields as they occur. This is called [schemaless ingestion](https://druid.apache.org/docs/latest/ingestion/ingestion-spec.html#inclusions-and-exclusions) in Druid and it is the most flexible way to handle semi-structured data. You can flexibly ingest any new fields, and they will be auromatically indexed too!
+Because the data is semi-structured, we want to be able to [pick up any new or changed fields as they occur](/2021/08/13/experiments-with-schema-evolution-in-apache-druid/). This is called [schemaless ingestion](https://druid.apache.org/docs/latest/ingestion/ingestion-spec.html#inclusions-and-exclusions) in Druid and it is the most flexible way to handle semi-structured data. You can flexibly ingest any new fields, and they will be auromatically indexed too!
 
 In order to achieve this, in the `Configure schema` screen, switch the `Explicitly specify dimension list` toggle to the off position:
 
 ![](/assets/2021-12-11-4.jpg)
 
-Configure monthly segments and leave dynamic partitioning in place:
+Configure monthly segments and leave dynamic partitioning in place. You could improve things even more by changing the partitioning strategy, but that's another story for another blogpost.
 
 ![](/assets/2021-12-11-6.jpg)
 
@@ -53,3 +53,10 @@ Reviewing the ingestion spec, this is what a schemaless spec looks like:
 You can query the data directly from the Druid console, or use a tool like [Pivot](https://imply.io/product/imply-pivot) to explore the data:
 
 ![](/assets/2021-12-11-9.jpg)
+
+## Learnings
+
+- Apache Druid is built to handle semi-structured data in a very natural way.
+- With automatic schema evolution, new fields are picked up seamlessly.
+- As a bonus, all the fields are indexed.
+- This allows for super fast data exploration, and the ability to power web apps!
