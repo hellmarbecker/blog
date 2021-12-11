@@ -18,7 +18,7 @@ Let's give it a try!
 
 You can follow Felipe's [instructions](https://hoffa.medium.com/loading-all-hacker-news-comments-into-snowflake-in-less-than-1-minute-728100f38272) on how to export the data from Google Big Query - I exported everything as gzipped Parquet files.
 
-Ingest these data into your Druid instance. Any Druid version will do, but make sure you have the [Parquet](https://druid.apache.org/docs/latest/development/extensions-core/parquet.html) and [Google](https://druid.apache.org/docs/latest/development/extensions-core/google.html) enabled. Also, follow the instructions on setting up GCS access in the docs if you don't want to make your data publicly accessible.
+Ingest these data into your Druid instance. Any Druid version will do, but make sure you have the [Parquet](https://druid.apache.org/docs/latest/development/extensions-core/parquet.html) and [Google](https://druid.apache.org/docs/latest/development/extensions-core/google.html) extensions enabled. Also, follow the instructions on setting up GCS access in the docs if you don't want to make your data publicly accessible.
 
 ## Loading the data
 
