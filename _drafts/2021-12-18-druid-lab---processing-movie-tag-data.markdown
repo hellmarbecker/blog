@@ -27,7 +27,7 @@ A very easy graphical tool that can be used for data cleansing is [Apache NiFi](
 
 So, we read the original file and feed the result into an `UpdateRecord` processor. This processor parses its input using a CSV Reader, and then replaces the `plot_synopsis` field like this:
 
-[](/assets/2021-12-18-nifi-2.jpg)
+![](/assets/2021-12-18-nifi-2.jpg)
 
 The rest is about giving the file a new name, and writing it back. Once we have done this, the result in Druid looks much better. But we have a new problem: the tag field's internal delimiter is a comma `,`, the same as the field delimiter!
 
@@ -63,7 +63,7 @@ because we need to double escape the backslash `\` in order to protect it from t
 
 With this, the result looks much better!
 
-![](/assets/2021-12-18-t-2.jpg)
+![](/assets/2021-12-18-t-3.jpg)
 
 If you follow up from here, you may find that there are still some more bad apples in the data. For a real production project, this would be the first iteration of several. But I hope I have been able to show some principles!
 
@@ -71,7 +71,7 @@ If you follow up from here, you may find that there are still some more bad appl
 
 - If you cannot parse a multi-value dimension directly, you may be able to use a transform to build it.
 - `string_to_array` is a powerful function to split a string dimension into multiple values using regular expressions.
-- Yoou can use Apache NiFi to preprocess any formats that you have trouble reading directly.
+- You can use Apache NiFi to preprocess any formats that you have trouble reading directly.
 
 ---
 
