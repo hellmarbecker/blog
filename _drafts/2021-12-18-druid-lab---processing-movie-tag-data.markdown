@@ -51,9 +51,27 @@ This is because the tags in the original data are separated by a sequence of com
 
 ## Flexible Splits
 
-A poorly documented feature of the `string_to_array` Druid function is that its second argument is actually a [regular expressiion](https://en.wikipedia.org/wiki/Regular_expression).
+A poorly documented feature of the `string_to_array` Druid function is that its second argument is actually a [regular expression](https://en.wikipedia.org/wiki/Regular_expression). So, why don't we solve this properly and split the string by (comma and any amount of whitespace)!
 
+The expression to enter is:
+```
+string_to_array(tags,',\\\\s+')
+```
+because we need to double escape the backslash `\` in order to protect it from the parser.
 
+(Side note: You could also use this function in a native Druid query. The equivalent in Druid SQL is called `STRING_TO_MV`; we talked about its counterpart `MV_TO_STRING` [earlier](/2021/09/25/multivalue-dimensions-in-apache-druid-part-3.markdown).)
+
+With this, the result looks much better!
+
+[](/assets/2021-12-18-t-2.jpg)
+
+If you follow up from here, you may find that there are still some more bad apples in the data. For a real production project, this would be the first iteration of several. But I hope I have been able to show some principles!
+
+## Learnings
+
+- If you cannot parse a multi-value dimension directly, you may be able to use a transform to build it.
+- `string_to_array` is a powerful function to split a string dimension into multiple values using regular expressions.
+- Yoou can use Apache NiFi to preprocess any formats that you have trouble reading directly.
 
 ---
 
