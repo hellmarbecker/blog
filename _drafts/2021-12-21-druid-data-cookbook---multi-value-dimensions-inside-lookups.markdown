@@ -6,7 +6,7 @@ categories: blog apache druid imply jq tutorial
 
 ![Elf Chef](/assets/2021-12-21-elf.jpg)
 
-We talked about joining a lookup against a multi-value dimension in Apache Druid [a while ago](/2021/10/14/druid-data-modeling-special-lookups-and-multi-value-dimensions/). Here's the opposite case: Imagine we have the multi-value entity inside the lookup!
+We talked about joining a lookup against a multi-value dimension in Apache Druid [a while ago](/2021/10/14/druid-data-modeling-special-lookups-and-multi-value-dimensions/). Here's the opposite case: Imagine we have the multi-value entity *inside the lookup*!
 
 Out of the box, this seems impossible. [Lookups](https://druid.apache.org/docs/latest/querying/lookups.html) are, after all, strictly single string to single string!
 
@@ -16,7 +16,7 @@ Like last time, I am going to use the [MPST movie database](https://ritual.uh.ed
 
 ## Preparing the Data for the Lookup
 
-Alas, each label list in the data file is a JSON Array:
+Each label list in the data file is a JSON Array:
 
 ```
 {
@@ -58,7 +58,7 @@ curl -H "Content-Type: application/json" http://localhost:8888/druid/coordinator
 A few notes on using the API:
 - The documentation says this is an update API, but it will also create new lookup tiers or lookups if these don't exist.
 - Make sure to choose a new unique value for the `"version"` field if you update an existing lookup spec. Druid keeps track of the version numbers and will return an error if you reuse an existing version number. 
-- The default lookup tier is `__default` with a double underscore. If you spell it wrong, this wiill fail silently.
+- The default lookup tier is `__default` with a double underscore. If you spell it wrong, this will fail silently.
 
 ## Pulling the Labels Apart
 
@@ -68,9 +68,49 @@ Look what we can do now!
 
 The lookup table can be queried in SQL just like any Druid datasource, and we can use `STRING_TO_MV` to create a multi-value field from the `v` column.
 
+## Joining Against Fact Data
 
+Let's generate some fake viewing data that we can use to join against. This little script will get a list of all known movie IDs from the full dataset file. Then it picks a random value and writes it out along with the current timestamp. It requires a sufficiently new version of either `bash` or `zsh`:
 
+```bash
+#!/bin/zsh
 
+cut -d , -f 1 mpst_full_data.csv | grep ^tt | while read mv; do movies+=($mv); done
+size=${#movies[@]}
+
+echo 'ts,movie_id'
+for i in {1..100}; do
+    index=$(($RANDOM % $size))
+    echo $(date "+%Y-%m-%d %T"),${movies[$index]}
+    sleep 0.5
+done
+```
+
+I've ingested these data as datasource `viewdata`.
+
+Now I can write a query against the tag list using the `LOOKUP` function, *and I can pull the tag list apart and group by tag just like with a regular multi-value dimension!*
+
+![](/assets/2021-12-21-2.jpg)
+
+You can filter by specific movies even if you haven't listed the movie ID:
+
+![](/assets/2021-12-21-3.jpg)
+
+Or sometimes not:
+
+![](/assets/2021-12-21-4.jpg)
+
+This is a small bug that happens whenever you group by a multi-value value from a lookup, and filter by one single key. Luckily, untils this (known) bug is fixed, there is a workaround:
+
+![](/assets/2021-12-21-4.jpg)
+
+## Learnings
+
+- Look Ma, no [Python](https://www.python.org/)! This little lab works entirely with basic shell commands and `jq`.
+- You can sneak your multi-value dimension into a Druid lookup, if you pack it into a string and unpack it on the fly.
+- This allows treating multi-value dimension data as a [slowly changing dimension](https://dwgeek.com/slowly-changing-dimensions-scd.html/)
+- Uploading a lookup through the API endpoint is elegant, but has some caveats.
+- You can use both the lookup key and (MVD) value in the same query, but (as of now) there is a limitation that makes queries fail if you filter by a single key.
 
 ---
 
