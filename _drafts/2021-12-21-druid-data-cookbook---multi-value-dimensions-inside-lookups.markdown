@@ -50,7 +50,7 @@ With this preprocessing step, the data looks much better for our purpose:
 
 Let's use the [Lookup API](https://druid.apache.org/docs/latest/querying/lookups.html#update-lookup) to upload these data into a static map:
 
-```
+```bash
 echo '{ "version": "v1", "lookupExtractorFactory": { "type": "map", "map":'$(cat movie_to_label_str.json)' } }' | \
 curl -H "Content-Type: application/json" http://localhost:8888/druid/coordinator/v1/lookups/config/_default/movie-tags -d@-
 ```
