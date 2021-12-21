@@ -52,8 +52,25 @@ Let's use the [Lookup API](https://druid.apache.org/docs/latest/querying/lookups
 
 ```bash
 echo '{ "version": "v1", "lookupExtractorFactory": { "type": "map", "map":'$(cat movie_to_label_str.json)' } }' | \
-curl -H "Content-Type: application/json" http://localhost:8888/druid/coordinator/v1/lookups/config/_default/movie-tags -d@-
+curl -H "Content-Type: application/json" http://localhost:8888/druid/coordinator/v1/lookups/config/__default/movie-labels -d@-
 ```
+
+A few notes on using the API:
+- The documentation says this is an update API, but it will also create new lookup tiers or lookups if these don't exist.
+- Make sure to choose a new unique value for the `"version"` field if you update an existing lookup spec. Druid keeps track of the version numbers and will return an error if you reuse an existing version number. 
+- The default lookup tier is `__default` with a double underscore. If you spell it wrong, this wiill fail silently.
+
+## Pulling the Labels Apart
+
+Look what we can do now!
+
+![](/assets/2021-12-21-1.jpg)
+
+The lookup table can be queried in SQL just like any Druid datasource, and we can use `STRING_TO_MV` to create a multi-value field from the `v` column.
+
+
+
+
 
 ---
 
