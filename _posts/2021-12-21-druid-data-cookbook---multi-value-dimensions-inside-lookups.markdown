@@ -110,9 +110,9 @@ Adding a *null* value to the filter list fixes the problem.
 
 - Look Ma, no [Python](https://www.python.org/)! This little lab works entirely with basic shell commands and `jq`.
 - You can sneak your multi-value dimension into a Druid lookup, if you pack it into a string and unpack it on the fly.
-- This allows treating multi-value dimension data as a [slowly changing dimension](https://dwgeek.com/slowly-changing-dimensions-scd.html/)
+- This allows treating multi-value dimension data as a [slowly changing dimension](https://dwgeek.com/slowly-changing-dimensions-scd.html/).
 - Uploading a lookup through the API endpoint is elegant, but has some caveats.
-- You can use both the lookup key and (MVD) value in the same query, but (as of now) there is a limitation that makes queries fail if you filter by a single key.
+- You can use both the lookup key and (multi-value) value in the same query, but (as of now) there is a limitation that makes queries fail if you filter by a single key.
 
 ---
 
