@@ -12,7 +12,7 @@ Out of the box, this seems impossible. [Lookups](https://druid.apache.org/docs/l
 
 But let's see what we can find in our toolbox.
 
-Like last time, I am going to use the [MPST movie database](https://ritual.uh.edu/mpst-2018/). Conveniently, it already contains a file `movie_to_label_name.json`, which, as the name suggests, maps each movie ID to the tag list that is associated with it.
+Like last time, I am going to use the [MPST movie data set](https://ritual.uh.edu/mpst-2018/). Conveniently, it already contains a file `movie_to_label_name.json`, which, as the name suggests, maps each movie ID to the tag list that is associated with it.
 
 ## Preparing the Data for the Lookup
 
