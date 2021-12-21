@@ -70,7 +70,7 @@ The lookup table can be queried in SQL just like any Druid datasource, and we ca
 
 ## Joining Against Fact Data
 
-Let's generate some fake viewing data that we can use to join against. This little script will get a list of all known movie IDs from the full dataset file. Then it picks a random value and writes it out along with the current timestamp. It requires a sufficiently new version of either `bash` or `zsh`:
+Let's generate some fake viewing data that we can use to join against. This little script will get a list of all known movie IDs from the full dataset file. Then, in a loop it picks a random value and writes it out along with the current timestamp. It requires a sufficiently new version of either `bash` or `zsh`:
 
 ```bash
 #!/bin/zsh
