@@ -6,7 +6,7 @@ categories: blog apache druid imply jq tutorial
 
 ![Elf Chef](/assets/2021-12-21-elf.jpg)
 
-We talked about joining a lookup against a multi-value dimension in Apache Druid [a while ago](/2021/10/14/druid-data-modeling-special-lookups-and-multi-value-dimensions/). Here's the opposite case: Imagine we have the multi-value entity *inside the lookup*!
+We talked about joining a lookup against a multi-value dimension in Apache Druid [a while ago](/2021/10/14/druid-data-modeling-special-lookups-and-multi-value-dimensions/). Here's the opposite case: Imagine we have the multi-value entity *inside the lookup!*
 
 Out of the box, this seems impossible. [Lookups](https://druid.apache.org/docs/latest/querying/lookups.html) are, after all, strictly single string to single string!
 
