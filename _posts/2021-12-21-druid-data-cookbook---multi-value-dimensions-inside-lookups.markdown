@@ -28,7 +28,7 @@ Each label list in the data file is a JSON Array:
 }
 ```
 
-We cannot read this directly into Druid. Let's collapse each of these arrays into a comma separated string, for which task [`jq`](https://stedolan.github.io/jq/) comes in handy. After some trial and error (the [JQ Play](https://jqplay.org/) website is very helpful for trying out!), I found this neat little `jq` expression:
+We cannot read this directly into a Druid lookup. Let's collapse each of these arrays into a comma separated string, for which task [`jq`](https://stedolan.github.io/jq/) comes in handy. After some trial and error (the [JQ Play](https://jqplay.org/) website is very helpful for trying out!), I found this neat little `jq` expression:
 
 ```bash
 jq '.[] |= join(",")' movie_to_label_name.json >movie_to_label_str.json
