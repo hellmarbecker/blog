@@ -102,7 +102,9 @@ Or sometimes not:
 
 This is a small bug that happens whenever you group by a multi-value value from a lookup, and filter by one single key. Luckily, untils this (known) bug is fixed, there is a workaround:
 
-![](/assets/2021-12-21-4.jpg)
+![](/assets/2021-12-21-5.jpg)
+
+Adding a *null* value to the filter list fixes the problem.
 
 ## Learnings
 
