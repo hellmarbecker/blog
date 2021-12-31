@@ -67,7 +67,7 @@ SELECT
 FROM ecpm
 GROUP BY 1, 2
 ```
-Note how we are summing over the summed values. This is perfectly legal and does exactly whate we want according to the formula above!
+Note how we are summing over the summed values. This is perfectly legal and does exactly what we want according to the formula above!
 
 ![Querying the data](/assets/2021-12-31-2.jpg)
 
@@ -147,3 +147,7 @@ For those who want to try it out, here is the complete ingestion spec, with inli
 ```
 
 ## Learnings
+
+- Druid is the database of choice for AdTech data; one of the reasons is the extremely efficient data representation as rollup.
+- However, valuable metrics such as eCPM seem not to be available easily with rollup
+- Transforms during ingestion present an elegant way to get to the desired result. 
