@@ -32,7 +32,7 @@ Quite straightforward so far: we are going to have `date` and `ad_network_id` as
 
 In a real life scenario we don't have three, but several thousand of lines per combination of `date` and `ad_network_id`, so we would very much like to activate rollup. But how? The standard aggregations (`count`, `sum`, `min`, `max`) don't really help us here. There are some other aggregators, notably `avg`, that look like we would use them here but they are not allowed during ingestion. And for good reasons: If you compute an average during a rollup ingestion, and then takt the average of _that_ in a `group by` query, you are most certainly doing the Wrong Thing.
 
-## Transforms to the Rescue
+## Transforms to the Rescue!
 
 Let's take a closer look at the formula for eCPM above. We have the sum of impressions in the denominator, that one is easy. The numerator is a sum of products, so let's first get these products in a transform step:
 ```json
