@@ -30,7 +30,7 @@ date|ad_network_id|ads_impressions|ads_revenue|ecpm
 ```
 Quite straightforward so far: we are going to have `date` and `ad_network_id` as dimensions, and the rest are going to be metrics somehow.
 
-In a real life scenario we don't have three, but several thousand of lines per combination of `date` and `ad_network_id`, so we would very much like to activate rollup. But how? The standard aggregations (`count`, `sum`, `min`, `max`) don't really help us here. There are some other aggregators, notably `avg`, that look like we would use them here but they are not allowed during ingestion. And for good reasons: If you compute an average during a rollup ingestion, and then takt the average of _that_ in a `group by` query, you are most certainly doing the Wrong Thing.
+In a real life scenario we don't have three, but several thousand of lines per combination of `date` and `ad_network_id`, so we would very much like to activate rollup. But how? The standard aggregations (`count`, `sum`, `min`, `max`) don't really help us here. There are some other aggregators, notably `avg`, that look like we would use them here but they are not allowed during ingestion. And for good reasons: If you compute an average during a rollup ingestion, and then take the average of _that_ in a `group by` query, you are most certainly doing the Wrong Thing.
 
 ## Transforms to the Rescue!
 
@@ -71,7 +71,7 @@ Note how we are summing over the summed values. This is perfectly legal and does
 
 ![Querying the data](/assets/2021-12-31-2.jpg)
 
-For those who want to try it out, here is the complete ingestion spec, with inline data:
+For those who want to try it out themselves, here is the complete ingestion spec, with inline data:
 ```json
 {
   "type": "index_parallel",
