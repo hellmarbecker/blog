@@ -14,7 +14,7 @@ While JPEG might not appear as a natural choice for screenshots, in the lowest q
 
 ## A Better Solution
 
-Then I cam across [this article](https://www.simplethread.com/why-your-website-should-not-use-dithered-images/) which has a comprehensive comparison of various image formats that offer superior compression and quality. It also links to a [free converter](https://squoosh.app/)! All the numbers in this benchmark are in favor of AVIF. 
+Then I came across [this article](https://www.simplethread.com/why-your-website-should-not-use-dithered-images/) which has a comprehensive comparison of various image formats that offer superior compression and quality. It also links to a [free converter](https://squoosh.app/)! All the numbers in this benchmark are in favor of AVIF. 
 Here is one of the images from my previous blog post as JPEG:
 
 ![Screenshot as JPEG](/assets/2021-11-07-3-filter.jpeg)
