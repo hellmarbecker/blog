@@ -23,17 +23,31 @@ Also, name the datasource `wikipedia-dynamic-1` (we will create more versions of
 
 ![Segment list](/assets/2022-01-05-2-num-segments.jpg)
 
-Because the sample has roughly 40,000 rows of data, Druid has created three partitions. Let's take a closer look at the partitions. In your shell, navigate to the path where you installed Druid, and type:
+Because the sample has roughly 40,000 rows of data, Druid has created three partitions. Let's take a closer look at the partitions. 
+
+In the quickstart setup, the segments live in `var/druid/segments/`, under which path there is a structure like this:
+<pre>
+datasource-name
+&#x2514;&#x2500;time chunk
+&nbsp;&nbsp;&#x2514;&#x2500;version timestamp
+&nbsp;&nbsp;&nbsp;&nbsp;&#x2514;&#x2500;partition number
+</pre>
+
+In your shell, navigate to the path where you installed Druid, and type:
 ```bash
 cd var/druid/segments/wikipedia-dynamic-1
 ```
 
 
 ```bash
+#!/bin/bash
+DSPATH=$HOME/apache-druid-0.22.1/var/druid/segments/wikipedia-dynamic-1
+
+
 java -classpath "$HOME/apache-druid-0.22.1/lib/*" -Ddruid.extensions.loadList="[]" org.apache.druid.cli.Main \
   tools dump-segment \                                                                                     
-  --directory /Users/hellmarbecker/tmpwork \
-  --out ~/tmpwork/output.txt
+  --directory "$HOME/tmpwork" \
+  --out "$HOME/tmpwork/output.txt"
 ```
 
 
