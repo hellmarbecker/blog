@@ -38,12 +38,8 @@ wikipedia-dynamic-1
             └── index.zip
 ```
 
-<pre>
-datasource-name
-&#x2514;&#x2500;time chunk
-&nbsp;&nbsp;&#x2514;&#x2500;version timestamp
-&nbsp;&nbsp;&nbsp;&nbsp;&#x2514;&#x2500;partition number
-</pre>
+So, we have `datasource-name` / `time chunk` / `version timestamp` / `partition number`. Each leaf file is a zip archive with the segment data, the format is described [here](https://druid.apache.org/docs/latest/design/segments.html#segment-components).
+
 
 In your shell, navigate to the path where you installed Druid, and type:
 ```bash
