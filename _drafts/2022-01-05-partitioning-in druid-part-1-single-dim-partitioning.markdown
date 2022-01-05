@@ -51,6 +51,7 @@ cd var/druid/segments/wikipedia-dynamic-1
 #!/bin/bash
 DSPATH=$HOME/apache-druid-0.22.1/var/druid/segments/wikipedia-dynamic-1
 
+find $DSPATH -type f -ls0 | 
 
 java -classpath "$HOME/apache-druid-0.22.1/lib/*" -Ddruid.extensions.loadList="[]" org.apache.druid.cli.Main \
   tools dump-segment \                                                                                     
