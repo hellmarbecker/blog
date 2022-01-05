@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Partitioning in Druid - Part 1: Single Dim Partitioning"
+title:  "Partitioning in Druid - Part 1: Dynamic and Hash Partitioning"
 categories: blog apache druid imply
 ---
 
@@ -9,9 +9,35 @@ In addition to segmenting data by time, Druid allows to introduce a secondary pa
 - hash partitioning
 - single dim partitioning.
 
+Let's use [the Wikipedia sample data](https://druid.apache.org/docs/latest/tutorials/index.html#step-4-load-data) to do some experiments. You can use the Druid quickstart for this tutorial.
+
 ### Dynamic Partitioning
 
 Generally speaking, dynamic partitioning does not do a lot to the data with regards to organizing or reordering them. You will get one or more partitions per input data blob for batch ingestion, and one or more partitions per Kafka partition for realtime Kafka ingestion. Often times, the resulting segment files are smaller than desired. The upside of this strategy is that ingestion with dynamic partitioning is faster than any other strategy, and it doesn't need to buffer or shuffle data. The downside is that it doesn't do anything to optimize query performance.
+
+For the first experiment, follow the [quickstart tutorial](https://druid.apache.org/docs/latest/tutorials/index.html) step by step, with one exception: Set the maximum number of rows per segment to 14,000, because we want to have more than one partition:
+
+![Setting the partition size](/assets/2022-01-05-1-rows-per-segment.jpg)
+
+Also, name the datasource `wikipedia-dynamic-1` (we will create more versions of this.) Run the ingestion, it will finish within a few seconds. Now let's look what we have:
+
+![Segment list](/assets/2022-01-05-2-num-segments.jpg)
+
+Because the sample has roughly 40,000 rows of data, Druid has created three partitions. Let's take a closer look at the partitions. In your shell, navigate to the path where you installed Druid, and type:
+```bash
+cd var/druid/segments/wikipedia-dynamic-1
+```
+
+
+```bash
+java -classpath "$HOME/apache-druid-0.22.1/lib/*" -Ddruid.extensions.loadList="[]" org.apache.druid.cli.Main \
+  tools dump-segment \                                                                                     
+  --directory /Users/hellmarbecker/tmpwork \
+  --out ~/tmpwork/output.txt
+```
+
+
+
 
 ### Hash Partitioning
 
