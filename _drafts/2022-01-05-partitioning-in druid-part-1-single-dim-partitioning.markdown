@@ -25,7 +25,19 @@ Also, name the datasource `wikipedia-dynamic-1` (we will create more versions of
 
 Because the sample has roughly 40,000 rows of data, Druid has created three partitions. Let's take a closer look at the partitions. 
 
-In the quickstart setup, the segments live in `var/druid/segments/`, under which path there is a structure like this:
+In the quickstart setup, the segments live in `var/druid/segments/`, and here's the structure Druid has created for the new datasource:
+```
+wikipedia-dynamic-1
+└── 2015-09-12T00:00:00.000Z_2015-09-13T00:00:00.000Z
+    └── 2022-01-05T16:03:35.016Z
+        ├── 0
+        │   └── index.zip
+        ├── 1
+        │   └── index.zip
+        └── 2
+            └── index.zip
+```
+
 <pre>
 datasource-name
 &#x2514;&#x2500;time chunk
