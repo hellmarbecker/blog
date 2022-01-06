@@ -17,11 +17,11 @@ Generally speaking, dynamic partitioning does not do a lot to the data with rega
 
 For the first experiment, follow the [quickstart tutorial](https://druid.apache.org/docs/latest/tutorials/index.html) step by step, with one exception: Set the maximum number of rows per segment to 14,000, because we want to have more than one partition:
 
-![Setting the partition size](/assets/2022-01-05-1-rows-per-segment.jpg)
+![Setting the partition size](/assets/2022-01-06-1-rows-per-segment.jpg)
 
 Also, name the datasource `wikipedia-dynamic-1` (we will create more versions of this.) Run the ingestion, it will finish within a few seconds. Now let's look what we have:
 
-![Segment list](/assets/2022-01-05-2-num-segments.jpg)
+![Segment list](/assets/2022-01-06-2-num-segments.jpg)
 
 Because the sample has roughly 40,000 rows of data, Druid has created three partitions. Let's take a closer look at the partitions. 
 
@@ -60,7 +60,9 @@ java -classpath "$HOME/apache-druid-0.22.1/lib/*" -Ddruid.extensions.loadList="[
 ```
 
 
-
+So, why would you even use dynamic partitioning? There are two reasons:
+- If you are ingesting realtime data, you need to use dynamic partitioning.
+- Also, you can always add (append) data to an existing time chunk with dynamic partitioning.
 
 ### Hash Partitioning
 
