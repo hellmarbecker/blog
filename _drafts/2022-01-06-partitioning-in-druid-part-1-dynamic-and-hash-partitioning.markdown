@@ -139,9 +139,10 @@ We got segments of roughly the same size, and each value of `channel` ends up in
 
 ## Conclusion
 
-So, why would you even use _dynamic partitioning?_ There are two reasons:
+So, why would you even use _dynamic partitioning?_ There are two reasons, or maybe three:
 - If you are ingesting realtime data, you need to use dynamic partitioning.
 - Also, you can always add (append) data to an existing time chunk with dynamic partitioning.
+- The third reason: you do not need to reshuffle data between partitions, so ingestion is faster and less resource intensive than iwht other partitioning schemes.
 
 _Hash partitioning_ helps ensure a proper distribution of the data, but has limited query performance benefits.
 
