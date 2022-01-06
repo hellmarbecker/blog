@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Partitioning in Druid - Part 1: Dynamic Partitioning"
-categories: blog apache druid imply
+categories: blog apache druid imply tutorial
 ---
 ![Test Tubes](/assets/2022-01-06-0-test-tubes.jpg)
 
