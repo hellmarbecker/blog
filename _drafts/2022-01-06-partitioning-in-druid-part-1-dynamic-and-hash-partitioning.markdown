@@ -17,7 +17,7 @@ Let's use [the Wikipedia sample data](https://druid.apache.org/docs/latest/tutor
 
 ## Dynamic Partitioning
 
-Generally speaking, dynamic partitioning does not do a lot to the data with regards to organizing or reordering them. You will get one or more partitions per input data blob for batch ingestion, and one or more partitions per Kafka partition for realtime Kafka ingestion. Often times, the resulting segment files are smaller than desired. The upside of this strategy is that ingestion with dynamic partitioning is faster than any other strategy, and it doesn't need to buffer or shuffle data. The downside is that it doesn't do anything to optimize query performance.
+Generally speaking, _dynamic partitioning_ does not do a lot to the data with regards to organizing or reordering them. You will get one or more partitions per input data blob for batch ingestion, and one or more partitions per Kafka partition for realtime Kafka ingestion. Often times, the resulting segment files are smaller than desired. The upside of this strategy is that ingestion with dynamic partitioning is faster than any other strategy, and it doesn't need to buffer or shuffle data. The downside is that it doesn't do anything to optimize query performance.
 
 For the first experiment, follow the [quickstart tutorial](https://druid.apache.org/docs/latest/tutorials/index.html) step by step, with one exception: Set the maximum number of rows per segment to 14,000, because we want to have more than one partition:
 
@@ -106,7 +106,11 @@ The most frequent values are all scattered over all partitions! This way, even i
 
 ## Hash Partitioning
 
-Now, let's try something different. Set the partitioning to `hashed`, and enter `channel` for the dimensions. Also set the target rows to 14,000, so we get three partitions again.
+Now, let's try something different. 
+
+_Hash partitioning_ computes a hash key based on a set of one or more dimension values, and assigns the partition based on that key. What are the consequences?
+
+Set the partitioning to `hashed`, and enter `channel` for the dimensions. Also set the target rows to 14,000, so we get three partitions again.
 
 ![Hash Partitioning](/assets/2022-01-06-3-hash.jpg)
 
