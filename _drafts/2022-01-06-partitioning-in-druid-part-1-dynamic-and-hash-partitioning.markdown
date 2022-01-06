@@ -135,7 +135,7 @@ Partition 2:
  749 #ja.wikipedia
  565 #pl.wikipedia
 ```
-We got segments of roughly the same size, and each value of `channel` ends up in only one segment. However, as a rule, similar values of the partition key do not end up in the same segment. Thus, range queries will not benefit. Queries with a single value filter can be faster, though.
+We got segments of roughly the same size, and each value of `channel` ends up in only one segment. However, as a rule, similar values of the partition key do not end up in the same segment. Thus, range queries will not benefit. Queries with a single value filter can be faster, though. Also, [_TopN_ queries](https://druid.apache.org/docs/latest/querying/topnquery.html) will give more accurate results than with dynamic partitiioing.
 
 ## Conclusion
 
