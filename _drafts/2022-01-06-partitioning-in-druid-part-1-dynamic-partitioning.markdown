@@ -3,6 +3,7 @@ layout: post
 title:  "Partitioning in Druid - Part 1: Dynamic Partitioning"
 categories: blog apache druid imply
 ---
+![Test Tubes](/assets/2022-01-06-0-test-tubes.jpg)
 
 In addition to segmenting data by time, Druid allows to introduce a secondary partitioning within each segment. There are various strategies:
 - dynamic partitioning
@@ -107,5 +108,7 @@ So, why would you even use dynamic partitioning? There are two reasons:
 - If you are ingesting realtime data, you need to use dynamic partitioning.
 - Also, you can always add (append) data to an existing time chunk with dynamic partitioning.
 
-## Hash Partitioning
+---
+
+"Remedy Tea Test tubes" by storyvillegirl is licensed under [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/?ref=openverse&atype=rich), cropped and edited by me
 
