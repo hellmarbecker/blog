@@ -4,14 +4,17 @@ title:  "Partitioning in Druid - Part 1: Dynamic and Hash Partitioning"
 categories: blog apache druid imply
 ---
 
-In addition to segmenting data by time, Druid allows to introduce a secondary partitioning within each segment. There are (currently) three strategies:
+In addition to segmenting data by time, Druid allows to introduce a secondary partitioning within each segment. There are various strategies:
 - dynamic partitioning
 - hash partitioning
-- single dim partitioning.
+- single dim partitioning
+- new in Druid 0.22: range (or multi dim) partitioning.
+
+I am going to take a look at each of these in the next few posts.
 
 Let's use [the Wikipedia sample data](https://druid.apache.org/docs/latest/tutorials/index.html#step-4-load-data) to do some experiments. You can use the Druid quickstart for this tutorial.
 
-### Dynamic Partitioning
+## Dynamic Partitioning
 
 Generally speaking, dynamic partitioning does not do a lot to the data with regards to organizing or reordering them. You will get one or more partitions per input data blob for batch ingestion, and one or more partitions per Kafka partition for realtime Kafka ingestion. Often times, the resulting segment files are smaller than desired. The upside of this strategy is that ingestion with dynamic partitioning is faster than any other strategy, and it doesn't need to buffer or shuffle data. The downside is that it doesn't do anything to optimize query performance.
 
@@ -40,88 +43,69 @@ wikipedia-dynamic-1
 
 So, we have `datasource-name` / `time chunk` / `version timestamp` / `partition number`. Each leaf file is a zip archive with the segment data, the format is described [here](https://druid.apache.org/docs/latest/design/segments.html#segment-components).
 
-
-In your shell, navigate to the path where you installed Druid, and type:
-```bash
-cd var/druid/segments/wikipedia-dynamic-1
-```
-
+Druid comes with a [dump-segment tool](https://druid.apache.org/docs/latest/operations/dump-segment.html), which has a number of interesting options. But in order to use it, we need to unzip the `index.zip` files first. Let's dump the data and look at the distribution of one dimension: I am going to pick the `channel` dimension, because it is well populated and has a limited number of values that occur frequently.
 
 ```bash
 #!/bin/bash
-DSPATH=$HOME/apache-druid-0.22.1/var/druid/segments/wikipedia-dynamic-1
 
-find $DSPATH -type f -ls0 | 
+# path settings for default quickstart install
 
-java -classpath "$HOME/apache-druid-0.22.1/lib/*" -Ddruid.extensions.loadList="[]" org.apache.druid.cli.Main \
-  tools dump-segment \                                                                                     
-  --directory "$HOME/tmpwork" \
-  --out "$HOME/tmpwork/output.txt"
+DRUID_HOME="${HOME}/apache-druid-0.22.1"
+DRUID_DATADIR="${DRUID_HOME}/var/druid/segments"
+DRUID_DATASOURCE="wikipedia-dynamic-1"
+DUMP_TMPDIR="${HOME}/tmpwork"
+
+TOPN=5
+
+FILES=$(cd ${DRUID_DATADIR} && find ${DRUID_DATASOURCE} -type f)
+
+for f in $FILES; do
+  FDIR=$(dirname $f)
+  FBASE=$(basename $f)
+  PARTN=$(cut -d "/" -f 4 <<<$f)
+  ODIR=${DUMP_TMPDIR}/$FDIR
+  mkdir -p $ODIR
+  unzip -q -o -f ${DRUID_DATADIR}/$f -d $ODIR
+
+  java -classpath "${DRUID_HOME}/lib/*" -Ddruid.extensions.loadList="[]" org.apache.druid.cli.Main \
+    tools dump-segment \
+    --directory $ODIR \
+    --out $ODIR/output.txt
+
+  # Top Countries Report
+  echo Partition $PARTN:
+  jq -r ".channel" $ODIR/output.txt | sort | uniq -c | sort -nr | head -$TOPN
+
+done
 ```
 
+And here is the output that I get:
+```
+Partition 0:
+4476 #vi.wikipedia
+4061 #en.wikipedia
+ 650 #zh.wikipedia
+ 638 #de.wikipedia
+ 514 #it.wikipedia
+Partition 1:
+3854 #en.wikipedia
+3152 #vi.wikipedia
+1080 #de.wikipedia
+ 921 #fr.wikipedia
+ 597 #it.wikipedia
+Partition 2:
+3634 #en.wikipedia
+2119 #vi.wikipedia
+ 872 #uz.wikipedia
+ 805 #de.wikipedia
+ 730 #fr.wikipedia
+```
+
+The most frequent values are all scattered over all partitions! This way, even if a query filters on a single `channel` value, it will have to read all segments. And for a `group by` query, all the groups will have to be assembled in the query node. This partitioning strategy does not make queries any faster.
 
 So, why would you even use dynamic partitioning? There are two reasons:
 - If you are ingesting realtime data, you need to use dynamic partitioning.
 - Also, you can always add (append) data to an existing time chunk with dynamic partitioning.
 
-### Hash Partitioning
+## Hash Partitioning
 
-
-
-### Single Dim Partitioning
-
-Here's what I get with all data in one segment:
-```
-% jq '.["channel"]' output.txt | sort | uniq -c | sort -nr
-11549 "#en.wikipedia"
-9747 "#vi.wikipedia"
-2523 "#de.wikipedia"
-2099 "#fr.wikipedia"
-1386 "#ru.wikipedia"
-1383 "#it.wikipedia"
-1256 "#es.wikipedia"
-1126 "#zh.wikipedia"
- 983 "#uz.wikipedia"
- 749 "#ja.wikipedia"
- 565 "#pl.wikipedia"
- 533 "#ko.wikipedia"
- 478 "#ca.wikipedia"
- 472 "#pt.wikipedia"
- 445 "#nl.wikipedia"
- 423 "#ar.wikipedia"
- 289 "#hu.wikipedia"
- 263 "#uk.wikipedia"
- 251 "#el.wikipedia"
- 246 "#he.wikipedia"
- 244 "#sv.wikipedia"
- 244 "#fi.wikipedia"
- 222 "#cs.wikipedia"
- 219 "#fa.wikipedia"
- 208 "#tr.wikipedia"
- 169 "#no.wikipedia"
- 168 "#sr.wikipedia"
- 153 "#hy.wikipedia"
- 110 "#id.wikipedia"
-  96 "#da.wikipedia"
-  76 "#ro.wikipedia"
-  75 "#bg.wikipedia"
-  65 "#gl.wikipedia"
-  60 "#ce.wikipedia"
-  52 "#et.wikipedia"
-  39 "#simple.wikipedia"
-  33 "#sk.wikipedia"
-  33 "#la.wikipedia"
-  33 "#be.wikipedia"
-  26 "#nn.wikipedia"
-  22 "#hr.wikipedia"
-  22 "#eo.wikipedia"
-  21 "#sl.wikipedia"
-  20 "#lt.wikipedia"
-  19 "#hi.wikipedia"
-  14 "#sh.wikipedia"
-  13 "#eu.wikipedia"
-  11 "#ms.wikipedia"
-   9 "#kk.wikipedia"
-   1 "#war.wikipedia"
-   1 "#min.wikipedia"
-```
