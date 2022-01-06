@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Partitioning in Druid - Part 1: Dynamic and Hash Partitioning"
+title:  "Partitioning in Druid - Part 1: Dynamic Partitioning"
 categories: blog apache druid imply
 ---
 
