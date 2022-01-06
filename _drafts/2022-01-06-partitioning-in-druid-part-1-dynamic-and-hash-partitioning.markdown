@@ -139,7 +139,7 @@ So, why would you even use _dynamic partitioning?_ There are two reasons:
 - If you are ingesting realtime data, you need to use dynamic partitioning.
 - Also, you can always add (append) data to an existing time chunk with dynamic partitioning.
 
-_Hash partitioning_ helps ensure a proper distribution of the data, but has limiet query performance benefits.
+_Hash partitioning_ helps ensure a proper distribution of the data, but has limited query performance benefits.
 
 For query optimization, we have to look at the remaining partitioning schemes. Stay tuned!
 
