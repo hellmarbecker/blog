@@ -66,7 +66,7 @@ for f in $FILES; do
   PARTN=$(cut -d "/" -f 4 <<<$f)
   ODIR=${DUMP_TMPDIR}/$FDIR
   mkdir -p $ODIR
-  unzip -q -o -f ${DRUID_DATADIR}/$f -d $ODIR
+  unzip -q -o ${DRUID_DATADIR}/$f -d $ODIR
 
   java -classpath "${DRUID_HOME}/lib/*" -Ddruid.extensions.loadList="[]" org.apache.druid.cli.Main \
     tools dump-segment \
@@ -104,9 +104,44 @@ Partition 2:
 
 The most frequent values are all scattered over all partitions! This way, even if a query filters on a single `channel` value, it will have to read all segments. And for a `group by` query, all the groups will have to be assembled in the query node. This partitioning strategy does not make queries any faster.
 
-So, why would you even use dynamic partitioning? There are two reasons:
+## Hash Partitioning
+
+Now, let's try something different. Set the partitioning to `hashed`, and enter `channel` for the dimensions. Also set the target rows to 14,000, so we get three partitions again.
+
+![Hash Partitioning](/assets/2022-01-06-3-hash.jpg)
+
+For good measure, name this datasource `wikipedia-hashed`. Running the same analysis as above gives this result:
+```
+Partition 0:
+11549 #en.wikipedia
+2099 #fr.wikipedia
+1126 #zh.wikipedia
+ 472 #pt.wikipedia
+ 445 #nl.wikipedia
+Partition 1:
+2523 #de.wikipedia
+1386 #ru.wikipedia
+1256 #es.wikipedia
+ 533 #ko.wikipedia
+ 478 #ca.wikipedia
+Partition 2:
+9747 #vi.wikipedia
+1383 #it.wikipedia
+ 983 #uz.wikipedia
+ 749 #ja.wikipedia
+ 565 #pl.wikipedia
+```
+We got segments of roughly the same size, and each value of `channel` ends up in only one segment. However, as a rule, similar values of the partition key do not end up in the same segment. Thus, range queries will not benefit. Queries with a single value filter can be faster, though.
+
+## Conclusion
+
+So, why would you even use _dynamic partitioning?_ There are two reasons:
 - If you are ingesting realtime data, you need to use dynamic partitioning.
 - Also, you can always add (append) data to an existing time chunk with dynamic partitioning.
+
+_Hash partitioning_ helps ensure a proper distribution of the data, but has limiet query performance benefits.
+
+For query optimization, we have to look at the remaining partitioning schemes. Stay tuned!
 
 ---
 
