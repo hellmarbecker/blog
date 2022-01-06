@@ -1,11 +1,11 @@
 ---
 layout: post
-title:  "Partitioning in Druid - Part 1: Dynamic Partitioning"
+title:  "Partitioning in Druid - Part 1: Dynamic and Hash Partitioning"
 categories: blog apache druid imply tutorial
 ---
 ![Test Tubes](/assets/2022-01-06-0-test-tubes.jpg)
 
-In addition to segmenting data by time, Druid allows to introduce a secondary partitioning within each time chunk. There are various strategies:
+In addition to segmenting data by time, [Druid](https://druid.apache.org) allows to introduce secondary partitioning within each time chunk. There are various strategies:
 - dynamic partitioning
 - hash partitioning
 - single dim partitioning
