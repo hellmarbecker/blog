@@ -49,4 +49,7 @@ Partition 2:
 We can see how the channel values are now neatly sorted into alphabetic buckets. There is actually an even better way to view these data by issuing a [segment metadata query](https://druid.apache.org/docs/latest/querying/segmentmetadataquery.html). This is a type of query that is used internally by a Druid cluster all the time in order to know which data lives where, but there is no reason why we wouldn't issue such a query directly.
 
 
+---
+
+"Remedy Tea Test tubes" by storyvillegirl is licensed under [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/?ref=openverse&atype=rich), cropped and edited by me
 
