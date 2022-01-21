@@ -6,7 +6,7 @@ categories: blog apache druid imply
 
 ![Map](/assets/2021-09-05-map.png)
 
-In [an earlier post](/2021/09/05/geospatial-data-in-apache-druid---ingestion/), I discussed how to model geospatial data in Druid. Here's a little hack that shows (as a proof of concept) how these data can be used to generate [Geohash](https://en.wikipedia.org/wiki/Geohash) codes from latitude and longitude values.
+In [an earlier post](/2021/09/05/geospatial-data-in-apache-druid---ingestion/), I discussed how to model geospatial data in Druid. Here's a little hack that shows (as a proof of concept) how these data can be used to generate [Geohash](https://en.wikipedia.org/wiki/Geohash) codes from latitude and longitude values, which are used by some map visualization tools.
 
 This uses a deprecated feature of Druid which lets you write your own parser in Javascript. You will have to [enable Javascript](https://druid.apache.org/docs/latest/configuration/index.html#javascript) to make this work.
 
@@ -78,7 +78,9 @@ Here is an example with inline data:
   }
 }
 ```
-For the Javascript parser, I used a Geohash function that I found [here](https://github.com/davetroy/geohash-js), adapted the signature, and ran it through an obfuscator/compressor.
+For the Javascript parser, I used a Geohash function that I found [here](https://github.com/davetroy/geohash-js), adapted the signature, and ran it through an obfuscator/compressor. Here's the result:
+
+![Geohash query](/assets/2022-01-21-geohash.jpg)
 
 You can see the intermediate steps in this repo: https://github.com/hellmarbecker/druid-spatial.
 
