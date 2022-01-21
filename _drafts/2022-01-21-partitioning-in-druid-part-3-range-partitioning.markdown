@@ -31,6 +31,10 @@ Then, continue in the wizard until you get to edit the JSON Spec. On this screen
 
 ![Editing the JSON spec](/assets/2022-01-21-2-jsonspec.jpg)
 
-When you are done, submit the ingestion task.
+You will have to submit this task via an API call because the console wizard tends to mangle settings that it doesn't know about. (This will be easiier in a future version of Druid.) Copy the entire JSON blob, save it to a file `wikipedia-range.json`, and submit it to Druid like so:
+
+```bash
+curl -XPOST -H "Content-Type: application/json" http://localhost:8888/druid/indexer/v1/task -d @wikipedia-range.json
+```
 
 
