@@ -17,13 +17,16 @@ _Range Partitioning_ fixes this problem.
 
 ## Range (or Multi Dimension) Partitioning
 
+
 Range partitioning works by allowing a list of dimensions to partition by, effectively creating a composite partition key. Note that this is _not_ a multi-level partitioning scheme as some databases know it. Rather, if a value in the first listed dimension is so frequent that it would create a partition that is too big, the second dimension is used to split the data, then the third, and so on.
 
 Also, data is sorted by this composite key. This has the effect that a query that groups or filters by all (or the first _n_) of the partition key columns will run faster. In this respect it works a bit like composite indexes in databases.
 
+Range partitioning is not yet available in the current Druid release. However, if you build the current snapshot from source, you can try it out!
+
 Range partitioning is not supported by the web console wizard, so we have to resort to a little trick. As before, I'll show this with the quickstart wikipedia dataset.
 
-Confiigure your ingestion just like in part 1, pretending that you want to do do a hash partitioning. Set the segment size to 14,000 rows, however this time, enter both `channel` and `user` as the partitioning column:
+Configure your ingestion just like in part 1, pretending that you want to do do a hash partitioning. Set the segment size to 14,000 rows, however this time, enter both `channel` and `user` as the partitioning column:
 
 ![First step in configuring](/assets/2022-01-21-1-params.jpg)
 
