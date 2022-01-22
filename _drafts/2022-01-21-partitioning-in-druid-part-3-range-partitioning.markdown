@@ -13,16 +13,15 @@ This is part 3 of the miniseries about data partitioning in [Apache Druid](https
 
 In the previous articles, we learned that _hash_ partitioning is great at ensuring uniform segment size. _Single dim_ partitioning can group data according to frequent query patterns - however, if the partition key has a skewed distribution you may end up with very uneven segment sizes.
 
-_Range Partitioning_ fixes this problem.
+_Range Partitioning_ fixes this problem. At the time of this writing it isn't part of the standard Druid release yet - it is slated to be released with Druid 0.23. But you can get a sneak peek when you [build the current snapshot from the source](https://github.com/apache/druid/blob/master/docs/development/build.md).
 
 ## Range (or Multi Dimension) Partitioning
-
 
 Range partitioning works by allowing a list of dimensions to partition by, effectively creating a composite partition key. Note that this is _not_ a multi-level partitioning scheme as some databases know it. Rather, if a value in the first listed dimension is so frequent that it would create a partition that is too big, the second dimension is used to split the data, then the third, and so on.
 
 Also, data is sorted by this composite key. This has the effect that a query that groups or filters by all (or the first _n_) of the partition key columns will run faster. In this respect it works a bit like composite indexes in databases.
 
-Range partitioning is not yet available in the current Druid release. However, if you build the current snapshot from source, you can try it out!
+As mentioned above, you will have to build your own snapshot Druid version to try this out.
 
 Range partitioning is not supported by the web console wizard, so we have to resort to a little trick. As before, I'll show this with the quickstart wikipedia dataset.
 
@@ -34,10 +33,5 @@ Then, continue in the wizard until you get to edit the JSON Spec. On this screen
 
 ![Editing the JSON spec](/assets/2022-01-21-2-jsonspec.jpg)
 
-You will have to submit this task via an API call because the console wizard tends to mangle settings that it doesn't know about. (This will be easiier in a future version of Druid.) Copy the entire JSON blob, save it to a file `wikipedia-range.json`, and submit it to Druid like so:
-
-```bash
-curl -XPOST -H "Content-Type: application/json" http://localhost:8888/druid/indexer/v1/task -d @wikipedia-range.json
-```
 
 
