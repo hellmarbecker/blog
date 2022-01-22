@@ -19,7 +19,9 @@ _Range Partitioning_ fixes this problem. At the time of this writing it isn't pa
 
 Range partitioning works by allowing a list of dimensions to partition by, effectively creating a composite partition key. Note that this is _not_ a multi-level partitioning scheme as some databases know it. Rather, if a value in the first listed dimension is so frequent that it would create a partition that is too big, the second dimension is used to split the data, then the third, and so on.
 
-Also, data is sorted by this composite key. This has the effect that a query that groups or filters by all (or the first _n_) of the partition key columns will run faster. In this respect it works a bit like composite indexes in databases.
+Also, data is _sorted_ by this composite key. This has the effect that a query that groups or filters by all (or the first _n_) of the partition key columns will run faster. In this respect it works a bit like composite indexes in databases.
+
+It will also reduce overall segment size because data that are sorted this way can be compressed more efficiently.
 
 As mentioned above, you will have to build your own snapshot Druid version to try this out.
 
