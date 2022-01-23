@@ -3,7 +3,7 @@ layout: post
 title:  "Partitioning in Druid - Part 3: Range Partitioning"
 categories: blog apache druid imply tutorial
 ---
-![Test Tubes](/assets/2022-01-21-0-test-tubes.jpg)
+![Test Tubes](/assets/2022-01-25-0-test-tubes.jpg)
 
 This is part 3 of the miniseries about data partitioning in [Apache Druid](https://druid.apache.org/). Previous articles in this series:
 - [part 1](/2022/01/06/partitioning-in-druid-part-1-dynamic-and-hash-partitioning/)
@@ -29,11 +29,11 @@ Range partitioning is not supported by the web console wizard, so we have to res
 
 Configure your ingestion just like in part 1, pretending that you want to do do a hash partitioning. Set the segment size to 14,000 rows, however this time, enter both `channel` and `user` as the partitioning column:
 
-![First step in configuring](/assets/2022-01-21-1-params.jpg)
+![First step in configuring](/assets/2022-01-25-1-params.jpg)
 
 Then, continue in the wizard until you get to edit the JSON Spec. On this screen, look up the partitioning configuration and replace the word `hashed` by `range`:
 
-![Editing the JSON spec](/assets/2022-01-21-2-jsonspec.jpg)
+![Editing the JSON spec](/assets/2022-01-25-2-jsonspec.jpg)
 
 
 
