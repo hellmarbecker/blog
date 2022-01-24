@@ -87,3 +87,7 @@ Partition 2:
 ```
 
 This concludes my short series about secondary partitioning in Druid. I hope this was helpful!
+
+---
+
+"Remedy Tea Test tubes" by storyvillegirl is licensed under [CC BY-SA 2.0](https://creativecommons.org/licenses/by-sa/2.0/?ref=openverse&atype=rich), cropped and edited by me
