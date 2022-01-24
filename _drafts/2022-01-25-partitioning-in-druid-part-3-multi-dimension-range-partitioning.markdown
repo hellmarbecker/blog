@@ -23,7 +23,9 @@ Also, data is _sorted_ by this composite key. This has the effect that a query t
 
 It will also reduce overall segment size because data that are sorted this way can be compressed more efficiently.
 
-As mentioned above, you will have to build your own snapshot Druid version to try this out. (If you follow the steps below with the standard 0.22 release, you will not get an error. But Druid will fall back to hash partitioning.)
+<mark>As mentioned above, you will have to build your own snapshot Druid version to try this out. If you follow the steps below with the standard 0.22 release, you will not get an error. But Druid will fall back to hash partitioning.</mark>
+
+(Or you can use [Imply](https://www.imply.io)'s version which has multi dimension partitioning already built in.)
 
 Range partitioning is not supported by the web console wizard, so we have to resort to a little trick. As before, I'll show this with the quickstart wikipedia dataset.
 
