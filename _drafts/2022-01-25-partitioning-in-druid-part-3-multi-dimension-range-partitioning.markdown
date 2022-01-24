@@ -41,7 +41,7 @@ This time, we get a nice and even distribution of rows among the segments:
 
 ![Segment distribution](/assets/2022-01-25-3-segment-size.jpg)
 
-Let's look at the segment metadata like last time. This time, include both key columns in the query:
+Run a native query to look at the segment metadata like last time, but include both key columns in the query:
 
 ```json
 {
@@ -58,7 +58,7 @@ Let's look at the segment metadata like last time. This time, include both key c
   }
 }
 ```
-This time the values are nicely bucketed in alphabetic order:
+The values are nicely bucketed in alphabetic order:
 
 ![Segment metadata](/assets/2022-01-25-4-segment-metadata.jpg)
 
