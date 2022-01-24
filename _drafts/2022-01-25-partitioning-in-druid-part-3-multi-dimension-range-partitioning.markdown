@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Partitioning in Druid - Part 3: Range Partitioning"
+title:  "Partitioning in Druid - Part 3: Multi Dimension Range Partitioning"
 categories: blog apache druid imply tutorial
 ---
 ![Test Tubes](/assets/2022-01-25-0-test-tubes.jpg)
@@ -23,11 +23,11 @@ Also, data is _sorted_ by this composite key. This has the effect that a query t
 
 It will also reduce overall segment size because data that are sorted this way can be compressed more efficiently.
 
-As mentioned above, you will have to build your own snapshot Druid version to try this out.
+As mentioned above, you will have to build your own snapshot Druid version to try this out. (If you follow the steps below with the standard 0.22 release, you will not get an error. But Druid will fall back to hash partitioning.)
 
 Range partitioning is not supported by the web console wizard, so we have to resort to a little trick. As before, I'll show this with the quickstart wikipedia dataset.
 
-Configure your ingestion just like in part 1, pretending that you want to do do a hash partitioning. Set the segment size to 14,000 rows, however this time, enter both `channel` and `user` as the partitioning column:
+Configure your ingestion just like in part 1, pretending that you want to do do a hash partitioning. Name the new datasource `wikipedia-range`. Set the segment size to 14,000 rows; however, this time, enter both `channel` and `user` as the partitioning column:
 
 ![First step in configuring](/assets/2022-01-25-1-params.jpg)
 
@@ -35,5 +35,55 @@ Then, continue in the wizard until you get to edit the JSON Spec. On this screen
 
 ![Editing the JSON spec](/assets/2022-01-25-2-jsonspec.jpg)
 
+Click `Submit` and let the ingestion task finish.
 
+This time, we get a nice and even distribution of rows among the segments:
 
+![Segment distribution](/assets/2022-01-25-3-segment-size.jpg)
+
+Let's look at the segment metadata like last time. This time, include both key columns in the query:
+
+```json
+{
+  "queryType": "segmentMetadata",
+  "dataSource": "wikipedia-range",
+  "intervals": [
+    "2013-01-01/2016-01-01"
+  ],
+  "toInclude": {
+    "type": "list",
+    "columns": [
+      "channel", "user"
+    ]
+  }
+}
+```
+This time the values are nicely bucketed in alphabetic order:
+
+![Segment metadata](/assets/2022-01-25-4-segment-metadata.jpg)
+
+Note how the "boundary" values (`en` and `ru`, respectively) are now distributed among two partitions. This is how multi dimension partitioning works - in these cases the second key column `user` breaks the tie.
+
+Here are the top 5 channel values for each partition:
+```
+Partition 0:
+8917 #en.wikipedia
+2523 #de.wikipedia
+ 478 #ca.wikipedia
+ 423 #ar.wikipedia
+ 251 #el.wikipedia
+Partition 1:
+9747 #vi.wikipedia
+1126 #zh.wikipedia
+ 983 #uz.wikipedia
+ 263 #uk.wikipedia
+ 247 #ru.wikipedia
+Partition 2:
+2632 #en.wikipedia
+2099 #fr.wikipedia
+1383 #it.wikipedia
+1256 #es.wikipedia
+1139 #ru.wikipedia
+```
+
+This concludes my short series about secondary partitioning in Druid. I hope this was helpful!
