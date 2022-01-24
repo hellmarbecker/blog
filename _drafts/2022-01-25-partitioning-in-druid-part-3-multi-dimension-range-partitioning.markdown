@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Partitioning in Druid - Part 3: Multi Dimension Range Partitioning"
+title:  "Partitioning in Druid - Part 3: Multi Dimension (Range) Partitioning"
 categories: blog apache druid imply tutorial
 ---
 ![Test Tubes](/assets/2022-01-25-0-test-tubes.jpg)
