@@ -60,7 +60,7 @@ Run a native query to look at the segment metadata like last time, but include b
   }
 }
 ```
-The values are nicely bucketed in alphabetic order:
+The values of the leading `channel` dimension are nicely bucketed in alphabetic order:
 
 ![Segment metadata](/assets/2022-01-25-4-segment-metadata.jpg)
 
@@ -92,7 +92,7 @@ Partition 2:
 
 - Multi dimension partitioning is new and will (likely) be part of the next Druid release.
 - It gives you benefits if you have frequent query patterns that use the same subset of columns for filtering and grouping.
-- Like hash partitioning, multi dimensiion partitioning can ensure uniform segment sizes. 
+- Like hash partitioning, multi dimension partitioning can ensure uniform segment sizes. 
 
 ---
 
