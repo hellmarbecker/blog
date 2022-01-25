@@ -88,7 +88,11 @@ Partition 2:
 1139 #ru.wikipedia
 ```
 
-This concludes my short series about secondary partitioning in Druid. I hope this was helpful!
+## Learnings
+
+- Multi dimension partitioning is new and will (likely) be part of the next Druid release.
+- It gives you benefits if you have frequent query patterns that use the same subset of columns for filtering and grouping.
+- Like hash partitioning, multi dimensiion partitioning can ensure uniform segment sizes. 
 
 ---
 
