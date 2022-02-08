@@ -10,7 +10,7 @@ what are ingestion transforms yada yada
 
 documentation [here](https://druid.apache.org/docs/latest/ingestion/ingestion-spec.html#transforms)
 
-note, transforms operate on dimensions as inputs, they can overshadow exiisting dimension names but you cannot use metrics nor other transforms as inputs
+note, transforms operate on dimensions as inputs, they can overshadow existing dimension names but you cannot use metrics nor other transforms as inputs
 
 some simple examples in the [tutorial](https://druid.apache.org/docs/latest/tutorials/tutorial-transform-spec.html#load-data-with-transform-specs)
 
@@ -18,7 +18,19 @@ but we can actually do more!
 
 ## Simple math transformation
 
-do a conversion from F to C or vice versa
+Imagine we have weather data from America that specifies the temperature in Fahrenheit degrees, `tempF`. As a European, I'd prefer to read the temperature in Celsius degrees.
+
+Here is the formula
+
+```json
+{
+  "type": "expression",
+  "name": "tempC",
+  "expression": "5.0 / 9.0 * (tempF - 32.0)"
+}
+```
+
+Note how I have been careful to write all the number literals with a decimal point? Druid does make a difference between integer and floating point numbers, and it will perform arithmetic according to the types involved. If you write `5 / 9 * (tempF - 32)`, you will get all zeroes because an integer division of 5 by 9 yields (integer) 0!
 
 ## Compose a new dimension out of several fields
 
@@ -26,10 +38,18 @@ concatenate
 
 ## Composite timestamps
 
-this is actually documented: what if you have to pull the timestamp out of more than one field in your data?
+Druid is very good at parsing timestamps of various formats. But what if you have to pull the timestamp out of more than one field in your data?
+
+The [documentation](https://druid.apache.org/docs/latest/ingestion/ingestion-spec.html#transforms) says:
+
+> Transforms can refer to the timestamp of an input row by referring to `__time` as part of the expression. They can also replace the timestamp if you set their "name" to `__time`.
+
+What does this mean? It means that the `__time` column value can be _overridden_ by anything you specify in an expression. 
+
 
 Consider this data sample from an ADS-B data collector:
-```
+
+```csv
 MT,TT,SID,AID,Hex,FID,DMG,TMG,DML,TML,CS,Alt,GS,Trk,Lat,Lng,VR,Sq,Alrt,Emer,SPI,Gnd
 MSG,1,111,11111,3C70A8,111111,2016/02/05,04:51:22.709,2016/02/05,04:51:22.693,BCS850  ,,,,,,,,,,,0
 MSG,8,111,11111,484411,111111,2016/02/05,04:51:22.746,2016/02/05,04:51:22.698,,,,,,,,,,,,0
@@ -57,7 +77,18 @@ MSG,8,111,11111,484411,111111,2016/02/05,04:51:23.387,2016/02/05,04:51:23.351,,,
 MSG,8,111,11111,44D1CF,111111,2016/02/05,04:51:23.402,2016/02/05,04:51:23.353,,,,,,,,,,,,0
 MSG,5,111,11111,484411,111111,2016/02/05,04:51:23.406,2016/02/05,04:51:23.354,,12525,,,,,,,0,,0,0
 ```
-The possible timestamp candidates are each spread across two columns for date and time.
+
+The possible timestamp candidates are each spread across two columns for date and time. A transform definition of
+
+```json
+{
+  "type": "expression",
+  "name": "__time",
+  "expression": "timestamp_parse(concat(\"DMG\", ' ', \"TMG\"), 'yyyy/M/d HH:mm:ss.SSS')"
+}
+```
+
+can concatenate the date and time fields and parse them according to the custom format.
 
 ## Parse a MVD
 
