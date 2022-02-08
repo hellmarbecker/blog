@@ -4,15 +4,29 @@ title:  "Druid Data Lab: Ingestion Transforms"
 categories: blog druid imply ingestion tutorial
 ---
 
-lorem ipsum 
+While [Apache Druid](https://druid.apache.org/) is not an ETL tool, it is possible to transform incoming data to do elementary cleaning or to derive dimension values from sets of input fields. Druid Transforms work on single rows of data. They operate on input fields and they create additional fields in the data. A Transform can overshadow existing field (dimension) names but you cannot use metrics nor other transforms as inputs.
 
-what are ingestion transforms yada yada
+The Druid documentation explais Transforms [here](https://druid.apache.org/docs/latest/ingestion/ingestion-spec.html#transforms). There's also a [tutorial](https://druid.apache.org/docs/latest/tutorials/tutorial-transform-spec.html#load-data-with-transform-specs), which is a good place to start if you haven't used transforms before.
 
-documentation [here](https://druid.apache.org/docs/latest/ingestion/ingestion-spec.html#transforms)
+## How to code Transforms
 
-note, transforms operate on dimensions as inputs, they can overshadow existing dimension names but you cannot use metrics nor other transforms as inputs
+The simplest way to employ Transforms is via the ingestion wizard in the Druid console. Right after the `Parse time` step, you are greeted with the option to roll your own Transform:
 
-some simple examples in the [tutorial](https://druid.apache.org/docs/latest/tutorials/tutorial-transform-spec.html#load-data-with-transform-specs)
+![transform tab](/assets/2022-02-08-1-t.jpg)
+
+As you hit `Add column transform`, you can define your transfrom using the [Druid expression syntax](https://druid.apache.org/docs/latest/misc/math-expr.html):
+
+![define transform](/assets/2022-02-08-2-detail.jpg)
+
+In the ingestion spec, Transforms are defined within the `transforms` section of the `dataSchema`. Here is how this might look like:
+
+![transform spec](/assets/2022-02-08-3-spec.jpg)
+
+One remark about quotes in expression syntax: It works much like in SQL. This means
+- string literals are enclosed in single quotes: `'string literal'`
+- identifiers such as field names, if required, are enclosed in double quotes: `"field name"`.
+
+<mark>Since double quotes are also used as string delimiters in JSON, double quotes inside an expression have to be escaped like so: `\"field name\"`.</mark> This does not apply when you use the wizard - it will add the escape characters for you.
 
 but we can actually do more!
 
@@ -90,7 +104,11 @@ The possible timestamp candidates are each spread across two columns for date an
 
 can concatenate the date and time fields and parse them according to the custom format.
 
-## Parse a MVD
+## Use a case expression inside a transform
+
+...
+
+## Parse a multi-value dimension
 
 refer to the blog I already wrote about that
 
