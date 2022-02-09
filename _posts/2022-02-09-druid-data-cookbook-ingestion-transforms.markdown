@@ -3,8 +3,9 @@ layout: post
 title:  "Druid Data Cookbook: Ingestion Transforms"
 categories: blog druid imply ingestion tutorial
 ---
+![Druid Cookbook](/assets/2021-12-21-elf.jpg)
 
-While [Apache Druid](https://druid.apache.org/) is not an ETL tool, it is possible to transform incoming data to do elementary cleaning or to derive dimension values from sets of input fields. Druid Transforms work on single rows of data. They operate on input fields and they create additional fields in the data. A Transform can overshadow existing field (dimension) names but you cannot use metrics nor other transforms as inputs.
+While [Apache Druid](https://druid.apache.org/) is not an ETL tool, it has the ability to transform incoming data to do elementary cleansing or to derive dimension values from sets of input fields. Druid Transforms work on single rows of data. They operate on input fields and they create additional fields in the data. A Transform can overshadow existing field (dimension) names but you cannot use metrics nor other transforms as inputs.
 
 The Druid documentation explains Transforms [here](https://druid.apache.org/docs/latest/ingestion/ingestion-spec.html#transforms). There's also a [tutorial](https://druid.apache.org/docs/latest/tutorials/tutorial-transform-spec.html#load-data-with-transform-specs), which is a good place to start if you haven't used transforms before.
 
@@ -14,15 +15,15 @@ The simplest way to employ Transforms is via the ingestion wizard in the Druid c
 
 ![transform tab](/assets/2022-02-09-1-t.jpg)
 
-As you hit `Add column transform`, you can define your transfrom using the [Druid expression syntax](https://druid.apache.org/docs/latest/misc/math-expr.html):
+As you hit `Add column transform`, you can define your transform using the [Druid expression syntax](https://druid.apache.org/docs/latest/misc/math-expr.html):
 
-![define transform](/assets/2022-02-09-2-detail.jpg)
+<img src="/assets/2022-02-09-2-detail.jpg" width="30%" />
 
 In the ingestion spec, Transforms are defined within the `transforms` section of the `dataSchema`. Here is how this might look like:
 
 ![transform spec](/assets/2022-02-09-3-spec.jpg)
 
-One remark about quotes in expression syntax: It works much like in SQL. This means
+<mark>Quotes in expression syntax work much like in SQL.</mark> This means
 - string literals are enclosed in single quotes: `'string literal'`
 - identifiers such as field names, if required, are enclosed in double quotes: `"field name"`.
 
@@ -44,7 +45,7 @@ Here is the formula
 }
 ```
 
-Note how I have been careful to write all the number literals with a decimal point? Druid does make a difference between integer and floating point numbers, and it will perform arithmetic according to the types involved. If you write `5 / 9 * (tempF - 32)`, you will get all zeroes because an integer division of 5 by 9 yields (integer) 0!
+<mark>Make sure to use the right kind of numeric types in your formulae!</mark> Note how I have been careful to write all the number literals with a decimal point? Druid does make a difference between integer and floating point numbers, and it will perform arithmetic according to the types involved. If you write `5 / 9 * (tempF - 32)`, you will get all zeroes because an integer division of 5 by 9 yields (integer) 0!
 
 ## Compose a new dimension out of several fields
 
@@ -67,7 +68,6 @@ The [documentation](https://druid.apache.org/docs/latest/ingestion/ingestion-spe
 > Transforms can refer to the timestamp of an input row by referring to `__time` as part of the expression. They can also replace the timestamp if you set their "name" to `__time`.
 
 What does this mean? It means that the `__time` column value can be _overridden_ by anything you specify in an expression. 
-
 
 Consider this data sample from an ADS-B data collector:
 
@@ -153,5 +153,6 @@ Once we have a field split and parsed into an array, we can do list processing u
 Druid transforms are a handy tool to do elementary data massaging during ingestion. What we've learnt:
 - Don't try to use this capability to replace an ETL or ELT pipeline.
 - Simple math transformation are easy on this level.
+- If you do math that involves integer expressions, be sure to force the numbers to floating point when needed.
 - We can use transforms to do things that the built in parser does not handle well by default, like parsing composite timestamps.
 - Arrays and lambda expressions open up additional possibilities.
