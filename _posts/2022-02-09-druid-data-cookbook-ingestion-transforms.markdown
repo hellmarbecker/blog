@@ -27,7 +27,7 @@ In the ingestion spec, Transforms are defined within the `transforms` section of
 - string literals are enclosed in single quotes: `'string literal'`
 - identifiers such as field names, if required, are enclosed in double quotes: `"field name"`.
 
-<mark>Since double quotes are also used as string delimiters in JSON, double quotes inside an expression have to be escaped like so: `\"field name\"`.</mark> This does not apply when you use the wizard - it will add the escape characters for you.
+Since double quotes are also used as string delimiters in JSON, <mark>double quotes inside an expression have to be escaped</mark> like so: `\"field name\"`. This does not apply when you use the wizard - it will add the escape characters for you.
 
 but we can actually do more! Let's look at a few recipes how to manipulate data using Transforms.
 
@@ -152,6 +152,7 @@ Once we have a field split and parsed into an array, we can do list processing u
 
 Druid transforms are a handy tool to do elementary data massaging during ingestion. What we've learnt:
 - Don't try to use this capability to replace an ETL or ELT pipeline.
+- If you write transforms directly into the ingestion spec, be aware of the quote escape rules.
 - Simple math transformation are easy on this level.
 - If you do math that involves integer expressions, be sure to force the numbers to floating point when needed.
 - We can use transforms to do things that the built in parser does not handle well by default, like parsing composite timestamps.
