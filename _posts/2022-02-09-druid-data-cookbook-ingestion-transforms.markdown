@@ -9,6 +9,9 @@ While [Apache Druid](https://druid.apache.org/) is not an ETL tool, it has the a
 
 The Druid documentation explains Transforms [here](https://druid.apache.org/docs/latest/ingestion/ingestion-spec.html#transforms). There's also a [tutorial](https://druid.apache.org/docs/latest/tutorials/tutorial-transform-spec.html#load-data-with-transform-specs), which is a good place to start if you haven't used transforms before.
 
+... but we can actually do more! Let's look at a few recipes how to manipulate data using Transforms.
+
+
 ## How to code Transforms
 
 The simplest way to employ Transforms is via the ingestion wizard in the Druid console. Right after the `Parse time` step, you are greeted with the option to roll your own Transform:
@@ -29,7 +32,7 @@ In the ingestion spec, Transforms are defined within the `transforms` section of
 
 Since double quotes are also used as string delimiters in JSON, <mark>double quotes inside an expression have to be escaped</mark> like so: `\"field name\"`. This does not apply when you use the wizard - it will add the escape characters for you.
 
-but we can actually do more! Let's look at a few recipes how to manipulate data using Transforms.
+Armed with this knowledge, feel free to try out some of the examples below.
 
 ## Simple math transformation
 
