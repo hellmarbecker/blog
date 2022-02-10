@@ -160,3 +160,7 @@ Druid transforms are a handy tool to do elementary data massaging during ingesti
 - If you do math that involves integer expressions, be sure to force the numbers to floating point when needed.
 - We can use transforms to do things that the built in parser does not handle well by default, like parsing composite timestamps.
 - Arrays and lambda expressions open up additional possibilities.
+
+---
+
+"This image is taken from Page 500 of Praktisches Kochbuch f&uuml;r die gew&ouml;hnliche und feinere K&uuml;che" by Medical Heritage Library, Inc. is licensed under [CC BY-NC-SA 2.0](https://creativecommons.org/licenses/by-nc-sa/2.0/?ref=openverse&atype=html)
