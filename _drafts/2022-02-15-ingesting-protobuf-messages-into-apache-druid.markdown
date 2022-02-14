@@ -16,6 +16,8 @@ Use Confluent Cloud Kafka Connect
 
 But you can also use the script that comes with the Protobuf extension
 
+Or roll your own see [this blog](https://dzone.com/articles/how-to-use-protobuf-with-apache-kafka-and-schema-r)
+
 ### Documentation of the Protobuf extension
 
 https://github.com/apache/druid/blob/ec334a641b3f56077d2693980128e872f08d8611/docs/development/extensions-core/protobuf.md
