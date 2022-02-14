@@ -1,0 +1,27 @@
+---
+layout: post
+title:  "Ingesting Protobuf messages into Apache Druid"
+categories: blog imply druid confluent kafka eventstreaming tutorial
+---
+
+Read Protobuf data from a [schema aware](https://docs.confluent.io/cloud/current/sr/schemas-manage.html) [Confluent Cloud](https://confluent.cloud) cluster into [Apache Druid](https://druid.apache.org/). Use the Druid 0.22 [micro-quickstart](https://druid.apache.org/docs/latest/tutorials/index.html) setup for this exercise.
+
+![Streaming analytics architecture](/assets/2021-10-19-0-architecture.png)
+
+## Setting up the Topic and all the rest
+
+## Generating data
+
+Use Confluent Cloud Kafka Connect
+
+But you can also use the script that comes with the Protobuf extension
+
+### Documentation of the Protobuf extension
+
+https://github.com/apache/druid/blob/ec334a641b3f56077d2693980128e872f08d8611/docs/development/extensions-core/protobuf.md
+
+### ProtobufBytesDecoder
+
+this can be either `schema_registry` or `file`
+
+https://github.com/apache/druid/blob/0e0c1a1aaf468d2e082fffa9cab8a98013f2b536/extensions-core/protobuf-extensions/src/main/java/org/apache/druid/data/input/protobuf/ProtobufBytesDecoder.java
