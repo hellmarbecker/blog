@@ -27,12 +27,6 @@ https://raw.githubusercontent.com/confluentinc/cp-all-in-one/7.0.1-post/cp-all-i
 
 Or you can clone [the entire repository](https://github.com/confluentinc/cp-all-in-one)
 
-Then follow the [quickstart guide](https://docs.confluent.io/platform/current/quickstart/ce-docker-quickstart.html#step-1-download-and-start-cp) by running
-
-```bash
-docker-compose up -d
-```
- 
 Need to map ports differently because the same ports are used by Druid
 
 |Service |Standard port |Custom port |
@@ -41,6 +35,18 @@ Need to map ports differently because the same ports are used by Druid
 |Schema Registry | 8081| 18081|
 |REST Proxy | 8082| 18082|
 |Kafka Connect | 8083| 18083|
+
+Then follow the [quickstart guide](https://docs.confluent.io/platform/current/quickstart/ce-docker-quickstart.html#step-1-download-and-start-cp) by running
+
+```bash
+docker-compose up -d
+```
+
+You can check the deployment with the `docker ps` command. Or query the Kafka metadata using [`kcat`](https://docs.confluent.io/platform/current/app-development/kafkacat-usage.html):
+```
+kcat -b localhost:9092 -L
+```
+If Kafka is up and running, this will return a list of topics and partitions.
 
 
 ### Documentation of the Protobuf extension
