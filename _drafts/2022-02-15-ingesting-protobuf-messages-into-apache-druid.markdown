@@ -18,6 +18,21 @@ But you can also use the script that comes with the Protobuf extension
 
 Or roll your own see [this blog](https://dzone.com/articles/how-to-use-protobuf-with-apache-kafka-and-schema-r)
 
+## Generating data with Kafka and Kafka Connect
+
+```bash
+curl --silent --output docker-compose.yml \ 
+https://raw.githubusercontent.com/confluentinc/cp-all-in-one/7.0.1-post/cp-all-in-one-community/docker-compose.yml
+```
+
+Or you can clone [the entire repository](https://github.com/confluentinc/cp-all-in-one)
+
+Then follow the [quickstart guide](https://docs.confluent.io/platform/current/quickstart/ce-docker-quickstart.html#step-1-download-and-start-cp) by running
+
+```bash
+docker-compose up -d
+```
+
 ### Documentation of the Protobuf extension
 
 https://github.com/apache/druid/blob/ec334a641b3f56077d2693980128e872f08d8611/docs/development/extensions-core/protobuf.md
