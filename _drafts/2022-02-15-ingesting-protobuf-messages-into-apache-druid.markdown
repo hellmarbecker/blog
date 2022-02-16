@@ -32,6 +32,16 @@ Then follow the [quickstart guide](https://docs.confluent.io/platform/current/qu
 ```bash
 docker-compose up -d
 ```
+ 
+Need to map ports differently because the same ports are used by Druid
+
+|Service |Standard port |Custom port |
+|:---|---:|---:|
+|Zookeeper | 2181| 12181|
+|Schema Registry | 8081| 18081|
+|REST Proxy | 8082| 18082|
+|Kafka Connect | 8083| 18083|
+
 
 ### Documentation of the Protobuf extension
 
