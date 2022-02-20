@@ -72,6 +72,21 @@ Ingest these data without any changes or transformations, using monthly segments
 
 Create a SQL cube from your data in Pivot.
 
-![Define dimension](/assets/2022-02-21-1-define-dim.jpg)
+In order to visualize the data on a map, use the new `ST_GEOHASH` function which is supplied by `imply_utility_belt`. It takes three parameters:
+- longitude
+- latitude
+- an integer that describes the precision, that is the length of the Geohas string.
+
+Make sure to tell Pivot that this is a Geo dimension:
+
+<img src="/assets/2022-02-21-1-define-dim.jpg" width="60%" />
+
+Then you can use the new dimension to show your data in a map view.
 
 ![Map view](/assets/2022-02-21-2-mapview.jpg)
+
+## Learnings
+
+- In order to use Imply's own visualization tool, there is now a function that creates Geohash strings out of geographical coordinates.
+- This is new in Inply 2022.02
+- It is found in the `imply-utility-belt` extension.
