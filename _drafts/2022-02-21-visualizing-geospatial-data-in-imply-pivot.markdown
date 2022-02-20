@@ -33,7 +33,6 @@ I am using a simple Python script to generate my sample data. (You will need the
 ```python
 import json
 from faker import Faker
-from itertools import chain
 
 fake = Faker()
 
