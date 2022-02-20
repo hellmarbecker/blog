@@ -4,13 +4,17 @@ title:  "Visualizing Geospatial Data in Imply Pivot"
 categories: blog imply druid geospatial pivot
 ---
 
-![Small map](/assets/2022-02-21-0-banner.jpg)
+![Small map](/assets/2022-02-21-0-banner.png)
 
 [Previously](/2021/11/07/fun-with-spatial-dimensions-in-apache-druid/), I looked at spatial dimensions in Apache Druid. Since [Imply](https://www.imply.io) created Pivot as a tailored visualization tool for Druid data, I would like to take advantage of the built-in map view to show my spatial dimensions on a map. How will we go about this?
 
 Pivot cannot display latitude/longitude coordinates directly on a map but it can interpret geocoded data in [Geohash](https://en.wikipedia.org/wiki/Geohash) format. If we could transform our coordinates into a geohash, sure we would be able to make the map visualization work!
 
-Until recently, this was only possible with [a hack using Javascript](/2022/01/21/geospatial-data-in-apache-druid---generating-geohashes/). But with Imply's extensions to Druid, it becomes a breeze! This extension was added in Imply version 2022.02, so be sure to use the latest version if you run the test.
+Until recently, this was only possible with [a hack using Javascript](/2022/01/21/geospatial-data-in-apache-druid---generating-geohashes/). But with Imply's extensions to Druid, it becomes a breeze! The functionality was added in Imply version 2022.02, so be sure to use the latest version if you run the test.
+
+## Setting Things Up
+
+You can use [the trial version of Imply](https://imply.io/download-imply) for this tutorial. To get started, register and follow the instructions to download and install the software. 
 
 The `imply-utility-belt` extension has to be enabled in your common properties. If you are using the quickstart on unmanaged Imply Enterprise, look into the file `conf-quickstart/druid/_common/common.runtime.properties` and make sure it is included in the extension list:
 
@@ -24,7 +28,7 @@ druid.extensions.hadoopDependenciesDir=dist/druid/hadoop-dependencies
 druid.extensions.loadList=["druid-histogram", "druid-datasketches", "druid-kafka-indexing-service", "imply-utility-belt"]
 ```
 
-For the Cloud version of Imply Enterprise, this is just a checkbox in the Manager UI.
+For the Cloud version of Imply Enterprise, this is configured [in the Manager UI](https://docs.imply.io/latest/cluster-management/#configure-extensions).
 
 ## Generating Data
 
@@ -74,7 +78,7 @@ Create a SQL cube from your data in Pivot.
 In order to visualize the data on a map, use the new `ST_GEOHASH` function which is supplied by `imply_utility_belt`. It takes three parameters:
 - longitude
 - latitude
-- an integer that describes the precision, that is the length of the Geohas string.
+- an integer between 1 and 12 describing the precision, that is the length of the Geohash string.
 
 Make sure to tell Pivot that this is a Geo dimension:
 
@@ -87,5 +91,5 @@ Then you can use the new dimension to show your data in a map view.
 ## Learnings
 
 - In order to use Imply's own visualization tool, there is now a function that creates Geohash strings out of geographical coordinates.
-- This is new in Inply 2022.02
+- This is new in Imply 2022.02.
 - It is found in the `imply-utility-belt` extension.
