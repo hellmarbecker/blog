@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Visualizing Geospatial Data in Imply Pivot"
-categories: blog imply druid geospatial pivot
+categories: blog imply druid geospatial pivot tutorial
 ---
 
 ![Small map](/assets/2022-02-21-0-banner.png)
@@ -10,7 +10,7 @@ categories: blog imply druid geospatial pivot
 
 Pivot cannot display latitude/longitude coordinates directly on a map but it can interpret geocoded data in [Geohash](https://en.wikipedia.org/wiki/Geohash) format. If we could transform our coordinates into a geohash, sure we would be able to make the map visualization work!
 
-Until recently, this was only possible with [a hack using Javascript](/2022/01/21/geospatial-data-in-apache-druid---generating-geohashes/). But with Imply's extensions to Druid, it becomes a breeze! The functionality was added in Imply version 2022.02, so be sure to use the latest version if you run the test.
+Until recently, this was only possible with [a hack using Javascript](/2022/01/21/geospatial-data-in-apache-druid---generating-geohashes/). But with Imply's extensions to Druid, it becomes a breeze! The functionality was added in Imply version [2022.02](https://docs.imply.io/latest/release/#changes-in-202202), so be sure to use the latest version if you run the test.
 
 ## Setting Things Up
 
@@ -73,6 +73,8 @@ Ingest these data without any changes or transformations, using monthly segments
 
 ## Loading the Data into Pivot
 
+Let's first generate the Geohash dimension in Pivot on the fly.
+
 Create a SQL cube from your data in Pivot.
 
 In order to visualize the data on a map, use the new `ST_GEOHASH` function which is supplied by `imply_utility_belt`. It takes three parameters:
@@ -88,8 +90,16 @@ Then you can use the new dimension to show your data in a map view.
 
 ![Map view](/assets/2022-02-21-2-mapview.jpg)
 
+## Precomputing Geohash during Ingestion
+
+If you have a larger data set, you may want to precompute the geohash column. This is possible using the `st_geohash` function in a native expression: 
+
+![Geohash transform during ingestion](/assets/2022-02-21-3-ingest.jpg)
+
+This is faster at query time but might be considered less flexible. However, you could precompute geohash with a high precision and then just truncate the string if you need shorter geohashes.
+
 ## Learnings
 
 - In order to use Imply's own visualization tool, there is now a function that creates Geohash strings out of geographical coordinates.
-- This is new in Imply 2022.02.
+- This is new in Imply 2022.02 and is available both in SQL and Druid native query.
 - It is found in the `imply-utility-belt` extension.
