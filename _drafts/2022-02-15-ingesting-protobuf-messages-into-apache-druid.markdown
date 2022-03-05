@@ -62,6 +62,8 @@ kcat -b localhost:9092 -L
 ```
 If Kafka is up and running, this will return a list of topics and partitions.
 
+TODO: deploy the datagen connector
+
 
 ### Documentation of the Protobuf extension
 
