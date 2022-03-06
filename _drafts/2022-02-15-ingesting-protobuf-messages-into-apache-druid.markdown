@@ -12,21 +12,16 @@ Read Protobuf data from a [schema aware](https://docs.confluent.io/cloud/current
 
 ## Setting up the Topic and all the rest
 
-## Generating data
+## Generating Data with Kafka and Kafka Connect
 
-There are various ways to create Protobuf data and stream them into Druid. One method is described in [the Protobuf extension documentation](https://druid.apache.org/docs/0.22.1/development/extensions-core/protobuf.html), involving a custom Python script. There's also [this blog](https://dzone.com/articles/how-to-use-protobuf-with-apache-kafka-and-schema-r), which shows how to do it in Java. I am going to look at two other options here:
-- using Confluent Cloud and
-- using Confluent Platform and Kafka Connect locally.
+There are various ways to create Protobuf data and stream them into Druid:
+- One method is described in [the Protobuf extension documentation](https://druid.apache.org/docs/0.22.1/development/extensions-core/protobuf.html), involving a custom Python script. 
+- There's also [this blog](https://dzone.com/articles/how-to-use-protobuf-with-apache-kafka-and-schema-r), which shows how to do it in Java. 
+- The easiest way would be to use Confluent Cloud - I described this in [my post about AVRO integration](/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/). Instead of AVRO data, choose to generate Protobuf, that's all. You will also have to set up security in Druid according to the instructions in that post.
 
-### Generating data with Confluent Cloud
+Because I did the Confluent Cloud version before, I am going to look at a different way using Confluent Platform and Kafka Connect locally. We will need to set up a few things to make this work.
 
-The easiest way would be to use Confluent Cloud - I described this in [my post about AVRO integration](/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/). Instead of AVRO data, choose to generate Protobuf, that's all. You will also have to set up security in Druid according to the instructions in that post.
-
-But you can also use the script that comes with the Protobuf extension
-
-Or roll your own see [this blog](https://dzone.com/articles/how-to-use-protobuf-with-apache-kafka-and-schema-r)
-
-### Generating data with Kafka and Kafka Connect
+### Setting up Kafka in Docker
 
 In order to generate data and stream them through Kafka, I am going to use the Community Edition of Confluent Platform, loosely following Confluent's [quickstart](https://docs.confluent.io/platform/current/quickstart/ce-docker-quickstart.html) instructions.
 
@@ -48,6 +43,17 @@ If you try to start this version alongside Apache Druid, you will notice that so
 |REST Proxy | 8082| 18082|
 |Kafka Connect | 8083| 18083|
 
+In addition to this, you will need to add an option to override the default REST port for Kafka Connect:
+
+```yaml
+  connect:
+    ...
+    environment:
+      ...
+      CONNECT_REST_PORT: 18083
+      ...
+```
+
 Note down the port numbers that you assigned, because you will need them later.
 
 Then follow the [quickstart guide](https://docs.confluent.io/platform/current/quickstart/ce-docker-quickstart.html#step-1-download-and-start-cp) by running
@@ -62,12 +68,46 @@ kcat -b localhost:9092 -L
 ```
 If Kafka is up and running, this will return a list of topics and partitions.
 
-TODO: deploy the datagen connector
+### Deploying the Datagen Connector
 
+Kafka Connect comes with a [built in data generator](https://docs.confluent.io/cloud/current/connectors/cc-datagen-source.html) that can deliver various sets of mock data. We are going to use the Clickstream data generator, which emulates page clicks on a web site.
+
+In addition to the data generator type, Kafka Connect lets us specify the output format using the `value.converter` property.
+
+Let's deploy the Connector configuration through the [Connect REST API](https://docs.confluent.io/platform/current/connect/references/restapi.html):
+
+```bash
+curl -X POST -H "Content-Type: application/json" --data '{
+  "name": "datagen-protobuf-clickstream",
+  "config": {
+    "connector.class": "io.confluent.kafka.connect.datagen.DatagenConnector",
+    "kafka.topic": "clickstream",
+    "quickstart": "clickstream",
+    "key.converter": "org.apache.kafka.connect.storage.StringConverter",
+    "value.converter": "io.confluent.connect.protobuf.ProtobufConverter",
+    "value.converter.schemas.enable": "false",
+    "value.converter.schema.registry.url": "http://schema-registry:18081",
+    "max.interval": 1000,
+    "iterations": 10000000,
+    "tasks.max": "1",
+    "transforms": "SetSchemaMetadata",
+    "transforms.SetSchemaMetadata.type": "org.apache.kafka.connect.transforms.SetSchemaMetadata$Value",
+    "transforms.SetSchemaMetadata.schema.name": "clickstream"
+  }
+}' http://localhost:18083/connectors
+```
+
+### Setting up Druid
+
+https://druid.apache.org/docs/latest/tutorials/index.html
 
 ### Documentation of the Protobuf extension
 
 https://github.com/apache/druid/blob/ec334a641b3f56077d2693980128e872f08d8611/docs/development/extensions-core/protobuf.md
+
+```
+druid.extensions.loadList=["druid-hdfs-storage", "druid-kafka-indexing-service", "druid-datasketches", "druid-parquet-extensions", "druid-protobuf-extensions"]
+```
 
 ### ProtobufBytesDecoder
 
