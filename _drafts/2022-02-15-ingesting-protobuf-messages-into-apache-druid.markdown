@@ -105,8 +105,19 @@ https://druid.apache.org/docs/latest/tutorials/index.html
 
 https://github.com/apache/druid/blob/ec334a641b3f56077d2693980128e872f08d8611/docs/development/extensions-core/protobuf.md
 
+Make sure to include the Protobuf extensions in the load list:
 ```
 druid.extensions.loadList=["druid-hdfs-storage", "druid-kafka-indexing-service", "druid-datasketches", "druid-parquet-extensions", "druid-protobuf-extensions"]
+```
+
+Download the missing JAR files according to [the documentation](https://druid.apache.org/docs/latest/development/extensions-core/protobuf.html#when-using-schema-registry)
+```
+cd extensions/
+mkdir protobuf-extensions
+cd protobuf-extensions
+curl -O -L https://packages.confluent.io/maven/io/confluent/kafka-protobuf-provider/6.0.1/kafka-protobuf-provider-6.0.1.jar
+curl -O -L https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.4.0/kotlin-stdlib-1.4.0.jar
+curl -O -L https://repo1.maven.org/maven2/com/squareup/wire/wire-schema/3.2.2/wire-schema-3.2.2.jar
 ```
 
 ### ProtobufBytesDecoder
