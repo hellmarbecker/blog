@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Descriptive Statistics in Apache Druid with Data Sketches"
+title:  "Quantiles in Apache Druid with Data Sketches"
 categories: blog druid imply statistics datasketches tutorial
 ---
 
