@@ -19,8 +19,15 @@ Likewise, the cut point such that 25% of values are less than or equal to it, is
 
 Quantiles are handy when trying to describe properties of distributions that are skewed or have outliers. This is something we are going to look at today.
 
-First, let's generate some data. I am logging down the incomes of a fictional population that is split iinto four segments:
-- 
+## Generating Data
+
+First, let's generate some data. I am logging down the incomes of a fictional population that is split into four segments:
+- **Segment A**'s income is normal distributed (bell curve) with the peak at 10,000 and a standard deviation of 2,000.
+- **Segment B** has a normal distribution too, but wider with a standard deviation of 10,000, so we can compare it to Segment C.
+- **Segment C**'s income follows an exponential distribution with a mean of 10,000 (and a standard deviation of 10,000, that's how the exponential distribution works.)
+- **Segment D** has a bimodal distribution, with the majority of members making around 10,000, and a small group that peaks around 50,000. This is modeled as the weighted sum of two bell curves.
+
+Here's the code for it:
 
 ```python
 import time
@@ -57,7 +64,13 @@ def main():
 if __name__ == "__main__":
     main()
 ```
+Run this code to generate an inout file for Druid, and set up ingestion using the `Load data` wizard. We are going to roll up the data with a query granularity of 15 minutes, and we want to have three metrics:
+- the standard `count` metric
+- the equally standard sum of salaries `sum_rn` so we can actually compute the mean salary for each segment
+- a quantiles sketch over `rn`.
 
+This is configured in the `Configure schema` section of the wizard like so:
+![](/assets/)
 
 ```sql
 SELECT 
