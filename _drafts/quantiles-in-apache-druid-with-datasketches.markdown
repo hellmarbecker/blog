@@ -107,7 +107,7 @@ Segment D has the most pronounced discrepancy between mean and median - the medi
 
 ![Bimodal with median and mean](/assets/2022-03-20-02-bimodal.png)
 
-Because the combination `DS_GET_QUANTILE(DS_QUANTILES_SKETCH(...)` is so frequently used, you can use the shorthand `APPROX_QUANTILE(expr, probability, [resolution])` instead.
+Because the combination `DS_GET_QUANTILE(DS_QUANTILES_SKETCH(...))` is so frequently used, you can use the shorthand `APPROX_QUANTILE(expr, probability, [resolution])` instead.
 
 ### Quartiles and More
 
