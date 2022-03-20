@@ -1,25 +1,52 @@
 ---
 layout: post
-title:  "Descriptive Statistics in Apache Druid with Datasketches"
-categories: blog druid imply ststistics datasketches tutorial
+title:  "Descriptive Statistics in Apache Druid with Data Sketches"
+categories: blog druid imply statistics datasketches tutorial
 ---
+
+Let's try some fun with [data sketches](https://druid.apache.org/docs/latest/development/extensions-core/datasketches-extension.html) in Apache Druid.
+
+Data sketches are a way to get a good estimate of measures that you would normally only obtain by going through every single row of your data, which could become prohibitive as the amount of data grows.
+
+One common example is counting unique things, such as visitors to a web site. But today I am going to look at [quantiles sketches](https://druid.apache.org/docs/latest/development/extensions-core/datasketches-quantiles.html).
+
+According to [Wikipedia](https://en.wikipedia.org/wiki/Quantile),
+> quantiles are cut points dividing the range of a probability distribution into continuous intervals with equal probabilities, or dividing the observations in a sample in the same way.
+
+So, the 0.5-quantile of a variable is the cut point such that 50% of rows have a value less than or equal to it, and 50% are above it. The 0.5-quantile is also known as the _median_.
+
+Likewise, the cut point such that 25% of values are less than or equal to it, is the _first quartile_.
+
+Quantiles are handy when trying to describe properties of distributions that are skewed or have outliers. This is something we are going to look at today.
+
+First, let's generate some data. I am logging down the incomes of a fictional population that is split iinto four segments:
+- 
 
 ```python
 import time
 import random
 import json
 
-def main():
 
+def bimodal(m1, m2, s, p):
+
+    if random.random() <= p:
+        m = m1
+    else:
+        m = m2
+    return random.gauss(m, s)
+
+
+def main():
+ 
     distr = {
         'A': { 'fn': random.gauss,       'param': (10000, 2000) },
         'B': { 'fn': random.gauss,       'param': (10000, 10000) },
         'C': { 'fn': random.expovariate, 'param': (0.0001,) },
-        'D': { 'fn': random.gauss,       'param': (20000, 2000) },
-        'E': { 'fn': random.gauss,       'param': (25000, 2500) },
+        'D': { 'fn': bimodal,            'param': (10000, 50000, 2000, 0.8) },
     }
     for i in range(0, 10000):
-        grp = random.choices('ABCDE', cum_weights=(0.50, 0.75, 0.82, 0.91, 1.00), k=1)[0]
+        grp = random.choices('ABCD', cum_weights=(0.50, 0.75, 0.90, 1.00), k=1)[0]
         rec = {
             'tn': time.time() - 10000 + i,
             'cn': grp,
@@ -29,7 +56,6 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 ```
 
 
