@@ -161,26 +161,56 @@ GROUP BY 1
 ```
 will give the maximum salary of each segment, excluding extreme outliers.
 
+## Going The Other Way Round: Approximating the Cumulative Distribution Function
 
+There's a set of functions that, in a sense, is the **reverse** of the quantiles functions. Until now we have given the algorithm a relative frequency (such as 0.5) and asked for the value of the random variable that represented the cutoff for that share. What if we ask the other way round:
 
+> For a given value of _X_ = _x_, what share of the population represents a value less than or equal to _x_?
 
+This brings us to the problem of approximating the [cumulative distribution function (CDF)](https://en.wikipedia.org/wiki/Cumulative_distribution_function). Luckily, Druid has us covered here too!
 
+### For a single value
+
+You can get an estimate for a single value of the CDF by calling ... `DS_RANK` on an aggregated quantiles sketch. 
+
+Show me the percentage of members in each segment that earn less than $10k:
 ```sql
 SELECT 
-  cn, 
-  count(*), 
-  DS_QUANTILES_SKETCH(qs_rn, 128) AS q,
-  DS_GET_QUANTILES(DS_QUANTILES_SKETCH(qs_rn, 128), 0.25, 0.5, 0.75) AS quartiles_s,
-  DS_GET_QUANTILE(DS_QUANTILES_SKETCH(qs_rn, 128), 0.25) AS q1_s, 
-  DS_GET_QUANTILE(DS_QUANTILES_SKETCH(qs_rn, 128), 0.5) AS median_s, 
-  DS_GET_QUANTILE(DS_QUANTILES_SKETCH(qs_rn, 128), 0.75) AS q3_s, 
-  DS_HISTOGRAM(DS_QUANTILES_SKETCH(qs_rn, 128), 5000, 10000, 20000) AS hi_s,
-  DS_CDF(DS_QUANTILES_SKETCH(qs_rn, 128), 5000, 10000, 20000) AS ff_s,
-  DS_RANK(DS_QUANTILES_SKETCH(qs_rn, 128), 5000) AS f5k_s,
-  DS_RANK(DS_QUANTILES_SKETCH(qs_rn, 128), 10000) AS f10k_s,
-  DS_RANK(DS_QUANTILES_SKETCH(qs_rn, 128), 20000) AS f20k_s,
-  SUM(sum_rn) / SUM("count") AS avg_s
+  cn,
+  DS_RANK(DS_QUANTILES_SKETCH(qs_rn, 128), 10000) AS f10k_s
 FROM randstream_salary
 GROUP BY 1
 ```
+cn	|f10k_s
+:---:|:---:
+A	|0.5003940110323088
+B	|0.5004019292604501
+C	|0.6471399035148173
+D	|0.3614213197969543
+
+No surprises here! Since distributions A and B have a median of 10k, the CDF value should be 0.5 (or close to it), and that's what we got!
+
+### For multiple values
+
+Finally, we also have the capability to return estimates of the CDF at multiple points in an array. This function is aptly named `DS_CDF`:
+```sql
+SELECT 
+  cn,
+  DS_CDF(DS_QUANTILES_SKETCH(qs_rn, 128), 5000, 10000, 20000, 30000) AS ff_s
+FROM randstream_salary
+GROUP BY 1
+```
+cn	|ff_s
+:---:|:---
+A	|\[0.0065011820330969266,0.5003940110323088,1.0,1.0,1.0\]
+B	|\[0.3046623794212219,0.5004019292604501,0.8384244372990354,0.9682475884244373,1.0\]
+C	|\[0.39972432804962094,0.6471399035148173,0.8662991040661613,0.9558924879393522,1.0\]
+D	|\[0.0040609137055837565,0.3614213197969543,0.7756345177664975,0.7756345177664975,1.0\]
+
+## Learnings
+
+- Quantiles sketches are a powerful tool for estimating the shape of a distribution of values.
+- They can be used to find "representative" or "most typical" values, and to exclude outliers.
+- Quantiles and CDF estimators complement each other.
+- Each estimator exists in a version that returns a single value, and another one that returns multiple values in an array. 
 
