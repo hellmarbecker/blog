@@ -123,6 +123,7 @@ SELECT
 FROM randstream_salary
 GROUP BY 1
 ```
+
 cn	|q1_s|	q2_s	|q3_s	|mean_s
 :---:|:---:|:---:|:---:|:---:
 A	|8644.233235251919	|9996.84943938557	|11393.163108254672	|9989.123516983642
@@ -140,6 +141,7 @@ SELECT
 FROM randstream_salary
 GROUP BY 1
 ```
+
 cn|	quartiles_s
 :---:|:---
 A	|\[8644.233235251919,9996.84943938557,11390.835537907638\]
@@ -182,6 +184,7 @@ SELECT
 FROM randstream_salary
 GROUP BY 1
 ```
+
 cn	|f10k_s
 :---:|:---:
 A	|0.5003940110323088
@@ -201,6 +204,7 @@ SELECT
 FROM randstream_salary
 GROUP BY 1
 ```
+
 cn	|ff_s
 :---:|:---
 A	|\[0.0065011820330969266,0.5003940110323088,1.0,1.0,1.0\]
