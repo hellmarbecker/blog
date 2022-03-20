@@ -1,10 +1,11 @@
 ---
 layout: post
-title:  "Quantiles in Apache Druid with Data Sketches"
+title:  "Druid Data Cookbook: Quantiles in Druid with Data Sketches"
 categories: blog druid imply statistics datasketches tutorial
 ---
+![Druid Cookbook](/assets/2021-12-21-elf.jpg)
 
-Let's try some fun with [data sketches](https://druid.apache.org/docs/latest/development/extensions-core/datasketches-extension.html) in Apache Druid.
+Let's try some fun with [data sketches](https://druid.apache.org/docs/latest/development/extensions-core/datasketches-extension.html) in [Apache Druid](https://druid.apache.org/).
 
 Data sketches are a way to get a good estimate of measures that you would normally only obtain by going through every single row of your data, which could become prohibitive as the amount of data grows.
 
@@ -17,7 +18,7 @@ So, the 0.5-quantile of a variable is the cut point such that 50% of rows have a
 
 ![Bell curve with median](/assets/2022-03-20-01-gauss.png)
 
-Likewise, the cut point such that 25% of values are less than or equal to it, is the _first quartile_.
+Likewise, the cut point such that 25% of values are less than or equal to it, is the _first quartile_. The median is the second quartile, and so on.
 
 Quantiles are handy when trying to describe properties of distributions that are skewed or have outliers. This is something we are going to look at today.
 
@@ -228,7 +229,6 @@ D	|\[4.0,352.0,408.0,0.0,221.0\]
 
 
 
-
 ## Learnings
 
 - Quantiles sketches are a powerful tool for estimating the shape of a distribution of values.
@@ -236,3 +236,6 @@ D	|\[4.0,352.0,408.0,0.0,221.0\]
 - Quantiles and CDF estimators complement each other.
 - Each estimator exists in a version that returns a single value, and another one that returns multiple values in an array. 
 
+---
+
+"This image is taken from Page 500 of Praktisches Kochbuch f&uuml;r die gew&ouml;hnliche und feinere K&uuml;che" by Medical Heritage Library, Inc. is licensed under [CC BY-NC-SA 2.0](https://creativecommons.org/licenses/by-nc-sa/2.0/?ref=openverse&atype=html)
