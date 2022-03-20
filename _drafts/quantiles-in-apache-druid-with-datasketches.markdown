@@ -131,7 +131,7 @@ D	|9201.740561816481	|10831.763371338158	|13466.267335825763	|18933.47273254579
 
 We can now see the difference between A and B, B being much broader distributed. Also the skewedness of D becomes even clearer - more then 75% of that segment are concentrated within the lower peak!
 
-There's a nice way to return multiple quantile values from one function call using `DS_GET_QUANTILES`. This function takes a variable number of relative frequency values and returns the quantiles for all of them in a SQL array:  
+There's a nice way to return multiple quantile values from one function call using `DS_GET_QUANTILES`. This function takes a variable number of relative frequency values and returns the quantiles for all of them in an SQL array:  
 ```sql
 SELECT 
   cn,
