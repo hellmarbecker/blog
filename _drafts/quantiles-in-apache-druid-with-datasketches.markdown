@@ -19,9 +19,7 @@ So, the 0.5-quantile of a variable is the cut point such that 50% of rows have a
 
 Likewise, the cut point such that 25% of values are less than or equal to it, is the _first quartile_.
 
-Quantiles are handy when trying to describe properties of distributions that are skewed or have outliers. This is something we are going to look at today. Look at this distribution:
-
-![Bimodal with median and mean](/assets/2022-03-20-02-bimodal.png)
+Quantiles are handy when trying to describe properties of distributions that are skewed or have outliers. This is something we are going to look at today.
 
 ## Generating Data
 
@@ -31,7 +29,7 @@ First, let's generate some data. I am logging down the incomes of a fictional po
 - **Segment C**'s income follows an exponential distribution with a mean of 10,000 (and a standard deviation of 10,000, that's how the exponential distribution works.)
 - **Segment D** has a bimodal distribution, with the majority of members making around 10,000, and a small group that peaks around 50,000. This is modeled as the weighted sum of two bell curves.
 
-Here's the code for it:
+Here's the code:
 
 ```python
 import time
@@ -105,7 +103,9 @@ D	|10906.525946085518	|18933.47273254579
 
 As we expected, for segments A and B the median and mean values coincide (more or less.) Segment C, the one with the exponential distribution, has a difference - the mean value is `1 / λ`, the parameter of the distribution, while the median is `ln(2) / λ`, and `ln(2) ≃ 0.693` so we're good.
 
-Segment D has the most pronounced discrepancy between mean and median (see the picture above) - the median is well within the big first bump of the distribution and reflects what "most" of the population members can expect to earn. The median shows a distorted picture because of the small subsegment of high earners.
+Segment D has the most pronounced discrepancy between mean and median - the median is well within the big first bump of the distribution and reflects what "most" of the population members can expect to earn. The mean shows a distorted picture because of the small subsegment of high earners:
+
+![Bimodal with median and mean](/assets/2022-03-20-02-bimodal.png)
 
 Because the combination `DS_GET_QUANTILE(DS_QUANTILES_SKETCH(...)` is so frequently used, you can use the shorthand `APPROX_QUANTILE(expr, probability, [resolution])` instead.
 
