@@ -13,11 +13,15 @@ One common example is counting unique things, such as visitors to a web site. Bu
 According to [Wikipedia](https://en.wikipedia.org/wiki/Quantile),
 > quantiles are cut points dividing the range of a probability distribution into continuous intervals with equal probabilities, or dividing the observations in a sample in the same way.
 
-So, the 0.5-quantile of a variable is the cut point such that 50% of rows have a value less than or equal to it, and 50% are above it. The 0.5-quantile is also known as the _median_.
+So, the 0.5-quantile of a variable is the cut point such that 50% of rows have a value less than or equal to it, and 50% are above it. The 0.5-quantile is also known as the _median_. For a standard bell curve, the median and the mean (average) coincide:
+
+![Bell curve with median](/assets/2022-03-20-01-gauss.png)
 
 Likewise, the cut point such that 25% of values are less than or equal to it, is the _first quartile_.
 
-Quantiles are handy when trying to describe properties of distributions that are skewed or have outliers. This is something we are going to look at today.
+Quantiles are handy when trying to describe properties of distributions that are skewed or have outliers. This is something we are going to look at today. Look at this distribution:
+
+![Bimodal with median and mean](/assets/2022-03-20-02-bimodal.png)
 
 ## Generating Data
 
@@ -64,13 +68,13 @@ def main():
 if __name__ == "__main__":
     main()
 ```
-Run this code to generate an inout file for Druid, and set up ingestion using the `Load data` wizard. We are going to roll up the data with a query granularity of 15 minutes, and we want to have three metrics:
+Run this code to generate an input file for Druid, and set up ingestion using the `Load data` wizard. We are going to roll up the data with a query granularity of 15 minutes, and we want to have three metrics:
 - the standard `count` metric
 - the equally standard sum of salaries `sum_rn` so we can actually compute the mean salary for each segment
 - a quantiles sketch over `rn`.
 
 This is configured in the `Configure schema` section of the wizard like so:
-![](/assets/)
+![Config Wizard showing data sketch](/assets/2022-03-20-03-config-sketch.jpg)
 
 ```sql
 SELECT 
