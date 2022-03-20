@@ -161,7 +161,7 @@ GROUP BY 1
 ```
 will give the maximum salary of each segment, excluding extreme outliers.
 
-## Going The Other Way Round: Approximating the Cumulative Distribution Function
+## Going The Other Way Round: Approximating Histograms and Cumulative Distribution Functions
 
 There's a set of functions that, in a sense, is the **reverse** of the quantiles functions. Until now we have given the algorithm a relative frequency (such as 0.5) and asked for the value of the random variable that represented the cutoff for that share. What if we ask the other way round:
 
@@ -169,7 +169,7 @@ There's a set of functions that, in a sense, is the **reverse** of the quantiles
 
 This brings us to the problem of approximating the [cumulative distribution function (CDF)](https://en.wikipedia.org/wiki/Cumulative_distribution_function). Luckily, Druid has us covered here too!
 
-### For a single value
+### CDF for a single value
 
 You can get an estimate for a single value of the CDF by calling ... `DS_RANK` on an aggregated quantiles sketch. 
 
@@ -190,9 +190,9 @@ D	|0.3614213197969543
 
 No surprises here! Since distributions A and B have a median of 10k, the CDF value should be 0.5 (or close to it), and that's what we got!
 
-### For multiple values
+### CDF for multiple values
 
-Finally, we also have the capability to return estimates of the CDF at multiple points in an array. This function is aptly named `DS_CDF`:
+We also have the capability to return estimates of the CDF at multiple points in an array. This function is aptly named `DS_CDF`:
 ```sql
 SELECT 
   cn,
@@ -206,6 +206,28 @@ A	|\[0.0065011820330969266,0.5003940110323088,1.0,1.0,1.0\]
 B	|\[0.3046623794212219,0.5004019292604501,0.8384244372990354,0.9682475884244373,1.0\]
 C	|\[0.39972432804962094,0.6471399035148173,0.8662991040661613,0.9558924879393522,1.0\]
 D	|\[0.0040609137055837565,0.3614213197969543,0.7756345177664975,0.7756345177664975,1.0\]
+
+### Approximate Histograms
+
+Finally, if we want to know how many people are in each of a defined set of buckets, we can use the `DS_HISTOGRAM` function:
+```sql
+SELECT 
+  cn,
+  DS_HISTOGRAM(DS_QUANTILES_SKETCH(qs_rn, 128), 5000, 10000, 20000, 30000) AS hist_s
+FROM randstream_salary
+GROUP BY 1
+```
+If you give it _n_ cutoff points, it creates _n_ + 1 buckets and estimates the number of records in each:
+
+cn	|hist_s
+:---:|:---
+A	|\[33.0,2507.0,2536.0,0.0,0.0\]
+B	|\[758.0,486.99999999999994,857.0000000000001,323.0,63.0\]
+C	|\[580.0,359.0,318.0,130.0,64.0\]
+D	|\[4.0,352.0,408.0,0.0,221.0\]
+
+
+
 
 ## Learnings
 
