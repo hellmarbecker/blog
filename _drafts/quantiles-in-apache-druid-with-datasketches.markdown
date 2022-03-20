@@ -131,6 +131,21 @@ D	|9201.740561816481	|10831.763371338158	|13466.267335825763	|18933.47273254579
 
 We can now see the difference between A and B, B being much broader distributed. Also the skewedness of D becomes even clearer - more then 75% of that segment are concentrated within the lower peak!
 
+There's a nice way to return multiple quantile values from one function call using `DS_GET_QUANTILES`. This function takes a variable number of relative frequency values and returns the quantiles for all of them in a SQL array:  
+```sql
+SELECT 
+  cn,
+   DS_GET_QUANTILES(DS_QUANTILES_SKETCH(qs_rn, 128), 0.25, 0.5, 0.75) AS quartiles_s
+FROM randstream_salary
+GROUP BY 1
+```
+cn|	quartiles_s
+:---:|:---
+A	|\[8644.233235251919,9996.84943938557,11390.835537907638\]
+B	|\[2957.7551807357313,9898.406577909447,16443.42636844785\]
+C	|\[2779.0521582375077,6743.422567701859,13769.232186289446\]
+D	|\[9201.740561816481,10831.763371338158,13475.30741204272\]
+
 
 
 ### Outlier Detection
