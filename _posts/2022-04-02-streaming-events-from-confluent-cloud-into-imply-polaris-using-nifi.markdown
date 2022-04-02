@@ -49,8 +49,8 @@ You will also need:
 - you _Kafka endpoint URL (Broker URL)_ from Confluent Cloud
 - a _service account_ that will have access to your Kafka topic
 - a _Kafka API key and secret_ associated with that service account
-- a _consumer group ID_ that you can choose freely, but you need to create
-- an _ACL_ for your consumer group in Confluent Cloud to give your service account read access to that consumer group
+- a _consumer group ID_ that you can choose freely, but ...
+- you need to create an _ACL for your consumer group_ in Confluent Cloud to give your service account read access to that consumer group.
 
 I've covered this in a bit more detail in [my post about Confluent Cloud integration with Druid](/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/).
 
@@ -122,7 +122,7 @@ and regurgitate afterwards.
 
 ## Result
 
-Here's the final retult in Polaris:
+Here's the final result in Polaris:
 
 ![Pivot](/assets/2022-04-02-01b-pivot.jpg)
 
