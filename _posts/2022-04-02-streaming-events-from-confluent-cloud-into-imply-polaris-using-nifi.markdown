@@ -58,7 +58,7 @@ I've covered this in a bit more detail in [my post about Confluent Cloud integra
 
 ### Controller Services
 
-I am using Nifi 1.15.3 for this tutorial, and I am going to make use of Record processors. Each record processor needs a Record Reader and a Record Writer. Since we are going to read whatever JSON we get at every stage, the Record Reader is generally just going to be a `JsonTreeReader` with the default configuration. 
+I am using Nifi 1.15.3 for this tutorial, and I am going to make use of Record processors. Each Record processor needs a Record Reader and a Record Writer. Since we are going to read whatever JSON we get at every stage, the Record Reader is generally just going to be a `JsonTreeReader` with the default configuration. 
 
 For the Record Writer, consider that Polaris expects data to arrive in [ndjson](http://ndjson.org/) format (1 JSON object per line). This is  conveniently achieved using a `JsonRecordSetWriter`, by setting the `Output Grouping` attribute to `One Line Per Object`:
 
@@ -100,7 +100,7 @@ We are going to use a `QueryRecord` processor to transform our JSON data using S
 
 ![QueryRecord](/assets/2022-04-02-05-queryrecord.jpg)
 
-One notice here: With this setup, sometimes the result of the transform query might be empty. In this case the processor will display an error message about cursor position and route the iriginal FlowFile to the `failure` relationship. This is not really an error, I am currently ignoring it.
+One notice here: With this setup, sometimes the result of the transform query might be empty. In this case the processor will display an error message about cursor position and route the original FlowFile to the `failure` relationship. This is not really an error, I am currently ignoring it.
 
 ### Push Events to the API
 
@@ -123,5 +123,5 @@ and regurgitate afterwards.
 ## Learnings
 
 - Imply Polaris currently supports event streaming through a Push API.
-- Apache NiFi is a very flexible toll that can connect a Kafka stream to the Polaris Push API.
+- Apache NiFi is a very flexible tool that can connect a Kafka stream to the Polaris Push API.
 - NiFi's record processors make preprocessing and filtering easy.
