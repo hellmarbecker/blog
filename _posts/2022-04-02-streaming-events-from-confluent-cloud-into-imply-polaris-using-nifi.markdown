@@ -120,6 +120,12 @@ REST calls in NiFi are made using the `InvokeHTTP` processor. We need:
 
 and regurgitate afterwards.
 
+## Result
+
+Here's the final retult in Polaris:
+
+![Pivot](/assets/2022-04-02-01b-pivot.jpg)
+
 ## Learnings
 
 - Imply Polaris currently supports event streaming through a Push API.
