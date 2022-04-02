@@ -37,7 +37,11 @@ First of all, we are going to need a target table in Polaris. The best way to cr
 
 Note this down - we will need it later.
 
-Also, [create an API token](https://docs.imply.io/polaris/oauth/) that we will use for authentication against Polaris. Make sure to extend the token's lifespan to 1 year.
+Also, [create an API client and token](https://docs.imply.io/polaris/oauth/) that we will use for authentication against Polaris. Make sure to extend the token's lifespan to 1 year.
+
+You can download the API token in the API Client GUI of Polaris:
+
+![Polaris Auth GUI](/assets/2022-04-02-08-api-token.jpg)
 
 ### Preparing Confluent Cloud
 
@@ -90,9 +94,22 @@ We want to batch up data for scalability, so let's insert a `MergeRecord` proces
 ### Transform
 
 We are going to use a `QueryRecord` processor to transform our JSON data using SQL. This achieves three things:
-- Creates a new fiels `__time`
+- Creates a new field `__time`
 - Populates that field with a millisecond timestamp
 - Uses a simple modulo rule on the session ID field `sid` to reduce the data volume by a factor of 10
 
 ![QueryRecord](/assets/2022-04-02-05-queryrecord.jpg)
+
+### Push Events to the API
+
+REST calls in NiFi are made using the `InvokeHTTP` processor. We need:
+- the API endpoint URL from above
+- Method will be POST
+- Set `Content-Type` to `application/json`
+- `Authorization` should be `Bearer ` and the literal value of your API token
+
+![HTTP 1](/assets/2022-04-02-06a-http.jpg)
+
+![HTTP 2](/assets/2022-04-02-06b-http.jpg)
+
 
