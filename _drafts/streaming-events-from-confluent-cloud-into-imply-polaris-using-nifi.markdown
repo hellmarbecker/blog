@@ -50,5 +50,16 @@ I've covered this in a bit more detail in [my post about Confluent Cloud integra
 
 ## Components of the NiFi Flow
 
-### 
+### Controller Services
+
+I am using Nifi 1.15.3 for this tutorial, and I am going to make use of the Record processors. Each record processor needs a Record Reader and a Record Writer. Since we are going to read whatever JSON we get at every stage, the Record Reader is generally just going to be a `JSONTreeReader` with the default configuration. 
+
+For the Record Writer, consider that Polaris expects data to arrive in [ndjson](http://ndjson.org/) format (1 JSON object per line). This is  conveniently achieved by setting the `Output Grouping` attribute to `One Line Per Object`:
+
+![Record Writer Configuration](/assets/2022-04-02-03-recordwriter.jpg)
+
+If you don't do this, the output will be a JSON array and Polaris will not be happy.
+
+### Kafka Consumer
+
 
