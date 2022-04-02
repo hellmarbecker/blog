@@ -37,6 +37,8 @@ First of all, we are going to need a target table in Polaris. The best way to cr
 
 Note this down - we will need it later.
 
+Also, [create an API token](https://docs.imply.io/polaris/oauth/) that we will use for authentication against Polaris. Make sure to extend the token's lifespan to 1 year.
+
 ### Preparing Confluent Cloud
 
 You will also need:
@@ -79,4 +81,18 @@ Here are my settings:
 
 Auto-terminate all relationships except `success`, which will go on into the merge processor.
 
+### Merge Records
+
+We want to batch up data for scalability, so let's insert a `MergeRecord` processor:
+
+![MergeRecord](/assets/2022-04-02-04-mergerecord.jpg)
+
+### Transform
+
+We are going to use a `QueryRecord` processor to transform our JSON data using SQL. This achieves three things:
+- Creates a new fiels `__time`
+- Populates that field with a millisecond timestamp
+- Uses a simple modulo rule on the session ID field `sid` to reduce the data volume by a factor of 10
+
+![QueryRecord](/assets/2022-04-02-05-queryrecord.jpg)
 
