@@ -100,6 +100,8 @@ We are going to use a `QueryRecord` processor to transform our JSON data using S
 
 ![QueryRecord](/assets/2022-04-02-05-queryrecord.jpg)
 
+One notice here: With this setup, sometimes the result of the transform query might be empty. In this case the processor will display an error message about cursor position and route the iriginal FlowFile to the `failure` relationship. This is not really an error, I am currently ignoring it.
+
 ### Push Events to the API
 
 REST calls in NiFi are made using the `InvokeHTTP` processor. We need:
@@ -112,4 +114,14 @@ REST calls in NiFi are made using the `InvokeHTTP` processor. We need:
 
 ![HTTP 2](/assets/2022-04-02-06b-http.jpg)
 
+`InvokeHTTP` has quite a bunch of relationships, most of which we will auto-terminate. Notable is `No Retry`, which would catch any batch that is too big. Conversely, the `retry` relationship catches any transient failures (typically a 503 error). These, we throttle using `ControlRate`:
 
+![ControlRate](/assets/2022-04-02-09-controlrate.jpg)
+
+and regurgitate afterwards.
+
+## Learnings
+
+- Imply Polaris currently supports event streaming through a Push API.
+- Apache NiFi is a very flexible toll that can connect a Kafka stream to the Polaris Push API.
+- NiFi's record processors make preprocessing and filtering easy.
