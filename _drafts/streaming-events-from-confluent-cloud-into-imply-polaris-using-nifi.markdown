@@ -52,14 +52,31 @@ I've covered this in a bit more detail in [my post about Confluent Cloud integra
 
 ### Controller Services
 
-I am using Nifi 1.15.3 for this tutorial, and I am going to make use of the Record processors. Each record processor needs a Record Reader and a Record Writer. Since we are going to read whatever JSON we get at every stage, the Record Reader is generally just going to be a `JSONTreeReader` with the default configuration. 
+I am using Nifi 1.15.3 for this tutorial, and I am going to make use of the Record processors. Each record processor needs a Record Reader and a Record Writer. Since we are going to read whatever JSON we get at every stage, the Record Reader is generally just going to be a `JsonTreeReader` with the default configuration. 
 
-For the Record Writer, consider that Polaris expects data to arrive in [ndjson](http://ndjson.org/) format (1 JSON object per line). This is  conveniently achieved by setting the `Output Grouping` attribute to `One Line Per Object`:
+For the Record Writer, consider that Polaris expects data to arrive in [ndjson](http://ndjson.org/) format (1 JSON object per line). This is  conveniently achieved using a `JsonRecordSetWriter`, by setting the `Output Grouping` attribute to `One Line Per Object`:
 
 ![Record Writer Configuration](/assets/2022-04-02-03-recordwriter.jpg)
 
 If you don't do this, the output will be a JSON array and Polaris will not be happy.
 
 ### Kafka Consumer
+
+You need to set:
+- the broker URL
+- the Record Reader and Writer (see above)
+- the Consumer Group ID (the one you picked earlier)
+- the security protocol (`SASL_SSL` / `PLAIN`)
+- username and password are your Kafka API key and secret
+- SSL Context Service, create one pointing to the truststore of your JVM (format is JKS and password is "changeit")
+- Max Poll records, estimate it such that you don't consume more than 1 MB in one go
+
+Here are my settings:
+
+![Kafka 1](/assets/2022-04-02-02a-kafka.jpg)
+
+![Kafka 2](/assets/2022-04-02-02b-kafka.jpg)
+
+Auto-terminate all relationships except `success`, which will go on into the merge processor.
 
 
