@@ -104,3 +104,39 @@ bin/start-micro-quickstart-nozk
 
 ## Generating Data
 
+Let's push some data into Pulsar. I am going to use the CLI client. Note that the namespace convention we configured will make a topic `kop/kop/pulsar-to-druid` appear as `pulsar-to-druid` on the Kafka side.
+
+```bash
+#!/bin/bash
+
+export PULSAR_HOME=$HOME/apache-pulsar-2.10.0
+export TOPIC=pulsar-to-druid
+
+while true; do
+    ${PULSAR_HOME}/bin/pulsar-client produce kop/kop/pulsar-to-druid -s "\000" \
+        -m "{ \"timestamp\": \"$(date -Iseconds)\", \"dim\": \"dim$((1 + RANDOM % 5))\", \"value\": \"$((1 + RANDOM % 100))\" }"
+    sleep 1
+done
+```
+
+This creates a stream of JSON messages with messages once a second. The `-s` option sets the message separator. The default is `,` which is not good for JSON.
+
+Let's test this with a Kafka client:
+
+```
+% kcat -b 127.0.0.1:9092 -t pulsar-to-druid -C           
+{ "timestamp": "2022-04-25T15:04:11+02:00", "dim": "dim5", "value": "5" }
+{ "timestamp": "2022-04-25T15:04:16+02:00", "dim": "dim4", "value": "30" }
+{ "timestamp": "2022-04-25T15:04:21+02:00", "dim": "dim3", "value": "84" }
+{ "timestamp": "2022-04-25T15:04:26+02:00", "dim": "dim1", "value": "33" }
+{ "timestamp": "2022-04-25T15:04:30+02:00", "dim": "dim3", "value": "92" }
+{ "timestamp": "2022-04-25T15:04:35+02:00", "dim": "dim3", "value": "49" }
+{ "timestamp": "2022-04-25T15:04:40+02:00", "dim": "dim3", "value": "40" }
+{ "timestamp": "2022-04-25T15:04:45+02:00", "dim": "dim2", "value": "81" }
+```
+
+This works fine. (Side note: `kcat` needs Kafka transactions enabled, too!)
+
+## Ingesting Pulsar Data into Druid
+
+
