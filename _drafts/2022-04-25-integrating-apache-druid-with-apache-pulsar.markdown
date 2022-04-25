@@ -76,12 +76,31 @@ bin/pulsar standalone
 
 ## Installing and Preparing Druid
 
-let's just use Pulsar's zookeeper
+Download the latest Druid release from [the Apache Druid website](https://druid.apache.org/downloads.html) and untar it into your home directory. We are going to use the Druid quickstart but first we have to solve a little problem.
 
-apache-druid-0.22.1/conf/supervise/single-server/micro-quickstart-nozk.conf:
+### Port Conflicts
+
+Both Druid and Pulsar use Zookeeper for storing cluster state, and both use the default port 2181. Moreover, Druid's default configuration exposes the Zookeper command API on port 8080, which is used for admin tasks by Pulsar too.
+
+In a production setup, this would have to be addressed properly. For the purpose of this tutorial, let's do a simple workaround: We will make Druid use the Zookeeper instance that comes with Pulsar! That means we need to remove Zookeeper from the Druid quickstart.
+
+Make a copy of `apache-druid-0.22.1/conf/supervise/single-server/micro-quickstart.conf` and remove the Zookeeper line:
 
 ~~`!p10 zk bin/run-zk conf`~~
 
-bin/start-micro-quickstart-nozk:
+Save this file to `apache-druid-0.22.1/conf/supervise/single-server/micro-quickstart-nozk.conf`.
+
+Make a copy of `bin/start-micro-quickstart` and edit the last line to refer to the new configuration file:
 
 `exec "$WHEREAMI/supervise" -c "$WHEREAMI/../conf/supervise/single-server/micro-quickstart-nozk.conf"`
+
+Save this to `bin/start-micro-quickstart-nozk`.
+
+We are ready to start Druid:
+
+```
+bin/start-micro-quickstart-nozk
+```
+
+## Generating Data
+
