@@ -1,8 +1,10 @@
 ---
 layout: post
-title:  "Connecting Apache Pulsar to Apache Druid"
+title:  "Integrating Apache Druid with Apache Pulsar"
 categories: blog apache druid imply pulsar streamnative eventstreaming tutorial
 ---
+
+![Pulsar to Druid](/assets/2022-04-25-01-banner.png)
 
 ## Installing Pulsar and KoP
 
