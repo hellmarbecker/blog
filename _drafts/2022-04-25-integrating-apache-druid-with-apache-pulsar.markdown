@@ -8,7 +8,7 @@ categories: blog apache druid imply pulsar streamnative eventstreaming tutorial
 
 With companies adopting the [event streaming pattern](https://medium.com/capital-one-tech/event-streaming-an-additional-architectural-style-to-supplement-api-design-703c4f801722), analytics has to become more "realtime" too. A great database for event analytics is [Apache Druid](https://druid.apache.org). Druid connects natively to various event streaming systems such as Kafka and AWS Kinesis.
 
-One of the most advanced modern event streaming platforms is [Apache Pulsar](https://pulsar.apache.org). Pulsar has a modern, cloud native architecture that separates the storage layer from the message brokers, claiming unprecendented scalability and flexibility. Sure it would be great to stream events directly from Pulsar into Druid!
+One of the most advanced modern event streaming platforms is [Apache Pulsar](https://pulsar.apache.org). Pulsar has a cloud native architecture that separates the storage layer from the message brokers, claiming unprecendented scalability and flexibility. Sure it would be great to stream events directly from Pulsar into Druid!
 
 The idea has been discussed before [by the Imply and StreamNative teams](https://imply.io/blog/community-spotlight-apache-pulsar-and-apache-druid-get-close/), but up until recently no turnkey solution existed. Pulsar offered a drop-in client library with call compatibility to the Kafka libraries, but using it would usually require rebuilding the entire application, which is not for everyone. 
 
