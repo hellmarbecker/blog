@@ -19,27 +19,28 @@ If we could set up a Pulsar cluster with KoP enabled, we should be able to lever
 We will need to install
 - Apache Pulsar and KoP
 - Apache Druid
-- We also need a data simulator. I am using a siimple script here
+- We also need a data simulator. This will be a simple script that uses the Pulsar commandline client, so we will also see the mapping between Kafka topic names and Pulsar topic names.
 
+I am running all components directly on my laptop.
 
 ## Installing Pulsar and KoP
 
-Download pulsar https://pulsar.apache.org/en/download/
+Download Pulsar from [the Apache Pulsar download website](https://pulsar.apache.org/en/download/), and untar into your home directory. At the time of this writing, the latest release is 2.10.0.
 
-QuickStart https://pulsar.apache.org/docs/en/standalone/
+Download KoP from [StreamNative's GitHub repository](https://github.com/streamnative/kop/releases). Make sure that the release number of KoP you download matches your Pulsar release. I am using  version 2.10.0.2.
 
-download kop from streamnative github https://github.com/streamnative/kop/releases
+Install KoP in `apache-pulsar-2.10.0` directory - you need to create a `protocols` directory and copy the nar file into it:
 
-install KoP in `apache-pulsar-2.10.0` directory:
-
-```
+```bash
+cd $HOME/apache-pulsar-2.10.0
 mkdir protocols
 cp ~/Downloads/pulsar-protocol-handler-kafka-2.10.0.2.nar protocols 
 ```
 
-now add the necessary config settings
+### Configuration for KoP
 
-In `conf/standalone.conf`:
+You have to add a few necessary configuration settings to `conf/standalone.conf` as per https://github.com/streamnative/kop/blob/master/docs/kop.md:
+
 ```
 messagingProtocols=kafka
 protocolHandlerDirectory=./protocols
@@ -48,9 +49,30 @@ kafkaListeners=PLAINTEXT://127.0.0.1:9092
 kafkaAdvertisedListeners=PLAINTEXT://127.0.0.1:9092
 brokerEntryMetadataInterceptors=org.apache.pulsar.common.intercept.AppendIndexMetadataInterceptor
 brokerDeleteInactiveTopicsEnabled=false    # !! overrides the default setting !!
+```
+
+Note that the settings for `allowAutoTopicCreationType` and `brokerDeleteInactiveTopicsEnabled` override the default settings, you have to find the lines with the default settings and edit or remove them.
+
+Druid uses Kafka transactions, so we need one more option to make KoP work with Druid:
+
+```
 kafkaTransactionCoordinatorEnabled=true    # this is not in the docs but required for Druid
 ```
-https://imply.io/blog/community-spotlight-apache-pulsar-and-apache-druid-get-close/
+
+### Topic Mapping
+
+While Kafka has a flat namespace, Pulsar has a naming scheme `tenant`/`namespace`/`topic`. You can set the default tenant and namespace for Kafka topics like so: (In `conf/standalone.conf`)
+
+```
+kafkaTenant=kop
+kafkaNamespace=kop
+```
+
+Finally, start Pulsar according to the [standalone quickstart](https://pulsar.apache.org/docs/en/standalone/) instructions:
+
+```
+bin/pulsar standalone
+```
 
 ## Installing and Preparing Druid
 
