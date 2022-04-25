@@ -32,9 +32,9 @@ Download KoP from [StreamNative's GitHub repository](https://github.com/streamna
 Install KoP in `apache-pulsar-2.10.0` directory - you need to create a `protocols` directory and copy the nar file into it:
 
 ```bash
-cd $HOME/apache-pulsar-2.10.0
-mkdir protocols
-cp ~/Downloads/pulsar-protocol-handler-kafka-2.10.0.2.nar protocols 
+% cd $HOME/apache-pulsar-2.10.0
+% mkdir protocols
+% cp ~/Downloads/pulsar-protocol-handler-kafka-2.10.0.2.nar protocols 
 ```
 
 ### Configuration for KoP
@@ -71,7 +71,7 @@ kafkaNamespace=kop
 Finally, start Pulsar according to the [standalone quickstart](https://pulsar.apache.org/docs/en/standalone/) instructions:
 
 ```
-bin/pulsar standalone
+% bin/pulsar standalone
 ```
 
 ## Installing and Preparing Druid
@@ -99,12 +99,12 @@ Save this to `bin/start-micro-quickstart-nozk`.
 We are ready to start Druid:
 
 ```
-bin/start-micro-quickstart-nozk
+% bin/start-micro-quickstart-nozk
 ```
 
 ## Generating Data
 
-Let's push some data into Pulsar. I am going to use the CLI client. Note that the namespace convention we configured will make a topic `kop/kop/pulsar-to-druid` appear as `pulsar-to-druid` on the Kafka side.
+Let's push some data into Pulsar. I am going to use the CLI client. Note that the namespace convention we configured will make a topic `kop/kop/pulsar-to-druid` appear as `pulsar-to-druid` on the Kafka side. Here's my `pulsar-produce.sh` script:
 
 ```bash
 #!/bin/bash
@@ -119,7 +119,7 @@ while true; do
 done
 ```
 
-This creates a stream of JSON messages with messages once a second. The `-s` option sets the message separator. The default is `,` which is not good for JSON.
+This creates a simulated timeseries of JSON messages with messages once a second. The `-s` option sets the message separator. The default is `,` which is not good for JSON.
 
 Let's test this with a Kafka client:
 
@@ -139,4 +139,16 @@ This works fine. (Side note: `kcat` needs Kafka transactions enabled, too!)
 
 ## Ingesting Pulsar Data into Druid
 
+Let's try if we can connect to Pulsar from the Druid console! Start a new ingestion, choose Kafka and enter the connection detail just like you would for Kafka:
+
+![Druid Ingestion](/assets/2022-04-25-02-druid.jpg)
+
+And from here it's just [standard steps to ingest data](https://druid.apache.org/docs/0.22.1/tutorials/index.html#step-4-load-data)!
+
+## Learnings
+
+- With StreamNative's KoP, all existing software can talk to Pulsar instead of Kafka.
+- Druid integration with KoP is a breeze.
+- Spend some time on the namespace mapping between Kafka emulation and Pulsar.
+- The `kafkaTransactionCoordinatorEnabled` is crucial to make Druid work with KoP.
 
