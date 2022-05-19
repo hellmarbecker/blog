@@ -19,7 +19,11 @@ The answer is: there is no way to tell by just looking at the aggregated numbers
 
 Or is there a better way?
 
-## Creating a Data Sample
+## Fast Approximation with Set Operations: Theta Sketches
+
+### What are Theta Sketches
+
+### Creating a Data Sample
 
 Sample file:
 
@@ -51,9 +55,6 @@ date,uid,show,episode
 - uid, convert into a theta sketch metric -> we are not interested in the individual names, only counts
 - query granularity: day
 - segment granularity: day
-
-## Fast Approximation with Set Operations: Theta Sketches
-
 
 
 
