@@ -19,6 +19,39 @@ The answer is: there is no way to tell by just looking at the aggregated numbers
 
 Or is there a better way?
 
+## Creating a Data Sample
+
+Sample file:
+
+```csv
+date,uid,show,episode
+2022-05-19,alice,Game of Thrones,1
+2022-05-19,alice,Game of Thrones,2
+2022-05-19,alice,Game of Thrones,1
+2022-05-19,bob,Bridgerton,1
+2022-05-20,alice,Game of Thrones,1
+2022-05-20,carol,Bridgerton,2
+2022-05-20,dan,Bridgerton,1
+2022-05-21,alice,Game of Thrones,1
+2022-05-21,carol,Bridgerton,1
+2022-05-21,erin,Game of Thrones,1
+2022-05-21,alice,Bridgerton,1
+2022-05-22,bob,Game of Thrones,1
+2022-05-22,bob,Bridgerton,1
+2022-05-22,carol,Bridgerton,2
+2022-05-22,bob,Bridgerton,1
+2022-05-22,erin,Game of Thrones,1
+2022-05-22,erin,Bridgerton,2
+2022-05-23,erin,Game of Thrones,1
+2022-05-23,alice,Game of Thrones,1
+```
+
+- enable rollup
+- episode has been selected as a metric, convert into a string dimension
+- uid, convert iinto a theta sketch metric -> we are not interested in the individual names, only counts
+- query granularity: day
+- segment granularity: day
+
 ## Fast Approximation with Set Operations: Theta Sketches
 
 
