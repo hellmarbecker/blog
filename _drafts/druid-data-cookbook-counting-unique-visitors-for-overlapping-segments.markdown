@@ -19,9 +19,7 @@ The answer is: there is no way to tell by just looking at the aggregated numbers
 
 Or is there a better way?
 
-## Fast Approximation: HLL Sketches
-
-## Allowing Set Operations: Theta Sketches
+## Fast Approximation with Set Operations: Theta Sketches
 
 
 
