@@ -48,7 +48,7 @@ date,uid,show,episode
 
 - enable rollup
 - episode has been selected as a metric, convert into a string dimension
-- uid, convert iinto a theta sketch metric -> we are not interested in the individual names, only counts
+- uid, convert into a theta sketch metric -> we are not interested in the individual names, only counts
 - query granularity: day
 - segment granularity: day
 
