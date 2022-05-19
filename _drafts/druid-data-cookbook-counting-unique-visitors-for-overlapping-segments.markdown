@@ -11,8 +11,8 @@ A common problem in clickstream analytics is counting unique things, like visito
 
 For instance, we might be interested in the number of visitors that watched episodes of a TV show. Let's say we found that at a given day, 1000 (unique) visitors watched episode 1 and 800 visitors watched episode 2. But we might have more questions, such as:
 
-- How many visitors watched both episodes?
-- How many visitors are there that watched at least one of the episodes?
+- How many visitors watched _both_ episodes?
+- How many visitors are there that watched _at least one_ of the episodes?
 - How many visitors watched episode 1 _but not_ episode 2?
 
 The answer is: there is no way to tell by just looking at the aggregated numbers. We will have to go back to the detail data and scan every single row. If the data volume is high enough, this may take long, meaning that an interactive data exploration is not possible.
