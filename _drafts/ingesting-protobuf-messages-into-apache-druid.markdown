@@ -6,7 +6,7 @@ categories: blog imply druid confluent kafka eventstreaming tutorial
 
 Since [version 0.22](https://github.com/apache/druid/releases/tag/druid-0.22.0), Druid supports reading Protobuf data from a Kafka stream. Let's look at this in practice.
 
-Read Protobuf data from a [schema aware](https://docs.confluent.io/cloud/current/sr/schemas-manage.html) [Confluent Cloud](https://confluent.cloud) cluster into [Apache Druid](https://druid.apache.org/). Use the Druid 0.22 [micro-quickstart](https://druid.apache.org/docs/latest/tutorials/index.html) setup for this exercise.
+Read Protobuf data from a [schema aware](https://docs.confluent.io/cloud/current/sr/schemas-manage.html) [Confluent Cloud](https://confluent.cloud) cluster into [Apache Druid](https://druid.apache.org/). This exercise uses the Druid 0.22.1 [micro-quickstart](https://druid.apache.org/docs/latest/tutorials/index.html) setup.
 
 ![Streaming analytics architecture](/assets/2021-10-19-0-architecture.png)
 
@@ -95,6 +95,11 @@ curl -X POST -H "Content-Type: application/json" --data '{
     "transforms.SetSchemaMetadata.schema.name": "clickstream"
   }
 }' http://localhost:18083/connectors
+```
+
+Test the generator:
+```
+kcat -b localhost:9092 -C -t clickstream
 ```
 
 ### Setting up Druid
