@@ -4,18 +4,27 @@ title:  "Ingesting Protobuf messages into Apache Druid"
 categories: blog imply druid confluent kafka eventstreaming tutorial
 ---
 
+![Streaming analytics architecture](/assets/2021-10-19-0-architecture.png)
+
 Since [version 0.22](https://github.com/apache/druid/releases/tag/druid-0.22.0), Druid supports reading Protobuf data from a Kafka stream. Let's look at this in practice.
 
 This exercise uses the Druid 0.22.1 [micro-quickstart](https://druid.apache.org/docs/latest/tutorials/index.html) setup.
 
-![Streaming analytics architecture](/assets/2021-10-19-0-architecture.png)
+We are going to:
+
+- Set up Kafka and Confluent Schema Registry in local Docker containers
+- Set up a data generator for Protobuf data using Kafka Connect
+- Run a local Druid instance
+- Configure Druid to ingest Protobuf data from the live stream.
+
+Let's get going!
 
 ## Generating Data with Kafka and Kafka Connect
 
 There are various ways to create Protobuf data and stream them into Druid:
 - One method is described in [the Protobuf extension documentation](https://druid.apache.org/docs/0.22.1/development/extensions-core/protobuf.html), involving a custom Python script. 
 - There's also [this blog](https://dzone.com/articles/how-to-use-protobuf-with-apache-kafka-and-schema-r), which shows how to do it in Java. 
-- The easiest way would be to use Confluent Cloud - I described this in [my post about AVRO integration](/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/). Instead of AVRO data, choose to generate Protobuf, that's all. You will also have to set up security in Druid according to the instructions in that post.
+- The easiest way would be to use Confluent Cloud - I described this in [my post about AVRO integration](/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/). Instead of AVRO data, choose to generate Protobuf. You will also have to set up security in Druid according to the instructions in that post.
 
 Because I did the Confluent Cloud version before, I am going to look at a different way using Confluent Platform and Kafka Connect locally. We will need to set up a few things to make this work.
 
