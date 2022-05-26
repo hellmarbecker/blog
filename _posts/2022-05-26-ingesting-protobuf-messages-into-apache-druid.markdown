@@ -62,7 +62,7 @@ In addition to this, you will need to add an option to override the default REST
       ...
 ```
 
-Note down the port numbers that you assigned, because you will need them later. Here is the full docker compose file:
+Note down the port numbers that you assigned, because you will need them later. This is the full docker compose file:
 
 ```yaml
 ---
@@ -196,22 +196,26 @@ Test the generator:
 111.245.174.111$-"679321(??)2#GET /site/user_status.html HTTP/1.1:200B4006J-RHMozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)
 ```
 
-This looks good! We are generating Protobuf data. Let's move on to Druid.
+This looks good! We are generating Protobuf data.
+
+We have also added the data schema to Schema Registry, which will become important in a moment. (That's why the schema registry information is in the REST call above.)
+
+Let's move on to Druid.
 
 ## Setting up Druid
 
-https://druid.apache.org/docs/latest/tutorials/index.html
+Download and install Druid, as described in [the Quickstart tutorial](https://druid.apache.org/docs/latest/tutorials/index.html#step-1-install-druid).
 
-### Documentation of the Protobuf extension
+### Configuring the Protobuf extension
 
-https://github.com/apache/druid/blob/ec334a641b3f56077d2693980128e872f08d8611/docs/development/extensions-core/protobuf.md
+In order to parse Protobuf messages, you first have to [enable](https://druid.apache.org/docs/0.22.0/development/extensions.html#loading-extensions) the Protobuf extension in the Druid configuration. For the `micro-quickstart` configuration, edit `conf/druid/single-server/micro-quickstart/_common/common.runtime.properties`:
 
-Make sure to include the Protobuf extensions in the load list:
-```
+```properties
 druid.extensions.loadList=["druid-hdfs-storage", "druid-kafka-indexing-service", "druid-datasketches", "druid-parquet-extensions", "druid-protobuf-extensions"]
 ```
 
-Download the missing JAR files according to [the documentation](https://druid.apache.org/docs/latest/development/extensions-core/protobuf.html#when-using-schema-registry)
+Download the missing JAR files according to [the documentation](https://druid.apache.org/docs/latest/development/extensions-core/protobuf.html#when-using-schema-registry). <mark>If you skip this step, you will get weird and cryptic errors.</mark>
+
 ```
 cd extensions/
 mkdir protobuf-extensions
@@ -221,8 +225,134 @@ curl -O -L https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.4
 curl -O -L https://repo1.maven.org/maven2/com/squareup/wire/wire-schema/3.2.2/wire-schema-3.2.2.jar
 ```
 
-### ProtobufBytesDecoder
 
-this can be either `schema_registry` or `file`
+## Ingesting Protobuf Data from Kafka
 
-https://github.com/apache/druid/blob/0e0c1a1aaf468d2e082fffa9cab8a98013f2b536/extensions-core/protobuf-extensions/src/main/java/org/apache/druid/data/input/protobuf/ProtobufBytesDecoder.java
+Start the Load Data wizard, and choose Kafka as the source. Enter the local Kafka coordinates as shown:
+
+![](/assets/2022-05-26-01.jpg)
+
+Then hit `Next`. You see what we would expect: garbled binary data. Here you would normally choose a parser. Since the Protobuf parser is not (yet) available as a drop-down choice, go directly to the `Edit spec` stage:
+
+![](/assets/2022-05-26-02.jpg)
+
+In the JSON editor, replace the `"inputFormat"` section:
+
+![](/assets/2022-05-26-03.jpg)
+
+Here is the replacement section.
+
+```json
+      "inputFormat": {
+        "type": "protobuf",
+        "protoBytesDecoder": {
+          "type": "schema_registry",
+          "url": "http://localhost:18081"
+        }
+      }
+```
+
+This does two things: It specifies the format as Protobuf, and also tells Druid to get the metadata information from Schema Registry. The beauty of this is that the Kafka Protobuf message format [encodes the schema ID as part of the message](https://docs.confluent.io/platform/current/schema-registry/serdes-develop/index.html#wire-format), so the right schema is looked up automatically!
+
+**Side note**: There's another way of injecting the schema information into Druid: by using  `"type": "file"` in `"protoBytesDecoder"`. In that case, you have a hardcoded schema and there is no schema ID in the message format. _This is actually a different binary format!_
+
+**Side note 2**: If you had authentication enabled for your Schema Registry, you would have to add the credentials like so:
+
+```json
+          "config": {
+            "basic.auth.credentials.source": "USER_INFO",
+            "basic.auth.user.info": "<SCHEMA REGISTRY API KEY>:<SCHEMA REGISTRY SECRET>"
+          }
+```
+
+
+Now, go back the the `Parse data` stage and the data is appearing properly:
+
+![](/assets/2022-05-26-04.jpg)
+
+From here, it's the standard procedure for the ingestion wizard:
+
+- choose `time` as the timestamp field, in `posix` format (this will show dates from 1970 but that doesn't matter for the tutorial)
+- choose daily segments and earliest offsets
+- name the datasource `clickstream-proto`
+- and kick off the Supervisor
+
+Here is the full ingestion spec:
+
+```json
+{
+  "type": "kafka",
+  "spec": {
+    "ioConfig": {
+      "type": "kafka",
+      "consumerProperties": {
+        "bootstrap.servers": "localhost:9092"
+      },
+      "topic": "clickstream",
+      "inputFormat": {
+        "type": "protobuf",
+        "protoBytesDecoder": {
+          "type": "schema_registry",
+          "url": "http://localhost:18081"
+        }
+      },
+      "useEarliestOffset": true
+    },
+    "tuningConfig": {
+      "type": "kafka"
+    },
+    "dataSchema": {
+      "dataSource": "clickstream-proto",
+      "timestampSpec": {
+        "column": "time",
+        "format": "posix"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          "ip",
+          {
+            "type": "long",
+            "name": "userid"
+          },
+          "remoteUser",
+          {
+            "type": "long",
+            "name": "time"
+          },
+          {
+            "type": "long",
+            "name": "Time"
+          },
+          "request",
+          {
+            "type": "long",
+            "name": "status"
+          },
+          {
+            "type": "long",
+            "name": "bytes"
+          },
+          "referrer",
+          "agent"
+        ]
+      },
+      "granularitySpec": {
+        "queryGranularity": "none",
+        "rollup": false,
+        "segmentGranularity": "day"
+      }
+    }
+  }
+}
+```
+
+Soon you will see data showing up in the new datasource:
+
+![Query Protobuf datasource](/assets/2022-05-26-05.jpg)
+
+## Learnings
+
+- Protobuf format is fully supported by a standard Druid extension.
+- As of the time of this writing, you need to add some libraries to Druid manually.
+- The Protobuf support options are not visible in the Load Data wizard, but they can be accessed by editing the JSON spec directly.
+- The Protobuf extension supports reading the Confluent wire format with a Schema Registry connection, or raw Protobuf with a schema file.
