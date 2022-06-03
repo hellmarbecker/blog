@@ -17,7 +17,11 @@ For instance, we might be interested in the number of visitors that watched epis
 
 The answer is: there is no way to tell by just looking at the aggregated numbers. We will have to go back to the detail data and scan every single row. If the data volume is high enough, this may take long, meaning that an interactive data exploration is not possible.
 
-Or is there a better way?
+An additional nuisance is that unique counts don't work well with rollups. For the example above, it would be great if we could have just one row of data per 15 minute interval[^1], show, and episode. After all, we are not interested in the individual user IDs, just the unique counts.
+
+[^1]: You might think: why 15 minutes and not just 1 hour? One of my customers pointed out why: 15 minute intervals work better with international timezones because those are not always aligned by hour. India, for instance, is 30 minutes off, and Nepal is even 45 minutes off. With 15 minute aggregates, you can get hourly sums for any of those timezones, too!) 
+
+Is there a way to avoid crunching the detail data every single time, and maybe even enable rollup?
 
 ## Fast Approximation with Set Operations: Theta Sketches
 
