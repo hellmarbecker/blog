@@ -35,7 +35,7 @@ Theta Sketches have a few nice properties:
 - They are **mergeable**. This means we can work with rolled-up data and merge the sketches over various time intervals. Thus, we can take advantage of Druid's rollup feature.
 - What's even more, theta sketches support **set operations**. Given two theta sketches over subsets of the data, we can compute the union, intersection, or set difference of these two. This gives us the ability to answer the questions above about the number of visitors that watched a specific combination of episodes.
 
-There is a lot of advanced math behind theta sketches. But with Druid, you do not need to bother about the compex algorithms - theta sketches just work!
+There is a lot of advanced math behind theta sketches. But with Druid, you do not need to bother about the complex algorithms - theta sketches just work!
 
 ### Creating a Data Sample
 
