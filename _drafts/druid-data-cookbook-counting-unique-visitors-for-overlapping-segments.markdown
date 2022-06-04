@@ -35,32 +35,54 @@ Theta Sketches have a few nice properties:
 
 There is a lot of advanced math behind theta sketches. But with Druid, you do not need to bother about the complex algorithms - theta sketches just work!
 
+## Tutorial: Theta Sketches
+
 ### Creating a Data Sample
 
-Sample file:
+As usual, let's work with [the Druid quickstart](https://druid.apache.org/docs/latest/tutorials/index.html). For demonstration purposes, let's ingest the snippet below which has just the bare basics that are needed:
+
+- a _timestamp_, in this case it's just dates but as mentioned above a finer granularity makes sens in real life;
+- a _user ID;_
+- _show_ and _episode_ identifiers.
 
 ```csv
 date,uid,show,episode
-2022-05-19,alice,Game of Thrones,1
-2022-05-19,alice,Game of Thrones,2
-2022-05-19,alice,Game of Thrones,1
-2022-05-19,bob,Bridgerton,1
-2022-05-20,alice,Game of Thrones,1
-2022-05-20,carol,Bridgerton,2
-2022-05-20,dan,Bridgerton,1
-2022-05-21,alice,Game of Thrones,1
-2022-05-21,carol,Bridgerton,1
-2022-05-21,erin,Game of Thrones,1
-2022-05-21,alice,Bridgerton,1
-2022-05-22,bob,Game of Thrones,1
-2022-05-22,bob,Bridgerton,1
-2022-05-22,carol,Bridgerton,2
-2022-05-22,bob,Bridgerton,1
-2022-05-22,erin,Game of Thrones,1
-2022-05-22,erin,Bridgerton,2
-2022-05-23,erin,Game of Thrones,1
-2022-05-23,alice,Game of Thrones,1
+2022-05-19,alice,Game of Thrones,S1E1
+2022-05-19,alice,Game of Thrones,S1E2
+2022-05-19,alice,Game of Thrones,S1E1
+2022-05-19,bob,Bridgerton,S1E1
+2022-05-20,alice,Game of Thrones,S1E1
+2022-05-20,carol,Bridgerton,S1E2
+2022-05-20,dan,Bridgerton,S1E1
+2022-05-21,alice,Game of Thrones,S1E1
+2022-05-21,carol,Bridgerton,S1E1
+2022-05-21,erin,Game of Thrones,S1E1
+2022-05-21,alice,Bridgerton,S1E1
+2022-05-22,bob,Game of Thrones,S1E1
+2022-05-22,bob,Bridgerton,S1E1
+2022-05-22,carol,Bridgerton,S1E2
+2022-05-22,bob,Bridgerton,S1E1
+2022-05-22,erin,Game of Thrones,S1E1
+2022-05-22,erin,Bridgerton,S1E2
+2022-05-23,erin,Game of Thrones,S1E1
+2022-05-23,alice,Game of Thrones,S1E1
 ```
+
+### Ingesting the Data
+
+Open the Druid console at `localhost:8888` and go to the `Load data` wizard. Select `Paste data` as the data source and paste the sample from above:
+
+![](/assets/2022-06-04-01.jpeg)
+
+Parse the data as CSV, with included headers:
+
+![](/assets/2022-06-04-02.jpeg)
+
+Accept the defaults for `Parse time`, `Transform`, and `Filter`. In the `Configure schema` stage, enable Rollup and confirm your choice in the popup. Then set the query granularity to `day`.
+
+This is where we will add the theta sketch. It should be a metric, so select the `Add metric` button:
+
+![](/assets/2022-06-04-03.jpeg)
 
 - enable rollup
 - episode has been selected as a metric, convert into a string dimension
