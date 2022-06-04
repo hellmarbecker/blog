@@ -23,7 +23,7 @@ An additional nuisance is that unique counts don't work well with rollups. For t
 
 Is there a way to avoid crunching the detail data every single time, and maybe even enable rollup?
 
-### Fast Approximation with Set Operations: Theta Sketches
+## Fast Approximation with Set Operations: Theta Sketches
 
 Theta Sketches are a probabilistic data structure to enable fast approximate analysis of big data. Druid's implementation relies on the [Apache DataSketches](https://datasketches.apache.org/) library, and you can find a detailed explanation of how they work in the docs there.
 
@@ -94,7 +94,7 @@ Click on the `uid` column in the data model and delete it using the trashcan but
 
 That's it! In the following screens, set the segment granularity to `DAY`, pick a name for your new table, and start the ingestion. 
 
-
+## Querying the Theta Sketch Column
 
 
 
