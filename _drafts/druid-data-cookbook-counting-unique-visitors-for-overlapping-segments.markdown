@@ -96,7 +96,12 @@ That's it! In the following screens, set the segment granularity to `DAY`, pick 
 
 ## Querying the Theta Sketch Column
 
+Much as with the [quantile sketches](/2022/03/20/druid-data-cookbook-quantiles-in-druid-with-datasketches/), getting a unique count estimate out of a theta sketch column involves two steps:
 
+1. merging the sketch columns by means of an [aggregator function](https://druid.apache.org/docs/latest/querying/sql.html#aggregation-functions), which in Druid SQL is called `DS_THETA`
+2. getting the estimate out of the merged sketch using [`THETA_SKETCH_ESTIMATE`](https://druid.apache.org/docs/latest/querying/sql.html#theta-sketch-functions).
+
+Between step 1 and 2, you can apply set functions. We will come to that in a moment.
 
 ---
 
