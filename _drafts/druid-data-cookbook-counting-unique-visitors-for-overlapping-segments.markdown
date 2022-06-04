@@ -35,9 +35,7 @@ Theta Sketches have a few nice properties:
 
 There is a lot of advanced math behind theta sketches. But with Druid, you do not need to bother about the complex algorithms - theta sketches just work!
 
-## Tutorial: Theta Sketches
-
-### Creating a Data Sample
+## Building a Data Model with Theta Sketches
 
 As usual, let's work with [the Druid quickstart](https://druid.apache.org/docs/latest/tutorials/index.html). For demonstration purposes, let's ingest the snippet below which has just the bare basics that are needed:
 
@@ -68,27 +66,35 @@ date,uid,show,episode
 2022-05-23,alice,Game of Thrones,S1E1
 ```
 
-### Ingesting the Data
-
 Open the Druid console at `localhost:8888` and go to the `Load data` wizard. Select `Paste data` as the data source and paste the sample from above:
 
-![](/assets/2022-06-04-01.jpeg)
+![](/assets/2022-06-04-01.jpg)
 
 Parse the data as CSV, with included headers:
 
-![](/assets/2022-06-04-02.jpeg)
+![](/assets/2022-06-04-02.jpg)
 
 Accept the defaults for `Parse time`, `Transform`, and `Filter`. In the `Configure schema` stage, enable Rollup and confirm your choice in the popup. Then set the query granularity to `day`.
 
 This is where we will add the theta sketch. It should be a metric, so select the `Add metric` button:
 
-![](/assets/2022-06-04-03.jpeg)
+![](/assets/2022-06-04-03.jpg)
 
-- enable rollup
-- episode has been selected as a metric, convert into a string dimension
-- uid, convert into a theta sketch metric -> we are not interested in the individual names, only counts
-- query granularity: day
-- segment granularity: day
+Define the new metric as a theta sketch over the `uid` field, leaving the default settings in place:
+
+![](/assets/2022-06-04-04.jpg)
+
+Hit `Apply` to add the new metric to the data model.
+
+We have to perform on more step to complete the data model. I said above that we are not interested in the individual user id's, only the unique counts. Right now, `uid` is still in the data model. Let's get rid of that!
+
+Click on the `uid` column in the data model and delete it using the trashcan button on the right:
+
+![](/assets/2022-06-04-05.jpg)
+
+That's it! In the following screens, set the segment granularity to `DAY`, pick a name for your new table, and start the ingestion. 
+
+
 
 
 
