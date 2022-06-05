@@ -113,7 +113,7 @@ Let's first see what the data looks like in Druid:
 
 The theta sketch column appears as a base 64 encoded string, behind it is a bitmap.
 
-The simplest query would group by everything and use the shorthand function `APPROX_COUNT_DISTINCT_DS_THETA` instead of a conventional `COUNT DISTINCT`:
+The simplest query would group by everything and use `APPROX_COUNT_DISTINCT_DS_THETA` instead of a conventional `COUNT DISTINCT`:
 
 ![](/assets/2022-06-05-07.jpg)
 
