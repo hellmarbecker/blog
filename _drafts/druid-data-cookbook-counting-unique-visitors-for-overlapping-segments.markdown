@@ -68,21 +68,21 @@ date,uid,show,episode
 
 Open the Druid console at `localhost:8888` and go to the `Load data` wizard. Select `Paste data` as the data source and paste the sample from above:
 
-![](/assets/2022-06-04-01.jpg)
+![](/assets/2022-06-05-01.jpg)
 
 Parse the data as CSV, with included headers:
 
-![](/assets/2022-06-04-02.jpg)
+![](/assets/2022-06-05-02.jpg)
 
 Accept the defaults for `Parse time`, `Transform`, and `Filter`. In the `Configure schema` stage, enable Rollup and confirm your choice in the popup. Then set the query granularity to `day`.
 
 This is where we will add the theta sketch. It should be a metric, so select the `Add metric` button:
 
-![](/assets/2022-06-04-03.jpg)
+![](/assets/2022-06-05-03.jpg)
 
 Define the new metric as a theta sketch over the `uid` field, leaving the default settings in place:
 
-![](/assets/2022-06-04-04.jpg)
+![](/assets/2022-06-05-04.jpg)
 
 Hit `Apply` to add the new metric to the data model.
 
@@ -90,7 +90,7 @@ We have to perform on more step to complete the data model. I said above that we
 
 Click on the `uid` column in the data model and delete it using the trashcan button on the right:
 
-![](/assets/2022-06-04-05.jpg)
+![](/assets/2022-06-05-05.jpg)
 
 That's it! In the following screens, set the segment granularity to `DAY`, pick a name for your new table, and start the ingestion. 
 
