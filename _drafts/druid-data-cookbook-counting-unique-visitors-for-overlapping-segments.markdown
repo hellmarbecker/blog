@@ -144,7 +144,7 @@ As an example, here's the total unique users that watched _Bridgerton:_
 
 ### Set Operations
 
-We can use this capability of filtering in the aggregator to finally answer the questions from above.
+We can use this capability of filtering in the aggregator, together with _set operations_, to finally answer the questions from above.
 
 How many users watched both episodes of _Bridgerton?_ Use `THETA_SKETCH_INTERSECT` to compute the unique count of the intersection of two (or more) segments:
 
