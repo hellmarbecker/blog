@@ -128,7 +128,7 @@ FROM streaming_theta_test
 GROUP BY 1, 2, 3
 ```
 
-Here, the discint count expression has been broken down into the theta sketch aggregator `DS_THETA` and the theta sketch estimator `THETA_SKETCH_ESTIMATE`.
+Here, the distinct count expression has been broken down into the theta sketch aggregator `DS_THETA` and the theta sketch estimator `THETA_SKETCH_ESTIMATE`.
 
 We can run a similar query without the time breakdown:
 
