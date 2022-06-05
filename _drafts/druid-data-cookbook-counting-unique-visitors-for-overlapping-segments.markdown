@@ -107,7 +107,7 @@ Between step 1 and 2, you can apply set functions. We will come to that in a mom
 
 ### Basic Counting 
 
-Let's first see what the data look like in Druid:
+Let's first see what the data looks like in Druid:
 
 ![](/assets/2022-06-05-06.jpg)
 
