@@ -88,7 +88,7 @@ Define the new metric as a theta sketch over the `uid` field, leaving the defaul
 
 Hit `Apply` to add the new metric to the data model.
 
-We have to perform on more step to complete the data model. I said above that we are not interested in the individual user id's, only the unique counts. Right now, `uid` is still in the data model. Let's get rid of that!
+We have to perform one more step to complete the data model. I said above that we are not interested in the individual user id's, only the unique counts. Right now, `uid` is still in the data model. Let's get rid of that!
 
 Click on the `uid` column in the data model and delete it using the trashcan button on the right:
 
