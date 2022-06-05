@@ -33,7 +33,9 @@ Theta Sketches have a few nice properties:
 - They are **mergeable**. This means we can work with rolled-up data and merge the sketches over various time intervals. Thus, we can take advantage of Druid's rollup feature.
 - What's even more, theta sketches support **set operations**. Given two theta sketches over subsets of the data, we can compute the union, intersection, or set difference of these two. This gives us the ability to answer the questions above about the number of visitors that watched a specific combination of episodes.
 
-There is a lot of advanced math behind theta sketches. But with Druid, you do not need to bother about the complex algorithms - theta sketches just work!
+There is a lot of advanced math behind theta sketches[^2]. But with Druid, you do not need to bother about the complex algorithms - theta sketches just work!
+
+[^2]: Specifically, the accuracy of the result is governed by the size _k_ of the theta sketch, and by the operations you perform. There's a whole explanation in [the datasketches documentation](https://datasketches.apache.org/docs/Theta/ThetaAccuracy.html). There's also a version of the sketch estimator `THETA_SKETCH_ESTIMATE_WITH_ERROR_BOUNDS` which takes an additional integer parameter and returns the error boundaries for the result in a JSON object. 
 
 ## Building a Data Model with Theta Sketches
 
@@ -144,16 +146,25 @@ As an example, here's the total unique users that watched _Bridgerton:_
 
 We can use this capability of filtering in the aggregator to finally answer the questions from above.
 
-How many users watched both episodes of _Bridgerton?_
+How many users watched both episodes of _Bridgerton?_ Use `THETA_SKETCH_INTERSECT` to compute the unique count of the intersection of two (or more) segments:
 
 ![](/assets/2022-06-05-10.jpg)
 
 Again, the set function is spliced in between the aggregator and the estimator.
 
+Likewise, use `THETA_SKETCH_UNION` to find the number of visitors that watched _any_ of the episodes:
 
+![](/assets/2022-06-05-11.jpg)
 
+And finally, there is `THETA_SKETCH_NOT` which computes the set difference of two or more segments:
 
+![](/assets/2022-06-05-12.jpg)
 
+## Learnings
+
+- Counting distinct things for large data sets can be done with theta sketches in Apache Druid.
+- This allows us to use rollup and discard the individual values, just retaining statistical approximations in the sketches.
+- With theta sketch set operations, affinity analysis (which segments correlate or overlap by how much?) becomes easy.
 
 
 ---
