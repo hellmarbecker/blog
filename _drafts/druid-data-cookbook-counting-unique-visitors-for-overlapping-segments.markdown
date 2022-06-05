@@ -103,6 +103,59 @@ Much as with the [quantile sketches](/2022/03/20/druid-data-cookbook-quantiles-i
 
 Between step 1 and 2, you can apply set functions. We will come to that in a moment.
 
+### Basic Counting 
+
+Let's first see what the data look like in Druid:
+
+![](/assets/2022-06-05-06.jpg)
+
+The theta sketch column appears as a base 64 encoded string, behind it is a bitmap.
+
+The simplest query would group by everything and use the shorthand function `APPROX_COUNT_DISTINCT_DS_THETA` instead of a conventional `COUNT DISTINCT`:
+
+![](/assets/2022-06-05-07.jpg)
+
+This is actually shorthand for the following query:
+
+```sql
+SELECT DATE_TRUNC('DAY', __time) AS "date",
+  "show", 
+  "episode",
+  THETA_SKETCH_ESTIMATE(DS_THETA(theta_uid)) AS users
+FROM streaming_theta_test
+GROUP BY 1, 2, 3
+```
+
+Here, the discint count expression has been broken down into the theta sketch aggregator `DS_THETA` and the theta sketch estimator `THETA_SKETCH_ESTIMATE`.
+
+We can run a similar query without the time breakdown:
+
+![](/assets/2022-06-05-08.jpg)
+
+### Filtered Metrics
+
+Druid has the capability to use [filtered metrics](https://druid.apache.org/docs/latest/querying/sql.html#aggregation-functions). This means we can include a `WHERE` clause in the `SELECT` part of the query. Note, that in the case of theta sketches, _the filter clause has to be inserted between the aggregator and the estimator._
+
+As an example, here's the total unique users that watched _Bridgerton:_
+
+![](/assets/2022-06-05-09.jpg)
+
+### Set Operations
+
+We can use this capability of filtering in the aggregator to finally answer the questions from above.
+
+How many users watched both episodes of _Bridgerton?_
+
+![](/assets/2022-06-05-10.jpg)
+
+Again, the set function is spliced in between the aggregator and the estimator.
+
+
+
+
+
+
+
 ---
 
 "This image is taken from Page 500 of Praktisches Kochbuch f&uuml;r die gew&ouml;hnliche und feinere K&uuml;che" by Medical Heritage Library, Inc. is licensed under [CC BY-NC-SA 2.0](https://creativecommons.org/licenses/by-nc-sa/2.0/?ref=openverse&atype=html)
