@@ -27,7 +27,7 @@ Publishers are constantly looking for new ways to transform their business, beca
 
 Here are a few unique points about Druid:
 
-## Self service analytics
+### Self service analytics
 
 Druid's principle for data can be described by the "3F" of "**F**resh, **F**ast, **F**or all". There are a number of [free](https://blog.allegro.tech/2018/10/turnilo-lets-change-the-way-people-explore-big-data.html) and [commercial](https://imply.io/post/hello-pivot) frontends that enable self service, exploratory analytics and interactive dashboarding on top of Druid - ensuring that each user gets snappy access to the data that was generated this very moment. 
 
