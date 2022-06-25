@@ -14,7 +14,7 @@ While customers of [Imply](https://imply.io/) have been able to take advantage o
 
 Let's have a look at this today.
 
-## Why does it matter?
+## Why Does It Matter?
 
 Up until now, Druid's Kafka ingestion module used to look only at the Kafka message value. Now, if you try to optimize your Kafka partitioning strategy, you would usually set up a partitioning key that gives you the ability to both scale and parallelize, and to have a partial order guarantee in your message stream. This is important when you look at message streams that have the notion of a session or a transaction which is tied together by a common session ID field and where the order of events matters.
 
