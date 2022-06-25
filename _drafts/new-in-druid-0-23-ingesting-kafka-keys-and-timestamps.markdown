@@ -18,11 +18,11 @@ Let's have a look!
 
 ## Why Does It Matter?
 
-Up until now, Druid's Kafka ingestion module used to look only at the Kafka message value. Now, if you try to optimize your Kafka partitioning strategy, you would usually set up a partitioning key that gives you the ability to both scale and parallelize, and to have a partial order guarantee in your message stream. This is important when you look at message streams that have the notion of a session or a transaction which is tied together by a common session ID field and where the order of events matters.
+Up until now, Druid's Kafka ingestion module used to look only at the Kafka message value. But if you try to optimize your Kafka partitioning strategy, you would usually set up a partitioning key that gives you the ability to both scale and parallelize, and to have a partial order guarantee in your message stream. This is important when you look at message streams that have the notion of a session or a transaction which is tied together by a common session ID field and where the order of events matters.
 
 In that case it makes a lot of sense to make the session ID the Kafka key, and having it again inside the message value would be an unnecessary data duplication.
 
-Modern stream processing systems like Confluent's [ksqlDB](https://ksqldb.io/) honor this fact: if you create a new stream joining two source streams (or a stream and a table, for that matter), the join key will be made the Kafka message key, and it will not be represented in the message value unless you put a copy there explicitly. Thus, having the ability to **ingest the key** directly simplifies the preprocessing pipeline and makes it more organic.
+Modern stream processing systems like Confluent's [ksqlDB](https://ksqldb.io/) honor this fact: if you create a new stream joining two source streams (or a stream and a table, for that matter), the join key will be made the new Kafka message key, and it will not be represented in the message value unless you put a copy there explicitly. Thus, having the ability to **ingest the key** directly simplifies the preprocessing pipeline and makes it more organic.
 
 Likewise, a Kafka message always has a **timestamp**. In the absence of other information, this would be the time when the message has been produced into Kafka. But for many cases this is good enough, and again, with pre-0.23 Druid, you would have to create another timestamp field inside the message for it to be ingested.
 
