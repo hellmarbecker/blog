@@ -4,6 +4,8 @@ title:  "New in Druid 0.23: Ingesting Kafka Keys and Timestamps"
 categories: blog imply druid kafka eventstreaming tutorial
 ---
 
+![Streaming analytics architecture](/assets/2021-10-19-0-architecture.png)
+
 Among the many new features in [Druid 0.23](https://github.com/apache/druid/releases/tag/druid-0.23.0) is the ability to handle Kafka metadata upon ingestion. This includes
 
 - the Kafka timestamp
@@ -12,13 +14,13 @@ Among the many new features in [Druid 0.23](https://github.com/apache/druid/rele
 
 While customers of [Imply](https://imply.io/) have been able to take advantage of this functionality for a few months already, it is still officially considered an alpha feature. But why would we want this anyway? 
 
-Let's have a look at this today.
+Let's have a look!
 
 ## Why Does It Matter?
 
 Up until now, Druid's Kafka ingestion module used to look only at the Kafka message value. Now, if you try to optimize your Kafka partitioning strategy, you would usually set up a partitioning key that gives you the ability to both scale and parallelize, and to have a partial order guarantee in your message stream. This is important when you look at message streams that have the notion of a session or a transaction which is tied together by a common session ID field and where the order of events matters.
 
-In that case it makes a lot of sense to make the session ID the Kafka key, and having it again inside the message value would be an unneccessary data duplication.
+In that case it makes a lot of sense to make the session ID the Kafka key, and having it again inside the message value would be an unnecessary data duplication.
 
 Modern stream processing systems like Confluent's [ksqlDB](https://ksqldb.io/) honor this fact: if you create a new stream joining two source streams (or a stream and a table, for that matter), the join key will be made the Kafka message key, and it will not be represented in the message value unless you put a copy there explicitly. Thus, having the ability to **ingest the key** directly simplifies the preprocessing pipeline and makes it more organic.
 
