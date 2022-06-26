@@ -32,7 +32,50 @@ I am going to present a short tutorial that shows how to handle Kafka keys and t
 
 ## Setting up Kafka
 
-In order to 
+You will need a Kafka service for this tutorial. If you don't have one ready, you can install it on your laptop using [Confluent's Community Docker images](https://docs.confluent.io/platform/current/installation/docker/image-reference.html), as I have covered in detail [in a previous post](/2022/05/26/ingesting-protobuf-messages-into-apache-druid/).
+
+For this tutorial, you will need just a Kafka broker and Zookeeper. Here's the Docker compose file:
+
+```
+---
+version: '2'
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.0.1
+    hostname: zookeeper
+    container_name: zookeeper
+    ports:
+      - "12181:12181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 12181
+      ZOOKEEPER_TICK_TIME: 2000
+
+  broker:
+    image: confluentinc/cp-kafka:7.0.1
+    hostname: broker
+    container_name: broker
+    depends_on:
+      - zookeeper
+    ports:
+      - "29092:29092"
+      - "9092:9092"
+      - "9101:9101"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: 'zookeeper:12181'
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:29092,PLAINTEXT_HOST://localhost:9092
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+      KAFKA_JMX_PORT: 9101
+      KAFKA_JMX_HOSTNAME: localhost
+```
+
+You will also need [`kcat`](https://github.com/edenhill/kcat) as a Kafka client. Although this is an open source tool, you can find valuable information about it [on Confluent's pages](https://docs.confluent.io/platform/current/app-development/kafkacat-usage.html).
+
+Leave the default configuration in place - among other options, this will auto-create a topic as soon as we produce into it.
 
 ## Setting up Druid
 
