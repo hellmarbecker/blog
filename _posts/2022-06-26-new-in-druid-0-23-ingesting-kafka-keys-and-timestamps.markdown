@@ -92,7 +92,7 @@ for i in {1..20}; do
 done
 ```
 
-Note how the message payload is JSON but the key is a single string. We'll have to handle that in out ingestion spec.
+Note how the message payload is JSON but the key is a single string. We'll have to handle that in our ingestion spec.
 
 Check if it worked:
 
