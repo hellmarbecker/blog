@@ -26,7 +26,7 @@ Modern stream processing systems like Confluent's [ksqlDB](https://ksqldb.io/) h
 
 Likewise, a Kafka message always has a **timestamp**. In the absence of other information, this would be the time when the message has been produced into Kafka. But for many cases this is good enough, and again, with pre-0.23 Druid, you would have to create another timestamp field inside the message for it to be ingested.
 
-Lastly, **Kafka headers** are used by some system to track data provenance and lineage. In order to fit into the larger context of a data governance architecture, you would want to preserve and/or process Kafka headers as the data maakes its way into and through Druid.
+Lastly, **Kafka headers** are used by some systems to track data provenance and lineage. In order to fit into the larger context of a data governance architecture, you would want to preserve and/or process Kafka headers as the data maakes its way into and through Druid.
 
 I am going to present a short tutorial that shows how to handle Kafka keys and timestamps within Druid. Headers work very similary and are left as an exercise for the reader.
 
