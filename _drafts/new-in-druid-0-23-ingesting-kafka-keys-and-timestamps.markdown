@@ -30,7 +30,7 @@ Lastly, **Kafka headers** are used by some system to track data provenance and l
 
 I am going to present a short tutorial that shows how to handle Kafka keys and timestamps within Druid. Headers work very similary and are left as an exercise for the reader.
 
-## Setting up Kafka
+## Setting Up Kafka
 
 You will need a Kafka service for this tutorial. If you don't have one ready, you can install it on your laptop using [Confluent's Community Docker images](https://docs.confluent.io/platform/current/installation/docker/image-reference.html), as I have covered in detail [in a previous post](/2022/05/26/ingesting-protobuf-messages-into-apache-druid/).
 
@@ -72,12 +72,56 @@ services:
       KAFKA_JMX_PORT: 9101
       KAFKA_JMX_HOSTNAME: localhost
 ```
+Leave the default configuration in place - among other options, this will auto-create a topic as soon as we produce into it.
 
 You will also need [`kcat`](https://github.com/edenhill/kcat) as a Kafka client. Although this is an open source tool, you can find valuable information about it [on Confluent's pages](https://docs.confluent.io/platform/current/app-development/kafkacat-usage.html).
 
-Leave the default configuration in place - among other options, this will auto-create a topic as soon as we produce into it.
+I prefer `kcat` over the built-in client utilities because it is more flexible. For instance, it comes with format options to include keys and to show metadata along with the message itself in consumer mode.
 
-## Setting up Druid
+Let's produce some data with keys and with implicit timestamps. Between messages, we wait a random number of seconds in order to get different timestamps:
+
+```bash
+#!/bin/bash
+
+BROKER=localhost:9092
+TOPIC=keytest
+
+for i in {1..20}; do
+   echo key$i:message$i | kcat -b $BROKER -P -t $TOPIC -K ":"
+   sleep $(( $RANDOM % 10 + 1 ))
+done
+```
+
+Check if it worked:
+
+```
+% kcat -b localhost:9092 -C -t keytest -f "%T:%k:%s\n" -o 0
+1656233704435:key1:message1
+1656233707521:key2:message2
+1656233712602:key3:message3
+1656233722675:key4:message4
+1656233728750:key5:message5
+1656233738825:key6:message6
+1656233739894:key7:message7
+1656233742965:key8:message8
+1656233745040:key9:message9
+1656233748117:key10:message10
+1656233751189:key11:message11
+1656233752262:key12:message12
+1656233758331:key13:message13
+1656233766409:key14:message14
+1656233773485:key15:message15
+1656233780557:key16:message16
+1656233782631:key17:message17
+1656233785704:key18:message18
+1656233793770:key19:message19
+1656233797840:key20:message20
+% Reached end of topic keytest [0] at offset 20
+```
+
+This shows the timestamp (in milliseconds since Epoch), the message key and value. We are good to go!
+
+## Setting Up Druid
 
 ## Ingesting the Data
 
