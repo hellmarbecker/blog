@@ -87,42 +87,147 @@ BROKER=localhost:9092
 TOPIC=keytest
 
 for i in {1..20}; do
-   echo key$i:message$i | kcat -b $BROKER -P -t $TOPIC -K ":"
+   echo 'key'$i'|{ "val": '$i' }' | kcat -b $BROKER -P -t $TOPIC -K "|"
    sleep $(( $RANDOM % 10 + 1 ))
 done
 ```
 
+Note how the message payload is JSON but the key is a single string. We'll have to handle that in out ingestion spec.
+
 Check if it worked:
 
 ```
-% kcat -b localhost:9092 -C -t keytest -f "%T:%k:%s\n" -o 0
-1656233704435:key1:message1
-1656233707521:key2:message2
-1656233712602:key3:message3
-1656233722675:key4:message4
-1656233728750:key5:message5
-1656233738825:key6:message6
-1656233739894:key7:message7
-1656233742965:key8:message8
-1656233745040:key9:message9
-1656233748117:key10:message10
-1656233751189:key11:message11
-1656233752262:key12:message12
-1656233758331:key13:message13
-1656233766409:key14:message14
-1656233773485:key15:message15
-1656233780557:key16:message16
-1656233782631:key17:message17
-1656233785704:key18:message18
-1656233793770:key19:message19
-1656233797840:key20:message20
+% kcat -b localhost:9092 -C -t keytest -f "%T|%k|%s\n" -o 0
+1656244527236|key1|{ "val": 1 }
+1656244537317|key2|{ "val": 2 }
+1656244539390|key3|{ "val": 3 }
+1656244544463|key4|{ "val": 4 }
+1656244550541|key5|{ "val": 5 }
+1656244552618|key6|{ "val": 6 }
+1656244559692|key7|{ "val": 7 }
+1656244562774|key8|{ "val": 8 }
+1656244570850|key9|{ "val": 9 }
+1656244578930|key10|{ "val": 10 }
+1656244589003|key11|{ "val": 11 }
+1656244596080|key12|{ "val": 12 }
+1656244605156|key13|{ "val": 13 }
+1656244614233|key14|{ "val": 14 }
+1656244617309|key15|{ "val": 15 }
+1656244625386|key16|{ "val": 16 }
+1656244631460|key17|{ "val": 17 }
+1656244639540|key18|{ "val": 18 }
+1656244643610|key19|{ "val": 19 }
+1656244651682|key20|{ "val": 20 }
 % Reached end of topic keytest [0] at offset 20
 ```
 
 This shows the timestamp (in milliseconds since Epoch), the message key and value. We are good to go!
 
-## Setting Up Druid
-
 ## Ingesting the Data
 
+Set up Druid 0.23 according to the quickstart instructions and point your browser to http://localhost:8888. Open up the `Load data` wizard and connect to your Kafka topic:
+
+![](/assets/2022-06-26-01.jpg)
+
+Proceed to `Parse data` and make sure that the JSON payload is parsed correctly. Note how we don't yet see the key or timestamp.
+
+![](/assets/2022-06-26-02.jpg)
+
+From here, go directly to `Edit spec`. The additional Kafka functionality is not yet supported by the GUI, so we are going to need to edit the ingestion spec manually. The details are documented in the [Kafka Supervisor](https://druid.apache.org/docs/latest/development/extensions-core/kafka-ingestion.html#kafka-input-format-supervisor-spec-example) and [Data formats](https://druid.apache.org/docs/latest/ingestion/data-formats.html#kafka) sections of the Druid docs.
+
+Here is what I got so far:
+
+```json
+{
+  "type": "kafka",
+  "spec": {
+    "ioConfig": {
+      "type": "kafka",
+      "consumerProperties": {
+        "bootstrap.servers": "localhost:9092"
+      },
+      "topic": "keytest",
+      "inputFormat": {
+        "type": "json"
+      }
+    },
+    "tuningConfig": {
+      "type": "kafka"
+    },
+    "dataSchema": {
+      "dataSource": "keytest"
+    }
+  }
+}
+```
+
+Edit the ingestion spec. The `inputFormat` type will be `"kafka"` instead of `"json"`. Also, there have to be nested `inputFormat`s for the key and value. For the value, this will be `json`. The key is a single string, which is conveniently viewed as a degenerate CSV format with only one column and no headers.
+
+I am also setting `useEarliestOffset` to read from the beginning of the topic, and I am adding the dimensions manually.
+
+Here's the final result:
+
+```json
+{
+  "type": "kafka",
+  "spec": {
+    "ioConfig": {
+      "type": "kafka",
+      "consumerProperties": {
+        "bootstrap.servers": "localhost:9092"
+      },
+      "topic": "keytest",
+      "useEarliestOffset": true,
+      "inputFormat": {
+        "type": "kafka",
+        "headerLabelPrefix": "kafka.header.",
+        "timestampColumnName": "kafka.timestamp",
+        "keyColumnName": "kafka.key",
+        "headerFormat": {
+          "type": "string"
+        },
+        "keyFormat": {
+          "type": "csv",
+          "columns": [
+            "k"
+          ]
+        },
+        "valueFormat": {
+          "type": "json"
+        }
+      }
+    },
+    "tuningConfig": {
+      "type": "kafka"
+    },
+    "dataSchema": {
+      "dataSource": "keytest",
+      "timestampSpec": {
+        "column": "kafka.timestamp",
+        "format": "millis"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          "kafka.key",
+          {
+            "name": "val",
+            "type": "LONG"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
+Paste this into the spec editor and submit.
+
+After a short while, you can see the data:
+
+![](/assets/2022-06-26-03.jpg)
+
 ## Learnings
+
+- Druid can now ingest not only the Kafka payload but also key, headers, and timestamp.
+- While the engine supports the Kafka input format, the GUI doesn't know about it yet. But you can use the JSON editor to create a Kafka spec.
+- This fits extremely well with modern stream processing architectures that rely on Kafka keys for their operation, and on headers for data governance.
