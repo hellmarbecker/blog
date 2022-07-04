@@ -75,7 +75,7 @@ Finish the ingestion and try the query again:
 ```sql
 SELECT
    DATE_TRUNC('MONTH',__time),
-  AVG("value")
+   AVG("value")
 FROM schema_evolution
 GROUP BY 1
 ```
