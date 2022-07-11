@@ -1,6 +1,9 @@
 ---
 
 ---
+
+https://stackoverflow.com/questions/45711911/add-certificates-to-key-store-and-trust-store
+
 ```
  1027  openssl pkcs12 -inkey service.key -in service.cert -export -out keystored.p12 -certfile ca.pem
  1028  keytool -importkeystore -destkeystore mykeystore.jks -srckeystore keystore.p12 -srcstoretype pkcs12
