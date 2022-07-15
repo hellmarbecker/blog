@@ -1,6 +1,15 @@
 ---
-
+layout: post
+title:  "Connecting Apache Druid to Kafka with TLS authentication"
+categories: blog druid imply ingestion tutorial kafka tls
 ---
+
+We've looked at connecting [Apache Druid](https://druid.apache.org/) to a secure [Kafka](https://kafka.apache.org/) cluster [before](/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/). In that article, I used a [Confluent Cloud](https://confluent.cloud/) cluster with API key and secret, which is basically username + password authentication.
+
+Kafka also supports mutual TLS (mTLS) authentication. If this is used, keys and certificates need to be stored on the Druid cluster that wants to connect to Kafka, and the ingestion spec needs to reference these data.
+
+In this tutorial, I am going to show how to connect Druid to Kafka using mTLS. I am using an [Aiven](https://aiven.io/) Kafka cluster because Aiven supports mTLS secured Kafka out of the box as the default.
+
 
 https://stackoverflow.com/questions/45711911/add-certificates-to-key-store-and-trust-store
 
