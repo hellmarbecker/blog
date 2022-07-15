@@ -6,9 +6,10 @@ categories: blog apache druid imply
 
 In which we continue the quest about multi-value handling and try to answer the question: _Why are we even doing this?_
 
-This is part 3 of the miniseries about multi-value dimensions in Apache Druid. The previous posts can be found here:
+This is part 3 of the miniseries about multi-value dimensions in Apache Druid. More posts can be found here:
 - [part 1](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)
 - [part 2](/2021/08/29/multivalue-dimensions-in-apache-druid-part-2/)
+- [part 4](/2021/10/03/multivalue-dimensions-in-apache-druid-part-4/)
 
 After part 2 of the multi-value series, one reader asked what the difference between the types of handling is and why he would even bother about it. Let's look at some scenarios.
 

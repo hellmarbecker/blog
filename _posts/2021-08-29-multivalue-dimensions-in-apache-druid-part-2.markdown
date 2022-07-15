@@ -4,6 +4,11 @@ title:  "Multi-Value Dimensions in Apache Druid (Part 2)"
 categories: blog apache druid imply
 ---
 
+This is part 2 of a miniseries about multi-value dimensions in Apache Druid. More posts can be found here:
+- [part 1](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)
+- [part 3](/2021/09/25/multivalue-dimensions-in-apache-druid-part-3/)
+- [part 4](/2021/10/03/multivalue-dimensions-in-apache-druid-part-4/)
+
 Let's continue our journey into the world of multi-value dimensions in Apache Druid - with this here:
 
 ![Source snippet](/assets/2021-08-29-source.png)

@@ -11,6 +11,12 @@ categories: blog apache druid imply
 - How do multi-value dimensions behave in queries?
 - What are some real world use cases of multi-value dimensions?
 
+The other parts of this miniseries can be found here:
+
+- [part 2](/2021/08/29/multivalue-dimensions-in-apache-druid-part-2/)
+- [part 3](/2021/09/25/multivalue-dimensions-in-apache-druid-part-3/)
+- [part 4](/2021/10/03/multivalue-dimensions-in-apache-druid-part-4/)
+
 Let's get started!
 
 ## What are multi-value dimensions?
