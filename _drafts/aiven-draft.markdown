@@ -110,7 +110,7 @@ Kick off the ingestion and look at the data after a while:
 
 ![Query](/assets/2022-07-16-08.jpg)
 
-The pizza names are all there!
+The pizza names are all there. And just like that, we have integrated with Aiven's mTLS secured Kafka service!
 
 ## Learnings
 
