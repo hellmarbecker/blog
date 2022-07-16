@@ -93,69 +93,27 @@ There's a lot of details in nested structures: `pizzas` is a JSON array of objec
 
 ## Handling Nested Data
 
-Since version 0.23, Druid supports ingestion of nested JSON data natively. (Previously you would have to extract individual fields using a [`flattenSpec`](https://druid.apache.org/docs/0.23.0/ingestion/data-formats.html#flattenspec). This works by specifying a dimension type of `json`.
+For now you have to extract individual fields using a [`flattenSpec`](https://druid.apache.org/docs/0.23.0/ingestion/data-formats.html#flattenspec). Customers of [Imply](https://imply.io/) can take advantage of native handling of nested data.
 
-Go to the ingestion spec editor, and add the below snippet
+Let's extract the pizza names as a [multi-value dimension](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/). Go back to the `Parse data` step and add a flattening:
 
-```json
-          {
-            "name": "pizzas",
-            "type": "json"
-          }
-```
+![Flattening button](/assets/2022-07-16-06.jpg)
 
-to the `dimensionsSpec` as shown:
+Select
+- `pizzaNames` for _Name_
+- `jq` for _Type_
+- for _Expr_, enter: `[.pizzas[].pizzaName]`
 
-![Pizza schema with nested data](/assets/2022-07-16-06.jpg)
+![Flattening spec](/assets/2022-07-16-07.jpg)
 
-Kick off the ingestion
+Kick off the ingestion and look at the data after a while:
 
+![Query](/assets/2022-07-16-08.jpg)
 
-```
-{
-  "type": "kafka",
-  "spec": {
-    "ioConfig": {
-      "type": "kafka",
-      "consumerProperties": {
-        "bootstrap.servers": "<your Kafka service host + port>",
-        "security.protocol": "SSL",
-        "ssl.truststore.location": "<your home directory>/aiven-tls/aiven_cacerts.jks",
-        "ssl.truststore.password": "changeit",
-        "ssl.keystore.location": "<your home directory>/aiven-tls/aiven_keystore.jks",
-        "ssl.keystore.password": "changeit"
-      },
-      "topic": "pizza",
-      "inputFormat": {
-        "type": "json"
-      }
-    },
-    "tuningConfig": {
-      "type": "kafka"
-    },
-    "dataSchema": {
-      "dataSource": "pizza",
-      "timestampSpec": {
-        "column": "timestamp",
-        "format": "millis"
-      },
-      "dimensionsSpec": {
-        "dimensions": [
-          {
-            "type": "long",
-            "name": "id"
-          },
-          "shop",
-          "name",
-          "phoneNumber",
-          "address"
-        ]
-      },
-      "granularitySpec": {
-        "queryGranularity": "none",
-        "rollup": false
-      }
-    }
-  }
-}
-```
+The pizza names are all there!
+
+## Learnings
+
+- Druid can easily connect to an mTLS authenticated Kafka service.
+- You may need to use Java utilities to convert keys and certificates into JKS format.
+- While Imply users can ingest nested JSON data natively, open source Druid offers powerful flattening capabilities that can utilize `jq` syntax.
