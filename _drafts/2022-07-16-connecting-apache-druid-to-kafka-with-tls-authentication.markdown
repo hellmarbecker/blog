@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Connecting Apache Druid to Kafka with TLS authentication"
-categories: blog druid imply ingestion tutorial kafka tls
+categories: blog druid imply ingestion tutorial kafka tls aiven
 ---
 
 We've looked at connecting [Apache Druid](https://druid.apache.org/) to a secure [Kafka](https://kafka.apache.org/) cluster [before](/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/). In that article, I used a [Confluent Cloud](https://confluent.cloud/) cluster with API key and secret, which is basically username + password authentication.
