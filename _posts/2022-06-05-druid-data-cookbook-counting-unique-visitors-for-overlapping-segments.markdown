@@ -41,7 +41,7 @@ There is a lot of advanced math behind theta sketches[^2]. But with Druid, you d
 
 As usual, let's work with [the Druid quickstart](https://druid.apache.org/docs/latest/tutorials/index.html). For demonstration purposes, let's ingest the snippet below which has just the bare basics that are needed:
 
-- a _timestamp_, in this case it's just dates but as mentioned above a finer granularity makes sens in real life;
+- a _timestamp_, in this case it's just dates but as mentioned above a finer granularity makes sense in real life;
 - a _user ID;_
 - _show_ and _episode_ identifiers.
 
