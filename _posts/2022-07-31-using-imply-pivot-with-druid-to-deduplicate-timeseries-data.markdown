@@ -67,7 +67,7 @@ There are two measurements of power output between 10:00 and 10:15, but only one
 
 Because the average power during the first 15 minutes has been 32 watts, and during the second 15 minutes, 48 watts, you would want to show the average power output as **40 watts**. Keep that in mind.
 
-## Using an Average measure in Pivot
+## Using an Average Measure in Pivot
 
 From the Druid datasource, create a cube in Imply Pivot. Make sure it is a SQL cube, and prepopulate the dimensions and measures:
 
@@ -92,7 +92,7 @@ The result is `(31 + 33 + 48) / 3 = 37`, which is the correct average but not th
 
 This is actually possible with Imply Pivot.
 
-## Nested Measures
+## Nested Aggregation Measures
 
 Pivot offers multi step aggregations in what is called [_nested aggregations_](https://docs.imply.io/latest/measures/#nested-aggregation-measures). Here, you can define an expression to split the data first into buckets in which to aggregate (the _inner aggregation_), then an _outer aggregation_ runs over the results of the inner aggregation.
 
