@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Ingesting Protobuf messages into Apache Druid"
+title:  "Ingesting Protobuf Messages into Apache Druid"
 categories: blog imply druid confluent kafka eventstreaming tutorial
 ---
 
