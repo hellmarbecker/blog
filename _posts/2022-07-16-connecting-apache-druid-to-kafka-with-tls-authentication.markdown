@@ -47,7 +47,7 @@ Enable `kafka.auto_create_topics_enable` in the advanced configuration settings 
 Run the command
 
 ```
-python3 main.py --security-protocol SSL --cert-folder ~/aiven-tls --host <your Kafka service host + port> --port 17641 --topic-name pizza --nr-messages 100 --max-waiting-time 10
+python3 main.py --security-protocol SSL --cert-folder ~/aiven-tls --host <your Kafka service host> --port <your Kafka service port> --topic-name pizza --nr-messages 100 --max-waiting-time 10
 ```
 
 using the `cert-folder` where you downloaded the certificate files in the first step.
@@ -56,7 +56,7 @@ using the `cert-folder` where you downloaded the certificate files in the first 
 
 Download the latest Druid release and follow the [quickstart instructions](https://druid.apache.org/docs/latest/tutorials/index.html). Go to the Druid console at `localhost:8888` and start the `Load data` wizard. Select `Kafka` and proceed to enter the connection details:
 
-![Load data Wizard](/assets/2022-07-16-02.jpg)
+![Load Data Wizard](/assets/2022-07-16-02.jpg)
 
 Create a consumer properties snippet to reference the keystore and truststore files you created earlier. Here is a template, you need to fill in the correct path and `host:port`.
 
