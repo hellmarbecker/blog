@@ -192,7 +192,7 @@ The result is as expected. Druid has correctly picked up the latest value for ea
 
 - Druid can use `LATEST` or `EARLIEST` aggregations during ingestion.
 - Druid stores these aggregations in an intermediate representation that allows for adding more data later. 
-- In the current version, this requires working with `SRTING` fields.
+- In the current version, this requires working with `STRING` fields.
 - For numeric fields, you can work around this limitation using a `CAST` expression.
 
 ---
