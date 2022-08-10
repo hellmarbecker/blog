@@ -73,7 +73,7 @@ From the Druid datasource, create a cube in Imply Pivot. Make sure it is a SQL c
 
 ![Create cube from datasource](/assets/2022-07-31-01-define-cube.jpg)
 
-By default, for each numeric field Pivot creates a `SUM` measure. Change this for the `Val` measure, and also change the name to `Avg Val`:
+By default, for each numeric field Pivot creates a `SUM` measure. Change this to `Average` for the `Val` measure, and also change the name to `Avg Val`:
 
 ![Define Average measure](/assets/2022-07-31-02-define-naive-avg.jpg)
 
