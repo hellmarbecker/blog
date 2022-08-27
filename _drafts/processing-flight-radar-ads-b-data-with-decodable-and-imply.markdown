@@ -4,16 +4,6 @@ title:  "Processing Flight Radar (ADS-B) Data with Imply, Decodable, and Conflue
 categories: blog druid imply tutorial kafka streamprocessing sql flink decodable
 ---
 
-Imply's analytical platform, based on [Apache Druid](https://druid.apache.org/), is a great tool for fast event analytics, and with the advent of [Imply Polaris](https://imply.io/imply-polaris/) as a managed service these capabilities are ever easier to use.
-
-In order to prepare streaming data for ingestion by Druid, [Apache Flink](https://flink.apache.org/) has become a popular programming framework. [Decodable](https://www.decodable.co/) is a no-code streaming ETL service on top of Flink that allows data engineers to configure stream processing pipelines using a graphical interface. Instead of programming the entire pipeline in Java, Decodable has a concept of simple building blocks:
-
-- _Connections_ are the interface to external data sources and sinks, such as streaming platforms or databases. They connect to streams.
-- _Pipelines_ are processing blocks: their inputs and outputs are streams. A pipeline has a piece of SQL that defines the processing.
-- _Streams_ connect pipelines to connections or to other pipelines. A stream has a schema defining the fields and their types.
-
-If you build a processing pipeline using these blocks, Decodable compiles them into Flink code behind the scenes. 
-
 Flight radar data are sent by commercial and most private aircraft, and can easily be received and decoded using a Raspberry Pi and a DVB-T receiver stick.
 
 In this tutorial, I am going to show you how to set up a pipeline that
@@ -21,6 +11,22 @@ In this tutorial, I am going to show you how to set up a pipeline that
 - generates an event stream from flight radar data
 - converts this stream into JSON format using [Decodable](https://www.decodable.co/)
 - and ingests these JSON events into [Imply Polaris](https://imply.io/imply-polaris/) using the new Pull Ingestion feature that was released in August 2022. 
+
+## Technologies Used
+
+Imply's analytical platform, based on [Apache Druid](https://druid.apache.org/), is a great tool for fast event analytics, and with the advent of [Imply Polaris](https://imply.io/imply-polaris/) as a managed service these capabilities are ever easier to use.
+
+Imply will be the final destination of the data pipeline and the visualization tool to the end user.
+
+In order to prepare streaming data for ingestion by Druid, [Apache Flink](https://flink.apache.org/) has become a popular programming framework. [Decodable](https://www.decodable.co/) is a no-code streaming ETL service on top of Flink that allows data engineers to configure stream processing pipelines using a graphical interface. Instead of programming the entire pipeline in Java, Decodable has a concept of simple building blocks:
+
+- _Connections_ are the interface to external data sources and sinks, such as streaming platforms or databases. They connect to streams.
+- _Pipelines_ are processing blocks: their inputs and outputs are streams. A pipeline has a piece of SQL that defines the processing.
+- _Streams_ connect pipelines to connections or to other pipelines. A stream has a schema defining the fields and their types.
+
+If you build a processing pipeline using these blocks, Decodable compiles them into Flink code behind the scenes. I am going to use Decodable to do some parsing and preprocessing on the data.
+
+[Confluent Cloud](https://confluent.cloud/) is Confluent's managed streaming service based on [Apache Kafka](https://kafka.apache.org/). This will supply the streams (topics) that tie everything together.
 
 ## Generating Data
 
