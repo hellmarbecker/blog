@@ -14,11 +14,11 @@ In this tutorial, I am going to show you how to set up a pipeline that
 
 ## Technologies Used
 
-Imply's analytical platform, based on [Apache Druid](https://druid.apache.org/), is a great tool for fast event analytics, and with the advent of [Imply Polaris](https://imply.io/imply-polaris/) as a managed service these capabilities are ever easier to use.
+Imply's analytical platform, based on [Apache Druid](https://druid.apache.org/), is a great tool for fast event analytics, and with the advent of [**Imply Polaris**](https://imply.io/imply-polaris/) as a managed service these capabilities are ever easier to use.
 
 Imply will be the final destination of the data pipeline and the visualization tool to the end user.
 
-In order to prepare streaming data for ingestion by Druid, [Apache Flink](https://flink.apache.org/) has become a popular programming framework. [Decodable](https://www.decodable.co/) is a no-code streaming ETL service on top of Flink that allows data engineers to configure stream processing pipelines using a graphical interface. Instead of programming the entire pipeline in Java, Decodable has a concept of simple building blocks:
+In order to prepare streaming data for ingestion by Druid, [Apache Flink](https://flink.apache.org/) has become a popular programming framework. [**Decodable**](https://www.decodable.co/) is a no-code streaming ETL service on top of Flink that allows data engineers to configure stream processing pipelines using a graphical interface. Instead of programming the entire pipeline in Java, Decodable has a concept of simple building blocks:
 
 - _Connections_ are the interface to external data sources and sinks, such as streaming platforms or databases. They connect to streams.
 - _Pipelines_ are processing blocks: their inputs and outputs are streams. A pipeline has a piece of SQL that defines the processing.
@@ -26,7 +26,7 @@ In order to prepare streaming data for ingestion by Druid, [Apache Flink](https:
 
 If you build a processing pipeline using these blocks, Decodable compiles them into Flink code behind the scenes. I am going to use Decodable to do some parsing and preprocessing on the data.
 
-[Confluent Cloud](https://confluent.cloud/) is Confluent's managed streaming service based on [Apache Kafka](https://kafka.apache.org/). This will supply the streams (topics) that tie everything together.
+[**Confluent Cloud**](https://confluent.cloud/) is Confluent's managed streaming service based on [Apache Kafka](https://kafka.apache.org/). This will supply the streams (topics) that tie everything together.
 
 ## Generating Data
 
