@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Processing ADS-B Data with Imply, Decodable, and Confluent Cloud"
+title:  "Processing Flight Radar (ADS-B) Data with Imply, Decodable, and Confluent Cloud"
 categories: blog druid imply tutorial kafka streamprocessing sql
 ---
 
