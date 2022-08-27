@@ -30,6 +30,8 @@ If you build a processing pipeline using these blocks, Decodable compiles them i
 
 ## Generating Data
 
+yada yada raspberry pi
+
 ## Sending Data to Kafka
 
 I am using Confluent Cloud and `kcat` as a client. (The package that comes with the current release of [Raspberry Pi OS](https://www.raspberrypi.com/software/operating-systems/), which is based on Debian 11, uses the old name `kafkacat`.)
