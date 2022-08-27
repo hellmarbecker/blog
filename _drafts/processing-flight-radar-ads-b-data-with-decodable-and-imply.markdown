@@ -69,3 +69,37 @@ sudo systemctl enable dump1090-kafka
 sudo systemctl start dump1090-kafka
 ```
 
+
+## Preprocessing the Data in Decodable
+
+```sql
+insert into `adsb-json`
+select
+    to_timestamp(
+        split_index(`raw`, ',',  6) || ' ' || split_index(`raw`, ',',  7),
+        'yyyy/MM/dd HH:mm:ss.SSS'
+    ) as __time,
+    split_index(`raw`, ',',  0) as message_type,
+    cast(split_index(`raw`, ',',  1) as integer) as transmission_type,
+    cast(split_index(`raw`, ',',  2) as integer) as session_id,
+    cast(split_index(`raw`, ',',  3) as integer) as aircraft_id,
+    split_index(`raw`, ',',  4) as hex_ident,
+    cast(split_index(`raw`, ',',  5) as integer) as flight_id,
+    split_index(`raw`, ',',  6) as date_message_generated,
+    split_index(`raw`, ',',  7) as time_message_generated,
+    split_index(`raw`, ',',  8) as date_message_logged,
+    split_index(`raw`, ',',  9) as time_message_logged,
+    split_index(`raw`, ',', 10) as callsign,
+    cast(split_index(`raw`, ',', 11) as integer) as altitude,
+    cast(split_index(`raw`, ',', 12) as double) as ground_speed,
+    cast(split_index(`raw`, ',', 13) as double) as track,
+    cast(split_index(`raw`, ',', 14) as double) as latitude,
+    cast(split_index(`raw`, ',', 15) as double) as longitude,
+    cast(split_index(`raw`, ',', 16) as integer) as vertical_rate,
+    split_index(`raw`, ',', 17) as squawk,
+    cast(split_index(`raw`, ',', 18) as integer) as alert,
+    cast(split_index(`raw`, ',', 19) as integer) as emergency,
+    cast(split_index(`raw`, ',', 20) as integer) as spi,
+    cast(split_index(`raw`, ',', 21) as integer) as is_on_ground
+from `adsb-raw`
+```
