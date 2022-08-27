@@ -6,9 +6,15 @@ categories: blog druid imply tutorial kafka streamprocessing sql flink decodable
 
 Imply's analytical platform, based on [Apache Druid](https://druid.apache.org/), is a great tool for fast event analytics, and with the advent of [Imply Polaris](https://imply.io/imply-polaris/) as a managed service these capabilities are ever easier to use.
 
-In order to prepare streaming data for ingestion by Druid, [Apache Flink](https://flink.apache.org/) has become a popular programming framework.
+In order to prepare streaming data for ingestion by Druid, [Apache Flink](https://flink.apache.org/) has become a popular programming framework. [Decodable](https://www.decodable.co/) is a no-code streaming ETL service on top of Flink that allows data engineers to configure stream processing pipelines using a graphical interface. Instead of programming the entire pipeline in Java, Decodable has a concept of simple building blocks:
 
-Flight radar data are sent by commercial and most private aircraft, and can easily be received and decoded usin a Raspberry Pi and a DVB-T receiver stick.
+- _Connections_ are the interface to external data sources and sinks, such as streaming platforms or databases. They connect to streams.
+- _Pipelines_ are processing blocks: their inputs and outputs are streams. A pipeline has a piece of SQL that defines the processing.
+- _Streams_ connect pipelines to connections or to other pipelines.
+
+If you build a processing pipeline using these blocks, Decodable compiles them into Flink code behind the scenes. 
+
+Flight radar data are sent by commercial and most private aircraft, and can easily be received and decoded using a Raspberry Pi and a DVB-T receiver stick.
 
 In this tutorial, I am going to show you how to set up a pipeline that
 
@@ -37,3 +43,29 @@ nc localhost 30003 \
     | awk -F "," '{ print $5 "|" $0 }' \
     | kafkacat -P -t ${TOPIC_NAME} -b ${CC_BOOTSTRAP} -K "|" ${CC_SECURE}
 ```
+
+Let's install this script as a service with `systemd`, so that it can be started automatically on boot.
+
+Create a file `dump1090-kafka.service` with this content (you may need to adapt the file path):
+
+```
+[Unit]
+Description=connector
+
+[Service]
+User=pi
+ExecStart=/home/pi/plt-airt-2000/send_kafka.sh
+RestartSec=30
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+and copy it to `/etc/systemd/system/`. Then run
+
+```
+sudo systemctl enable dump1090-kafka
+sudo systemctl start dump1090-kafka
+```
+
