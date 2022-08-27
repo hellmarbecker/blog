@@ -10,7 +10,7 @@ In order to prepare streaming data for ingestion by Druid, [Apache Flink](https:
 
 - _Connections_ are the interface to external data sources and sinks, such as streaming platforms or databases. They connect to streams.
 - _Pipelines_ are processing blocks: their inputs and outputs are streams. A pipeline has a piece of SQL that defines the processing.
-- _Streams_ connect pipelines to connections or to other pipelines.
+- _Streams_ connect pipelines to connections or to other pipelines. A stream has a schema defining the fields and their types.
 
 If you build a processing pipeline using these blocks, Decodable compiles them into Flink code behind the scenes. 
 
