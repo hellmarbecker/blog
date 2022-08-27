@@ -30,6 +30,10 @@ I am using Confluent Cloud and `kcat` as a client. (The package that comes with 
 
 You have to set up the topic for the flight data, as well as an API key and ACLs in Confluent Cloud. I have covered this in detail in [an earlier post](/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/).
 
+For Decodable, you will be needing the cluster ID and REST endpoint (this is _not_ the broker endpoint!) You can find these in the cluster menu under `Cluster overview` > `Cluster settings`.
+
+![Screenshot of Confluent Cloud cluster settings](...)
+
 ```bash
 #!/bin/bash
 
