@@ -62,6 +62,8 @@ nc localhost 30003 \
     | kafkacat -P -t ${TOPIC_NAME} -b ${CC_BOOTSTRAP} -K "|" ${CC_SECURE}
 ```
 
+(The `awk` command in the script is not strictly needed for this tutorial. It adds the ID of the flight as a key field to each Kafka message.)
+
 Don't forget to make the file executable with `chmod 755 send_kafka.sh`. Let's install this script as a service with `systemd`, so that it can be started automatically on boot.
 
 Create a file `dump1090-kafka.service` with this content (you may need to adapt the file path):
