@@ -4,7 +4,7 @@ title:  "Processing Flight Radar (ADS-B) Data with Imply, Decodable, and Conflue
 categories: blog druid imply tutorial kafka streamprocessing sql flink decodable
 ---
 
-Flight radar data are sent by commercial and most private aircraft, and can easily be received and decoded using a Raspberry Pi and a DVB-T receiver stick.
+Flight radar data are sent by most commercial and private aircraft, and can easily be received and decoded using a Raspberry Pi and a DVB-T receiver stick.
 
 In this tutorial, I am going to show you how to set up a pipeline that
 
@@ -30,7 +30,11 @@ If you build a processing pipeline using these blocks, Decodable compiles them i
 
 ## Generating Data
 
-yada yada raspberry pi
+[Flightradar24](https://www.flightradar24.com/build-your-own) has step by step instructions how to set up a flight radar receiver. There are also various open source repositories that add functionality to the original `dump1090` software.
+
+`dump1090` makes the data it receives available in a CSV format on port 30003, which is where we are going to pick it up for the next step.
+
+This tutorial assumes that you have your Raspberry Pi set up to receive aircraft data.
 
 ## Sending Data to Kafka
 
@@ -41,6 +45,8 @@ In Confluent Cloud, create two topics `adsb-raw` and `adsb-json` for the flight 
 For Decodable, you will be needing the Confluent cluster ID and REST endpoint (this is _not_ the broker endpoint!) You can find these in the cluster menu under `Cluster overview` > `Cluster settings`.
 
 ![Screenshot of Confluent Cloud cluster settings](...)
+
+On your Raspberry Pi, create a script `send_kafka.sh` like this:
 
 ```bash
 #!/bin/bash
@@ -56,7 +62,7 @@ nc localhost 30003 \
     | kafkacat -P -t ${TOPIC_NAME} -b ${CC_BOOTSTRAP} -K "|" ${CC_SECURE}
 ```
 
-Let's install this script as a service with `systemd`, so that it can be started automatically on boot.
+Don't forget to make the file executable with `chmod 755 send_kafka.sh`. Let's install this script as a service with `systemd`, so that it can be started automatically on boot.
 
 Create a file `dump1090-kafka.service` with this content (you may need to adapt the file path):
 
