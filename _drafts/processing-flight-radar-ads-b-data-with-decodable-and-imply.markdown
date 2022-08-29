@@ -123,3 +123,7 @@ select
     cast(split_index(`raw`, ',', 21) as integer) as is_on_ground
 from `adsb-raw`
 ```
+
+---
+
+<a href="https://www.flaticon.com/free-icons/radar" title="radar icons">Radar icons created by Freepik - Flaticon</a>
