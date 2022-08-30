@@ -201,6 +201,8 @@ An in Confluent Cloud, verify that data is arriving the topic:
 
 ## Ingesting Data into Polaris
 
+You can sign up for a free Polaris trial at [Imply](https://imply.io/).
+
 ---
 
 <a href="https://www.flaticon.com/free-icons/radar" title="radar icons">Radar icons created by Freepik - Flaticon</a>
