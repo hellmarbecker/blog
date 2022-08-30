@@ -183,7 +183,7 @@ And again, hit the `Start` button to start the pipeline.
 
 ### Putting the data back into Kafka
 
-Lastly, we need another connection to write data back into Confluent Cloud. This works much like the input connection.
+Lastly, we need another connection to write data back into Confluent Cloud. This works the same way as the input connection, with a few minor changes:
 
 - In the connection settings, use the same Confluent Cloud coordinates as for the input connection. Make sure you select connection type `Sink` and value format `JSON`.
 - For the topic, select `adsb-json`.
@@ -191,6 +191,15 @@ Lastly, we need another connection to write data back into Confluent Cloud. This
 - Name the new connection `sink-adsb-json` and add a suitable description.
 - Don't forget to start the connection using the `Start` button.
 
+You can look into the Decodable streams and verify the data is flowing:
+
+![Output stream preview](/assets/2022-08-30-11-preview.jpg)
+
+An in Confluent Cloud, verify that data is arriving the topic:
+
+![Output topic preview](/assets/2022-08-30-12-preview-cc.jpg)
+
+## Ingesting Data into Polaris
 
 ---
 
