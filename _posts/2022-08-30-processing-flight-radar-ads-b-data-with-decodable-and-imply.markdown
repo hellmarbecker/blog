@@ -46,6 +46,8 @@ I am using Confluent Cloud and `kcat` as a client. (The package that comes with 
 
 In Confluent Cloud, create two topics `adsb-raw` and `adsb-json` for the flight data. You can create them with just one partition and leave all the other default settings in place. Also you have to create an API key and assign ACLs to it that allow both read and write access to those two topics. I have covered this in detail in [an earlier post](/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/).
 
+If you are using a service account rather than personal account for the API key (as you should), you will also need an ACL to allow read access to all _consumer groups prefixed by `kafka_supervisor`_.
+
 On your Raspberry Pi, create a script `send_kafka.sh` like this:
 
 ```bash
@@ -197,13 +199,50 @@ You can look into the Decodable streams and verify the data is flowing:
 
 ![Output stream preview](/assets/2022-08-30-11-preview.jpg)
 
-An in Confluent Cloud, verify that data is arriving the topic:
+And in Confluent Cloud, verify that data is arriving the topic:
 
 ![Output topic preview](/assets/2022-08-30-12-preview-cc.jpg)
 
 ## Ingesting Data into Polaris
 
 You can sign up for a free Polaris trial at [Imply](https://imply.io/).
+
+In the `Tables` menu, start by creating a new table.
+
+![Create a Polaris table](/assets/2022-08-30-13-create-table.jpg)
+
+Because our data is structured as JSON, we can proceed directly to load data:
+
+![Load data](/assets/2022-08-30-14-load-data.jpg)
+
+Now, it's time to create a new Confluent Cloud connection. Select Confluent Cloud as the data source. We could also use the Push API here, this is an integration that Decodable may offer in the future.
+
+![New Confluent Cloud connection](/assets/2022-08-30-15-new-cc.jpg)
+
+Enter the connection details such as topic name, bootstrap server address and API key and secret:
+
+![Configure connection](/assets/2022-08-30-16-configure-cc.jpg)
+
+Finally, choose to ingest from the beginning of the topic.
+
+![Ingestion settings](/assets/2022-08-30-17-ingest.jpg)
+
+Click through the newxt few screens - we are not going to make changes to the schema for now. After a short time, you can see data coming in!
+
+You can [create a data cube](https://docs.imply.io/polaris/managing-data-cubes/#create-a-data-cube) to visualize the data coming in. Let's also add a geohash dimension, computed from longitude and latitude:
+
+![Geohash definition](/assets/2022-08-30-18-geohash.jpg)
+
+And so we can finally get the data on a map:
+
+![Map of aircraft positions](/assets/2022-08-30-19-map.jpg)
+
+## Learnings
+
+- Imply Polaris now offers pull based stream ingestion from Confluent Cloud.
+- Decodable is a no code, SQL only, streaming ETL service that is easy to connect to Imply Polaris via Confluent Cloud.
+- With these tools, it is easy to stream almost any type of event data into Polaris.
+
 
 ---
 
