@@ -14,6 +14,8 @@ In this tutorial, I am going to show you how to set up a pipeline that
 - converts this stream into JSON format using [Decodable](https://www.decodable.co/)
 - and ingests these JSON events into [Imply Polaris](https://imply.io/imply-polaris/) using the new Pull Ingestion feature that was released in August 2022. 
 
+There are simpler methods to get these data into Polaris, but the example serves well to illustrate some of the concepts behing streaming ETL.
+
 ## Technologies Used
 
 Imply's analytical platform, based on [Apache Druid](https://druid.apache.org/), is a great tool for fast event analytics, and with the advent of [**Imply Polaris**](https://imply.io/imply-polaris/) as a managed service these capabilities are ever easier to use.
