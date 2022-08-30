@@ -4,6 +4,8 @@ title:  "Processing Flight Radar (ADS-B) Data with Imply, Decodable, and Conflue
 categories: blog druid imply tutorial kafka streamprocessing sql flink decodable
 ---
 
+![Overview Architecture](/assets/2022-08-30-01-overview.jpg)
+
 Flight radar data are sent by most commercial and private aircraft, and can easily be received and decoded using a Raspberry Pi and a DVB-T receiver stick.
 
 In this tutorial, I am going to show you how to set up a pipeline that
@@ -95,31 +97,44 @@ Sign up for a free account at Decodable. Here's what we need to create:
 - a _sink connector_ to write the transformaed ddata out to Kafka
 - _streams_ to connect all these.
 
+### Connecting to the data source
+
 First, create a source connector. You will be needing the Confluent cluster ID and REST endpoint (this is _not_ the broker endpoint!) You can find these in the cluster menu under `Cluster overview` > `Cluster settings`.
 
-![Screenshot of Confluent Cloud cluster settings](2022-08-30-03-cc-settings)
+![Screenshot of Confluent Cloud cluster settings](/assets/2022-08-30-03-cc-settings.jpg)
 
 Go to `Create Source` in Decodable, and pick Confluent Cloud as the source:
 
-![](2022-08-30-02-create-source)
+![Create Source](/assets/2022-08-30-02-create-source.jpg)
 
 In the next dialog, enter the Confluent cluster settings in Decodable's configuration dialog. Also enter your API key and secret to access Confluent Cloud, and make sure you select `Raw` as the value format.
 
-![](2022-08-30-04-source-settings)
+![Source Connector Settings](/assets/2022-08-30-04-source-settings.jpg)
 
 In the next step, specify `adsb-raw` as the topic to connect to.
 
-![](2022-08-30-05-topic)
+![Choose Topic](/assets/2022-08-30-05-topic.jpg)
 
-Next, Decodable is going to ask which stream to connect to. You will create a new stream in this step. Select `New Stream`, and enter the name and description
+Next, Decodable is going to ask which stream to connect to. You will create a new stream in this step. Select `New Stream`, and enter the name and description.
 
-![](2022-08-30-06-create-stream)
+![Create New Stream](/assets/2022-08-30-06-create-stream.jpg)
 
+A stream also needs a schema. Since the data source fromat is `Raw`, the schema has only one field, which we will conveniently name `raw`. Pick `string` as the field type.
 
+![Define schema](/assets/2022-08-30-06-schema.jpg)
 
+Hit `Next` and define the name and description for the connection:
+
+![Name connection](/assets/2022-08-30-07-name-connection.jpg)
+
+Start the connection using the `Start` button.
+
+### Transforming the data
+
+Next, let's create a Pipeline. Use the `Create Pipeline` button and select `stream-adsb-raw` as the input source. In the following dialog, enter this SQL code:
 
 ```sql
-insert into `adsb-json`
+insert into `stream-adsb-json`
 select
     to_timestamp(
         split_index(`raw`, ',',  6) || ' ' || split_index(`raw`, ',',  7),
@@ -147,8 +162,12 @@ select
     cast(split_index(`raw`, ',', 19) as integer) as emergency,
     cast(split_index(`raw`, ',', 20) as integer) as spi,
     cast(split_index(`raw`, ',', 21) as integer) as is_on_ground
-from `adsb-raw`
+from `stream-adsb-raw`
 ```
+
+![Decodable SQL screen](/assets/2022-08-30-08-sql.jpg)
+
+
 
 ---
 
