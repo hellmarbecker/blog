@@ -167,6 +167,29 @@ from `stream-adsb-raw`
 
 ![Decodable SQL screen](/assets/2022-08-30-08-sql.jpg)
 
+We are doing a few things here:
+
+- We extract the individual comma separated fields.
+- We assign the correct types so numbers will be encoded as numbers in the resulting JSON.
+- Since date and time are in separate original fields, we build a timestamp string out of both, we parse it and represent it as milliseconds since [Epoch](https://en.wikipedia.org/wiki/Unix_time). This is the native timestamp format for Polaris.
+
+The `INSERT INTO` clause defines the output stream name. Since that stream doesn't exist yet, we create it in the next step:
+
+![Create output stream](/assets/2022-08-30-09-create-output-stream.jpg)
+
+![Name and save pipeline](/assets/2022-08-30-10-save-pipeline.jpg)
+
+And again, hit the `Start` button to start the pipeline.
+
+### Putting the data back into Kafka
+
+Lastly, we need another connection to write data back into Confluent Cloud. This works much like the input connection.
+
+- In the connection settings, use the same Confluent Cloud coordinates as for the input connection. Make sure you select connection type `Sink` and value format `JSON`.
+- For the topic, select `adsb-json`.
+- As the source stream, select `stream-adsb-json` that we created before.
+- Name the new connection `sink-adsb-json` and add a suitable description.
+- Don't forget to start the connection using the `Start` button.
 
 
 ---
