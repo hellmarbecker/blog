@@ -121,7 +121,7 @@ Next, Decodable is going to ask which stream to connect to. You will create a ne
 
 A stream also needs a schema. Since the data source fromat is `Raw`, the schema has only one field, which we will conveniently name `raw`. Pick `string` as the field type.
 
-![Define schema](/assets/2022-08-30-06-schema.jpg)
+![Define schema](/assets/2022-08-30-06a-schema.jpg)
 
 Hit `Next` and define the name and description for the connection:
 
