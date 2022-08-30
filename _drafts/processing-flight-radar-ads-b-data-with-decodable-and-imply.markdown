@@ -4,7 +4,7 @@ title:  "Processing Flight Radar (ADS-B) Data with Imply, Decodable, and Conflue
 categories: blog druid imply tutorial kafka streamprocessing sql flink decodable
 ---
 
-![Overview Architecture](/assets/2022-08-30-01-overview.jpg)
+![Overview Architecture](/assets/2022-08-30-01-overview.png)
 
 Flight radar data are sent by most commercial and private aircraft, and can easily be received and decoded using a Raspberry Pi and a DVB-T receiver stick.
 
