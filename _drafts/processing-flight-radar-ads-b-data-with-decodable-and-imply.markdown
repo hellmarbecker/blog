@@ -42,10 +42,6 @@ I am using Confluent Cloud and `kcat` as a client. (The package that comes with 
 
 In Confluent Cloud, create two topics `adsb-raw` and `adsb-json` for the flight data. You can create them with just one partition and leave all the other default settings in place. Also you have to create an API key and assign ACLs to it that allow both read and write access to those two topics. I have covered this in detail in [an earlier post](/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/).
 
-For Decodable, you will be needing the Confluent cluster ID and REST endpoint (this is _not_ the broker endpoint!) You can find these in the cluster menu under `Cluster overview` > `Cluster settings`.
-
-![Screenshot of Confluent Cloud cluster settings](...)
-
 On your Raspberry Pi, create a script `send_kafka.sh` like this:
 
 ```bash
@@ -91,6 +87,36 @@ sudo systemctl start dump1090-kafka
 
 
 ## Preprocessing the Data in Decodable
+
+Sign up for a free account at Decodable. Here's what we need to create:
+
+- a _source connector_ to connect to the raw data topic
+- a _pipeline_ to transform the data
+- a _sink connector_ to write the transformaed ddata out to Kafka
+- _streams_ to connect all these.
+
+First, create a source connector. You will be needing the Confluent cluster ID and REST endpoint (this is _not_ the broker endpoint!) You can find these in the cluster menu under `Cluster overview` > `Cluster settings`.
+
+![Screenshot of Confluent Cloud cluster settings](2022-08-30-03-cc-settings)
+
+Go to `Create Source` in Decodable, and pick Confluent Cloud as the source:
+
+![](2022-08-30-02-create-source)
+
+In the next dialog, enter the Confluent cluster settings in Decodable's configuration dialog. Also enter your API key and secret to access Confluent Cloud, and make sure you select `Raw` as the value format.
+
+![](2022-08-30-04-source-settings)
+
+In the next step, specify `adsb-raw` as the topic to connect to.
+
+![](2022-08-30-05-topic)
+
+Next, Decodable is going to ask which stream to connect to. You will create a new stream in this step. Select `New Stream`, and enter the name and description
+
+![](2022-08-30-06-create-stream)
+
+
+
 
 ```sql
 insert into `adsb-json`
