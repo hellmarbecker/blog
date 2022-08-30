@@ -227,7 +227,7 @@ Finally, choose to ingest from the beginning of the topic.
 
 ![Ingestion settings](/assets/2022-08-30-17-ingest.jpg)
 
-Click through the newxt few screens - we are not going to make changes to the schema for now. After a short time, you can see data coming in!
+Click through the next few screens - we are not going to make changes to the schema for now. After a short time, you can see data coming in!
 
 You can [create a data cube](https://docs.imply.io/polaris/managing-data-cubes/#create-a-data-cube) to visualize the data coming in. Let's also add a geohash dimension, computed from longitude and latitude:
 
