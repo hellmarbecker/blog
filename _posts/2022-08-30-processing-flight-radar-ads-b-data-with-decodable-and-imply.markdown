@@ -98,7 +98,7 @@ Sign up for a free account at Decodable. Here's what we need to create:
 
 - a _source connector_ to connect to the raw data topic
 - a _pipeline_ to transform the data
-- a _sink connector_ to write the transformaed ddata out to Kafka
+- a _sink connector_ to write the transformed data out to Kafka
 - _streams_ to connect all these.
 
 ### Connecting to the data source
@@ -107,11 +107,11 @@ First, create a source connector. You will be needing the Confluent cluster ID a
 
 ![Screenshot of Confluent Cloud cluster settings](/assets/2022-08-30-03-cc-settings.jpg)
 
-Go to `Create Source` in Decodable, and pick Confluent Cloud as the source:
+Go to `Create Connection` in Decodable, and pick Confluent Cloud as the source:
 
 ![Create Source](/assets/2022-08-30-02-create-source.jpg)
 
-In the next dialog, enter the Confluent cluster settings in Decodable's configuration dialog. Also enter your API key and secret to access Confluent Cloud, and make sure you select `Raw` as the value format.
+In the next dialog, enter the Confluent cluster settings in Decodable's configuration dialog. Also enter your API key and secret to access Confluent Cloud, and make sure you select `Raw` as the value format. Connection Type should be `Source`.
 
 ![Source Connector Settings](/assets/2022-08-30-04-source-settings.jpg)
 
