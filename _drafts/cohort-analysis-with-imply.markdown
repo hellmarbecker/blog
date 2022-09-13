@@ -1,8 +1,23 @@
 ---
 layout: post
-title:  "Cohort Analysis with Imply"
+title:  "Tutorial: Cohort Analysis with Imply"
 categories: blog druid imply pivot analytics tutorial gaming
 ---
+
+Imagine you are running an online gaming platform where players deposit funds into their accounts and then use these funds for games. In order to analyze  player retention and lifetime value, you want to group players according to when they signed up (which calendar month, or week), and then for each group chart their spending behaviour over time, starting at the time when they signed up.
+
+This is the use case for [_cohort analysis_](https://en.wikipedia.org/wiki/Cohort_analysis).
+
+Cohort analysis is also used to analyze customer loyalty in ecommerce, and there are numerous other application cases in various industries. With Imply, it is easy to do even on large data sets.
+
+Let's look at an example!
+
+In this tutorial, you will
+
+- Generate a random data set that is suitable for cohort analysis
+- Ingest this data set into Imply Druid using the new SQL based ingestion
+- Create a suitable logical data model in Imply Pivot, on top of the Druid table
+- Create a cohort based visualisation.
 
 ## Simulating Data
 
