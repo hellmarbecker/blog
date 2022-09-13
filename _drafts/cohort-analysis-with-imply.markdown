@@ -76,7 +76,7 @@ for ( my $d = $start->clone; $d < $stop; $d->add(days => 1) ) {
 REPLACE INTO cohort OVERWRITE ALL
 WITH source AS (SELECT * FROM TABLE(
   EXTERN(
-    '{"type":"s3","uris":["s3://imply-cloud-sales-data/valsea/cohort.csv"]}',
+    '{"type":"s3","uris":["s3://<your S3 file path>"]}',
     '{"type":"csv","findColumnsFromHeader":true}',
     '[{"name":"curdate","type":"string"},{"name":"playerid","type":"string"},{"name":"signupdate","type":"string"},{"name":"deposit","type":"double"},{"name":"signupdate_long","type":"long"}]'
   )
