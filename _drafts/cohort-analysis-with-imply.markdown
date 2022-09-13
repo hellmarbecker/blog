@@ -21,6 +21,12 @@ In this tutorial, you will
 
 ## Simulating Data
 
+Let's create a simple data set. The following script creates a random set of players with signup dates in the last 2 years, and then generates events, trying to mimic typical player behaviour by creating less events for players that have been with the platform for longer time.
+
+Each event row describes a deposit made, and includes the event date, the player ID, the player's signup date, and the amount of the deposit.
+
+Run the Perl script below and pipe the output into a file named `cohort.csv`:
+
 ```perl
 #!/usr/bin/perl
 # create data set for cohort analysis
@@ -84,6 +90,8 @@ for ( my $d = $start->clone; $d < $stop; $d->add(days => 1) ) {
     }
 }
 ```
+
+Upload this file into a S3 bucket.
 
 ## Ingesting the Data
 
