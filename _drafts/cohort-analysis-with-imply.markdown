@@ -119,13 +119,21 @@ From the `Data cubes` navigation item, go to `New data cube`. Create a data cube
 
 ![Create new data cube](/assets/2022-09-25-04-create-cube.jpg)
 
-This gives a good starting point but we are going to have to do some edits to the logical data model.
+### Measures
 
-First of all, change the data type of the signup date column to `Time` so we can have a date selector on it. (Pivot will automatically parse and convert the datetime string.) I am also renaming the dimensions to `Player ID` and `Player Signup Date` to make the reports look nicer.
+- A default `SUM` measure over the deposits has been created automatically. This is fine for the tutorial; in a real life scenario you would have to consider rolled back deposits and other special cases as well. 
+- The number of events is always present as a `COUNT` measure.
+- Add a measure to count unique players:
 
-We are going to need a few more dimensions. We want to group the players into cohorts by their signup date, so let's parse out the month and calendar week from the signup date. Note that in order to match with the calendar week, you need to use the week year (`'xxxx'`) date mask rather that `'yyyy'`.
+![Logical model: measures](/assets/2022-09-25-06-dimensions.jpg)
 
-Also, we are adding the `Player age` as the time between event time and signup time as a set of calculated dimensions in days, weeks, and months. These are numbers but make sure to disable default bucketing.
+### Dimensions
+
+We are going to add some enhancements to the logical data model.
+
+- Change the data type of the signup date column to `Time` so we can have a date selector on it. (Pivot will automatically parse and convert the datetime string.) I am also renaming the dimensions to `Player ID` and `Player Signup Date` to make the reports look nicer.
+- In order to group the players into cohorts by their signup date, parse out the month and calendar week from the signup date. Note that in order to match with the calendar week, you need to use the week year (`'xxxx'`) date mask rather that `'yyyy'`.
+- Add the `Player age` as the time between event time and signup time as a set of calculated dimensions in days, weeks, and months. These are numbers but make sure to disable default bucketing.
 
 Add the following dimensions:
 
@@ -139,12 +147,13 @@ Player Age Months|Number|`timestampdiff(MONTH, time_parse(t."signupdate"), t."__
 
 After that, your data model should look like this:
 
-![Logical model: dimensions](/assets/2022-09-25-05-dimensions.jpg)
+![Logical model: dimensions](/assets/2022-09-25-06-dimensions.jpg)
 
 
 ## Creating the Cohort Chart
 
-
+---
+ <p class="attribution">"<a target="_blank" rel="noopener noreferrer" href="https://www.flickr.com/photos/149561324@N03/37008333656">Roulettetisch im Casino</a>" by <a target="_blank" rel="noopener noreferrer" href="https://www.flickr.com/photos/149561324@N03">marcoverch</a> is licensed under <a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by/2.0/?ref=openverse">CC BY 2.0 <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/></a>. </p> 
 
 
 
