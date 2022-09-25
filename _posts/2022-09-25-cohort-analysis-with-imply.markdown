@@ -176,12 +176,10 @@ Here's the final result, as it looks on the big screen and with totals hidden:
 
 ## Learnings
 
-- Imply Pivot allows secondary timestamp dimensions that are based on ISO formmated timestamp strings.
+- Imply Polaris lets you build analytics powered by Druid with just a few easy steps.
+- Imply Pivot allows secondary timestamp dimensions that are based on ISO formated timestamp strings.
 - Time differences can be analyzed using computed dimensions.
 - With these elements, it is easy to show a graphical cohort analysis.
 
 ---
  <p class="attribution">"<a target="_blank" rel="noopener noreferrer" href="https://www.flickr.com/photos/149561324@N03/37008333656">Roulettetisch im Casino</a>" by <a target="_blank" rel="noopener noreferrer" href="https://www.flickr.com/photos/149561324@N03">marcoverch</a> is licensed under <a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by/2.0/?ref=openverse">CC BY 2.0 <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/></a>. </p> 
-
-
-
