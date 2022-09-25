@@ -156,7 +156,7 @@ After that, your data model should look like this:
 
 In the Cube view, select a Table visualisation. Set the time filter to _Current year_, select _Deposit_ and _Unique players_ as measures, and set the formatting options as shown.
 
-![Pivot chart base settings](/assets/2022-09-25-06-pivot1.jpg)
+![Pivot chart base settings](/assets/2022-09-25-06a-pivot1.jpg)
 
 Expand the _Show_ bar and drag _Player Signup Date Month_ into the _Rows_. Make sure the sort order is ascending by _Player Signup Date Month_.
 
