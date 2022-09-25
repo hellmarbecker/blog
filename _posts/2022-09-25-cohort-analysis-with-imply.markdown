@@ -127,7 +127,7 @@ From the `Data cubes` navigation item, go to `New data cube`. Create a data cube
 - The number of events is always present as a `COUNT` measure.
 - Add a measure to count unique players:
 
-![Logical model: measures](/assets/2022-09-25-06-dimensions.jpg)
+![Logical model: measures](/assets/2022-09-25-05-measures.jpg)
 
 ### Dimensions
 
