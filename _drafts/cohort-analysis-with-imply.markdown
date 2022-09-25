@@ -4,6 +4,8 @@ title:  "Tutorial: Cohort Analysis with Imply"
 categories: blog druid imply pivot analytics tutorial gaming
 ---
 
+![Roulette table](/assets/2022-09-25-00-roulette.jpg)
+
 Imagine you are running an online gaming platform where players deposit funds into their accounts and then use these funds for games. In order to analyze  player retention and lifetime value, you want to group players according to when they signed up (which calendar month, or week), and then for each group chart their spending behaviour over time, starting at the time when they signed up.
 
 This is the use case for [_cohort analysis_](https://en.wikipedia.org/wiki/Cohort_analysis).
@@ -151,6 +153,32 @@ After that, your data model should look like this:
 
 
 ## Creating the Cohort Chart
+
+In the Cube view, select a Table visualisation. Set the time filter to _Current year_, select _Deposit_ and _Unique players_ as measures, and set the formatting options as shown.
+
+![Pivot chart base settings](/assets/2022-09-25-06-pivot1.jpg)
+
+Expand the _Show_ bar and drag _Player Signup Date Month_ into the _Rows_. Make sure the sort order is ascending by _Player Signup Date Month_.
+
+![Pivot chart dimension 1](/assets/2022-09-25-07-pivot2.jpg)
+
+Likewise, add _Player Age Months_ to the _Rows_ section.
+
+![Pivot chart dimension 2](/assets/2022-09-25-08-pivot3.jpg)
+
+Set a filter on signup date, using the time dimension for signup date:
+
+![Pivot chart filter](/assets/2022-09-25-09-pivot4.jpg)
+
+Here's the final result, as it looks on the big screen and with totals hidden:
+
+![Final chart](/assets/2022-09-25-10-final.jpg)
+
+## Learnings
+
+- Imply Pivot allows secondary timestamp dimensions that are based on ISO formmated timestamp strings.
+- Time differences can be analyzed using computed dimensions.
+- With these elements, it is easy to show a graphical cohort analysis.
 
 ---
  <p class="attribution">"<a target="_blank" rel="noopener noreferrer" href="https://www.flickr.com/photos/149561324@N03/37008333656">Roulettetisch im Casino</a>" by <a target="_blank" rel="noopener noreferrer" href="https://www.flickr.com/photos/149561324@N03">marcoverch</a> is licensed under <a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by/2.0/?ref=openverse">CC BY 2.0 <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/></a>. </p> 
