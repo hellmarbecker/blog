@@ -174,6 +174,8 @@ Here's the final result, as it looks on the big screen and with totals hidden:
 
 ![Final chart](/assets/2022-09-25-10-final.jpg)
 
+The same analysis can be done on a calendar week basis, showing the relative player age in weeks as well. This is left as an exercise for the reader.
+
 ## Learnings
 
 - Imply Polaris lets you build analytics powered by Druid with just a few easy steps.
