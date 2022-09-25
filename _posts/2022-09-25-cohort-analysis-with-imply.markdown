@@ -23,7 +23,7 @@ In this tutorial, you will
 
 ## Simulating Data
 
-Let's create a simple data set. The following script creates a random set of players with signup dates in the last 2 years, and then generates events, trying to mimic typical player behaviour by creating less events for players that have been with the platform for longer time.
+Let's create a simple data set. The following script creates a random set of players with signup dates in the last 2 years, and then generates events, trying to mimic typical player behaviour by creating less events for players that have been with the platform for a longer time.
 
 Each event row describes a deposit made, and includes the event date, the player ID, the player's signup date, and the amount of the deposit.
 
