@@ -164,7 +164,7 @@ Expand the _Show_ bar and drag _Player Signup Date Month_ into the _Rows_. Make 
 
 ![Pivot chart dimension 1](/assets/2022-09-25-07-pivot2.jpg)
 
-Likewise, add _Player Age Months_ to the _Rows_ section.
+Likewise, add _Player Age Months_ to the _Columns_ section.
 
 ![Pivot chart dimension 2](/assets/2022-09-25-08-pivot3.jpg)
 
