@@ -15,7 +15,7 @@ Let's look at an example!
 In this tutorial, you will
 
 - Generate a random data set that is suitable for cohort analysis
-- Ingest this data set into Imply Druid using the new SQL based ingestion
+- Ingest this data set into Imply Polaris
 - Create a suitable logical data model in Imply Pivot, on top of the Druid table
 - Create a cohort based visualisation.
 
@@ -91,25 +91,30 @@ for ( my $d = $start->clone; $d < $stop; $d->add(days => 1) ) {
 }
 ```
 
-Upload this file into a S3 bucket.
-
 ## Ingesting the Data
 
-```sql
-REPLACE INTO cohort OVERWRITE ALL
-WITH source AS (SELECT * FROM TABLE(
-  EXTERN(
-    '{"type":"s3","uris":["s3://<your S3 file path>"]}',
-    '{"type":"csv","findColumnsFromHeader":true}',
-    '[{"name":"curdate","type":"string"},{"name":"playerid","type":"string"},{"name":"signupdate","type":"string"},{"name":"deposit","type":"double"},{"name":"signupdate_long","type":"long"}]'
-  )
-))
-SELECT
-  TIME_PARSE(curdate) AS __time,
-  playerid,
-  signupdate,
-  deposit
-FROM source
-PARTITIONED BY MONTH
-CLUSTERED BY playerid
-```
+[Here](https://docs.imply.io/polaris/quickstart/) you can find instructions how to sign up for a free trial of Imply Polaris. After following the signup process, you will have a fresh Polaris environment.
+
+Let's create a table. Select `Tables` from the left navigation bar and start the table creation wizard using the `Create table` button. Name the new table `cohort` and make sure `Detail` is selected.
+
+![Create table settings](/assets/2022-09-25-01-create-table.jpg)
+
+(There are two kinds of tables in Polaris, `Detail` and `Aggregate`. Detail tables store the individual rows as they occur in the source data. Aggregate tables correspond to what we call _rollup_ in Druid, where data is aggregated to a predefined time granularity, greatly reducing storage needs. One of the cool things in Druid and Polaris is that you can [have that level of aggregation and still count unique things, like visitors](/2022/06/05/druid-data-cookbook-counting-unique-visitors-for-overlapping-segments/). But for now, we need the detail data.)
+
+Select `Load data` to define your new table's schema based on the sample file. This will take you to the data sources dialog, where you select `Files` and `Upload files from your computer`. Select the `cohort.csv` file from the previous step, wait until the upload completes and proceed to the next step.
+
+You will be presented with a sample from your data which should look similar to this:
+
+![CSV parser settings](/assets/2022-09-25-02-parse-csv.jpg)
+
+Verify that the input format is CSV and the `Data has header` switch is set to `Yes`. Continue to the next step:
+
+![Schema definition](/assets/2022-09-25-03-schema.jpg)
+
+Makes sure the primary timestamp (`__time`) is derived from the `curdate` column, and the `signupdate` field is modeled as a `string`. Then start the ingestion.
+
+
+
+
+
+
