@@ -25,7 +25,7 @@ Let's create a simple data set. The following script creates a random set of pla
 
 Each event row describes a deposit made, and includes the event date, the player ID, the player's signup date, and the amount of the deposit.
 
-Run the Perl script below and pipe the output into a file named `cohort.csv`:
+Run the [Perl 5](https://www.perl.org/) script below and pipe the output into a file named `cohort.csv`:
 
 ```perl
 #!/usr/bin/perl
