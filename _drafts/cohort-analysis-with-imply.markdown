@@ -111,8 +111,38 @@ Verify that the input format is CSV and the `Data has header` switch is set to `
 
 ![Schema definition](/assets/2022-09-25-03-schema.jpg)
 
-Makes sure the primary timestamp (`__time`) is derived from the `curdate` column, and the `signupdate` field is modeled as a `string`. Then start the ingestion.
+Makes sure the primary timestamp (`__time`) is derived from the `curdate` column, and the `signupdate` field is modeled as a `string`. Then start the ingestion. After a short while, you can see how the table is populated with data.
 
+## Creating the Logical Data Model
+
+From the `Data cubes` navigation item, go to `New data cube`. Create a data cube from your new table and have it prepopulated by the wizard:
+
+![Create new data cube](/assets/2022-09-25-04-create-cube.jpg)
+
+This gives a good starting point but we are going to have to do some edits to the logical data model.
+
+First of all, change the data type of the signup date column to `Time` so we can have a date selector on it. (Pivot will automatically parse and convert the datetime string.) I am also renaming the dimensions to `Player ID` and `Player Signup Date` to make the reports look nicer.
+
+We are going to need a few more dimensions. We want to group the players into cohorts by their signup date, so let's parse out the month and calendar week from the signup date. Note that in order to match with the calendar week, you need to use the week year (`'xxxx'`) date mask rather that `'yyyy'`.
+
+Also, we are adding the `Player age` as the time between event time and signup time as a set of calculated dimensions in days, weeks, and months. These are numbers but make sure to disable default bucketing.
+
+Add the following dimensions:
+
+Dimension Name|Data Type|Formula|Possible bucketing
+--------------|---------|-------|------------------
+Player Signup Date Week|String|`TIME_FORMAT(TIME_PARSE(t."signupdate"), 'xxxx''W''ww')`|-
+Player Signup Date Month|String|`TIME_FORMAT(TIME_PARSE(t."signupdate"), 'yyyy''-''MM')`|-
+Player Age Days|Number|`timestampdiff(DAY, time_parse(t."signupdate"), t."__time")`|Default don't bucket
+Player Age Weeks|Number|`timestampdiff(DAY, time_parse(t."signupdate"), t."__time") / 7`|Default don't bucket
+Player Age Months|Number|`timestampdiff(MONTH, time_parse(t."signupdate"), t."__time")`|Default don't bucket
+
+After that, your data model should look like this:
+
+![Logical model: dimensions](/assets/2022-09-25-05-dimensions.jpg)
+
+
+## Creating the Cohort Chart
 
 
 
