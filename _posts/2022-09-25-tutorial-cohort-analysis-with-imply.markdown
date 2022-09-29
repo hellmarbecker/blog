@@ -113,7 +113,7 @@ Verify that the input format is CSV and the `Data has header` switch is set to `
 
 ![Schema definition](/assets/2022-09-25-03-schema.jpg)
 
-Makes sure the primary timestamp (`__time`) is derived from the `curdate` column, and the `signupdate` field is modeled as a `string`. Then start the ingestion. After a short while, you can see how the table is populated with data.
+Make sure the primary timestamp (`__time`) is derived from the `curdate` column, and the `signupdate` field is modeled as a `string`. Then start the ingestion. After a short while, you can see how the table is populated with data.
 
 ## Creating the Logical Data Model
 
