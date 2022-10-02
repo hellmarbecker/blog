@@ -36,7 +36,7 @@ Define an alert in Pivot as usual. In my example, the alert is evaluated at the 
 
 ![Define alert condition](/assets/2022-10-02-04-alert1.jpg)
 
-Now, use the `Add condition` button to add a second alert condition. This is going to be our scheduler mask. Select the measure you defined (im my case, I called it _Schedule 1_), and set the condition as `> 0`.
+Now, use the `Add condition` button to add a second alert condition. This is going to be our scheduler mask. Select the measure you defined (here, I called it _Schedule 1_), and set the condition as `> 0`.
 
 Make sure to select `All conditions` on top of the condition definitions.
 
