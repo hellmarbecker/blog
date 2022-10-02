@@ -10,11 +10,11 @@ Here's a neat trick when working with [Imply Pivot](https://docs.imply.io/latest
 
 In the small hours of the night, you have low sales but that is expected and you don't want to have lots of messages during that time. Wouldn't it be nice to set a more detailed schedule for the alert to be evaluated only during certain hours of the day?
 
-This is possible when we use the fact that Pivot alerts can have multiple conditions, and custom measures.
+This is possible using multiple alert conditions, and custom measures. Let's see how!
 
 ## Defining the schedule
 
-Let's define the schedule as a custom measure in Pivot. From the cube editor, go to `Measures` and define a new measure that takes the value 1 when you want the alert to run, and 0 otherwise. I want the alert to fire only between 7am and midnight, so here's my formula:
+Define the schedule as a custom measure in Pivot. From the cube editor, go to `Measures` and define a new measure that takes the value 1 when you want the alert to run, and 0 otherwise. I want the alert to fire only between 7am and midnight, so here's my formula:
 
 ```sql
 MIN(CASE WHEN TIME_EXTRACT(t."__time", 'HOUR') BETWEEN 7 AND 23 THEN 1 ELSE 0 END)
