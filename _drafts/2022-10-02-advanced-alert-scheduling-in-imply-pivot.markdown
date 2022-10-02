@@ -12,6 +12,8 @@ In the small hours of the night, you have low sales but that is expected and you
 
 This is possible using multiple alert conditions, and custom measures. Let's see how!
 
+In this tutorial I am working with [Polaris](https://docs.imply.io/polaris/quickstart/) but all steps work the same in Imply Hybrid or Enterprise.
+
 ## Defining the schedule
 
 Define the schedule as a custom measure in Pivot. From the cube editor, go to `Measures` and define a new measure that takes the value 1 when you want the alert to run, and 0 otherwise. I want the alert to fire only between 7am and midnight, so here's my formula:
