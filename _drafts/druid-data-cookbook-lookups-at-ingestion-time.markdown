@@ -4,7 +4,10 @@ title:  "Druid Data Cookbook: Lookups at Ingestion Time"
 categories: blog imply druid tutorial
 ---
 
-lorem ipsum
+![Druid Cookbook](/assets/2021-12-21-elf.jpg)
+
+A while ago I explained how to [apply a lookup to a multi-value dimension in Apache Druid](/2021/10/14/druid-data-modeling-special-lookups-and-multi-value-dimensions/). In that post, I also mentioned that you can apply lookups at ingestion time. Documentation on this feature is a bit terse, so let's find out how to make it work!
+
 
 ---
 
