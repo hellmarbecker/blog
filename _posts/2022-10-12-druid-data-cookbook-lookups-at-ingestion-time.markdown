@@ -140,7 +140,9 @@ Note how not only all the values are there, we have also preserved the order of 
 
 ## Learnings
 
-- ...
+- Lookups can be applied not only at query time, but also at ingestion time. This can bring an advantage to query speed.
+- The way to implement ingestion time lookups is with ingestion transforms.
+- For multi-value dimensions, `map` and lambda expressions make it possible to apply a lookup to all values.
 
 ---
 
