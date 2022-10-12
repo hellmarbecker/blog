@@ -38,7 +38,7 @@ The exact steps are described [here](/2021/10/14/druid-data-modeling-special-loo
 
 ## Building the Data Model
 
-In Druid 24.0 there are two ways to do batch ingestion: Classic and SQL. For now, use the `Classic` mode:
+In Druid 24.0 there are two ways to do batch ingestion: Classic and SQL. For now, use `Classic` mode:
 
 <img src="/assets/2022-10-12-01-classic.jpg" width="25%" />
 
