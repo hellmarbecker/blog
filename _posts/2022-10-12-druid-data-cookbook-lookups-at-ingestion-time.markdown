@@ -79,7 +79,7 @@ On the `Partition` screen, set the segment granularity to `day` and proceed to t
 
 ## Adding the Lookup, First Attempt
 
-We are going to add a new dimension which is supposed to hold the names of the basket items. Thus, it has to be a multi-value dimension too. So, add the following snippet to the `dimensionsSpec`:
+We are going to add a new dimension to hold the names of the basket items. Thus, it has to be a multi-value dimension too. Add the following snippet to the `dimensionsSpec`:
 
 ```json
           {
@@ -112,7 +112,7 @@ Submit the ingestion spec and wait for the job to finish. Let's look at the resu
 
 ![Query, naive model](/assets/2022-10-12-04-query1.jpg)
 
-Unfortunately we are not quite there yet. The basket_item column has been populated only for one row of data, all the rest is _null_. This is because _basket_ is a multi-value dimension. The lookup has only worked for the one case where there is only one value.
+Unfortunately we are not quite there yet. The _basket_item_ column has been populated only for one row of data, all the rest is _null_. This is because _basket_ is a multi-value dimension. The lookup has only worked for the one case where there is only one value.
 
 ## Making the Lookup Work With a Multi-Value Dimension
 
