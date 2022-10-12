@@ -46,7 +46,7 @@ The product catalog is the same as in my earlier post and looks like this:
 }
 ```
 
-Use the lookup creation wizard to define a lokup `eshop_sku`:
+Use the lookup creation wizard to define a lookup `eshop_sku`:
 
 <img src="/assets/2021-10-14-1-create-lookup.jpg" width="50%" />
 
