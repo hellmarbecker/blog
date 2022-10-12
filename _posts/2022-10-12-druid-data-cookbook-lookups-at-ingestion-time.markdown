@@ -132,7 +132,7 @@ Go back to your ingestion spec and change the transform definition to this:
       }
 ```
 
-And with that change,the query will give the expected result:
+And with that change, the query will give the expected result:
 
 ![Query, final](/assets/2022-10-12-05-query2.jpg)
 
