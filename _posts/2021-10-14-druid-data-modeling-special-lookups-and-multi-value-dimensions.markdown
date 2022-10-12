@@ -21,6 +21,7 @@ So, Peter's question is: can you apply lookups with [multi-value dimensions](/20
 ## Real life example
 
 Let's assume I am running an ecommerce shop. There's a number of items in my portfolio, and each of them has a SKU number and product name like so:
+
 ```json
 {
   "0001": "Mug O'Grog",
@@ -31,6 +32,7 @@ Let's assume I am running an ecommerce shop. There's a number of items in my por
   "0006": "Fabulous Idol"
 }
 ```
+
 In fact, this is just the format for defining an inline lookup. From the Druid console, navigate to the `Lookup` wizard, choose `Add lookup`, and paste the snippet from above into the `Map` input field. Name the lookup `eshop_sku`:
 
 <img src="/assets/2021-10-14-1-create-lookup.jpg" width="50%" />
@@ -40,6 +42,7 @@ In fact, this is just the format for defining an inline lookup. From the Druid c
 Now, let's enter some transactions.
 
 Here's our data snippet for today's tutorial:
+
 ```json
 { "ts": "2021-10-14 10:00:00", "customer": "Gian", "basket": [ "0001", "0001", "0002", "0004" ] }
 { "ts": "2021-10-14 10:10:00", "customer": "Rachel", "basket": [ "0002", "0004", "0005" ] }
@@ -48,6 +51,7 @@ Here's our data snippet for today's tutorial:
 { "ts": "2021-10-14 10:40:00", "customer": "Jessy", "basket": [ "0003", "0005", "0006" ] }
 { "ts": "2021-10-14 10:50:00", "customer": "Gian", "basket": [ "0005", "0006" ] }
 ```
+
 Ingest these data into Druid, set the segment granularity to `day`, and name the datasource `eshop`. Time for some fun queries!
 
 The first query I am going to run is a plain scan query. Here is the SQL:
