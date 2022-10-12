@@ -77,7 +77,7 @@ The different handling modes, and when to use them, are discussed in [my article
 
 On the `Partition` screen, set the segment granularity to `day` and proceed to the `Publish` screen. Here, set the datasource name to `eshop` and proceed again to the JSON editor.
 
-### Adding the Lookup, 1st attempt
+## Adding the Lookup, First Attempt
 
 We are going to add a new dimension which is supposed to hold the names of the basket items. Thus, it has to be a multi-value dimension too. So, add the following snippet to the `dimensionsSpec`:
 
@@ -97,7 +97,7 @@ This new dimension will be populated by a transform. Add a `transformSpec` like 
         "transforms": [
           {
             "type": "expression",
-            "expression": "lookup(x, 'eshop_sku')",
+            "expression": "lookup(basket, 'eshop_sku')",
             "name": "basket_item"
           }
         ]
@@ -114,12 +114,33 @@ Submit the ingestion spec and wait for the job to finish. Let's look at the resu
 
 Unfortunately we are not quite there yet. The basket_item column has been populated only for one row of data, all the rest is _null_. This is because _basket_ is a multi-value dimension. The lookup has only worked for the one case where there is only one value.
 
-### Making the Lookup Work With a Multi-Value Dimension
+## Making the Lookup Work With a Multi-Value Dimension
 
-We will have to find a way to apply the lookup transform to _all_ values in the multi-value dimension. This is done using the `map` function with a lambda expression.
+We will have to find a way to apply the lookup transform to _all_ values in the multi-value dimension. This is done using [the `map` function with a lambda expression](https://druid.apache.org/docs/latest/misc/math-expr.html#lambda-expressions-syntax).
 
+Go back to your ingestion spec and change the transform definition to this:
 
+```json
+      "transformSpec": {
+        "transforms": [
+          {
+            "type": "expression",
+            "expression": "map((x)->lookup(x, 'eshop_sku'), basket)",
+            "name": "basket_item"
+          }
+        ]
+      }
+```
 
+And with that change,the query will give the expected result:
+
+![Query, final](/assets/2022-10-12-05-query2.jpg)
+
+Note how not only all the values are there, we have also preserved the order of items by specifying the `ARRAY` handling mode!
+
+## Learnings
+
+- ...
 
 ---
 
