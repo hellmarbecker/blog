@@ -11,18 +11,15 @@ A modern streaming analytics pipeline is built around two central components:
 - an event streaming platform
 - an event analytics platform.
 
-The de facto standard for event streaming is Apache Kafka; for event analytics it is Apache Druid. Both are open source projects and it is comparatively straightforward to build a streaming analytics pipeline using these tools.
+This is conveniently achieved using [Confluent](https://www.confluent.io/) Cloud as a SaaS event streaming platform, and [Imply](https://imply.io/) Polaris as a SaaS realtime analytics database.
 
-## Using Managed Services
+In this tutorial, I am going to show you how to set up a pipeline that
 
-With the advent of managed SaaS services this task becomes even easier.
+- generates a simulated clickstream event stream and sends it to Confluent Cloud
+- processes the raw clickstream data using managed [ksqlDB](https://ksqldb.io/) in Confluent Cloud
+- delivers the processed stream using Confluent Cloud
+- and ingests these JSON events, using a native connection, into Imply Polaris.
 
-[Confluent](https://www.confluent.io/) was founded by the creators of Kafka. Its Confluent Cloud service offers not only Kafka clusters, but also a managed version of [ksqlDB](https://ksqldb.io/), a streaming SQL framework that enables engineers to develop and deploy real time ETL applications using just SQL statements.
-
-[Imply](https://imply.io/) was founded by the creators of Druid, and offers Imply Polaris, an integrated real time analytics platform based on Apache Druid.
-
-Taking these two together, we have all components to build a streaming analytics pipeline.
- 
 ## Prerequisites
 
 - confluent cloud
