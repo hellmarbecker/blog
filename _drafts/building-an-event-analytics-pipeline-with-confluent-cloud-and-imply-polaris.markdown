@@ -26,8 +26,13 @@ For this tutorial, you need a Confluent Cloud account. In this account, create [
 
 The smallest size of cluster (`Basic`) will do.
 
-Furthermore, you need an Imply Polaris environment.
+Furthermore, you need an Imply Polaris environment. You can sign up for a free trial [here](https://signup.imply.io).
 
 ## Data Generation
 
 - how to use the news data generator
+
+## Setting up ksqlDB
+
+## Setting up Imply Polaris
+
