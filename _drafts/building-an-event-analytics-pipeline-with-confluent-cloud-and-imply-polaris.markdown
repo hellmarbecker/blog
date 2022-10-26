@@ -22,12 +22,11 @@ In this tutorial, I am going to show you how to set up a pipeline that
 
 ## Prerequisites
 
-- confluent cloud
-  - an environment
-  - a cluster
-  - a KSQL application
-- imply polaris
-  - an environment
+For this tutorial, you need a Confluent Cloud account. In this account, create [an environment](https://docs.confluent.io/cloud/current/access-management/hierarchy/cloud-environments.html), [a cluster](https://docs.confluent.io/cloud/current/clusters/create-cluster.html), and [a ksqlDB application](https://docs.confluent.io/cloud/current/get-started/index.html#section-2-add-ksql-cloud-to-the-cluster).
+
+The smallest size of cluster (`Basic`) will do.
+
+Furthermore, you need an Imply Polaris environment.
 
 ## Data Generation
 
