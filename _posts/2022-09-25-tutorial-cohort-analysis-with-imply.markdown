@@ -143,9 +143,9 @@ Dimension Name|Data Type|Formula|Possible bucketing
 --------------|---------|-------|------------------
 Player Signup Date Week|String|`TIME_FORMAT(TIME_PARSE(t."signupdate"), 'xxxx''W''ww')`|-
 Player Signup Date Month|String|`TIME_FORMAT(TIME_PARSE(t."signupdate"), 'yyyy''-''MM')`|-
-Player Age Days|Number|`timestampdiff(DAY, time_parse(t."signupdate"), t."__time")`|Never bucket
-Player Age Weeks|Number|`timestampdiff(DAY, time_parse(t."signupdate"), t."__time") / 7`|Never bucket
-Player Age Months|Number|`timestampdiff(MONTH, time_parse(t."signupdate"), t."__time")`|Never bucket
+Player Age Days|Number|`TIMESTAMPDIFF(DAY, TIME_PARSE(t."signupdate"), t."__time")`|Never bucket
+Player Age Weeks|Number|`TIMESTAMPDIFF(DAY, TIME_PARSE(t."signupdate"), t."__time") / 7`|Never bucket
+Player Age Months|Number|`TIMESTAMPDIFF(MONTH, TIME_PARSE(t."signupdate"), t."__time")`|Never bucket
 
 (If you leave bucketing on, you will have to switch it of explicitly every time you build a chart, and we want the individual values in any case. You could achieve the same using a String dimension but that would mess up the sort order.)
 
