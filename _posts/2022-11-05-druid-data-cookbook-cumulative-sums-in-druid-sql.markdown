@@ -26,7 +26,7 @@ Ingest it using the Druid console, using standard batch ingestion with a Paste s
 
 ## Cumulative Sums
 
-First, I want a report that shows me for each customer, how their cumulative revenue builds up over time, day by day. As a preparation, let's aggregate our data to the level of granularity that we will need in the report:
+First, I want a report that shows, for each customer, how their cumulative revenue builds up over time, day by day. As a preparation, let's aggregate our data to the level of granularity that we will need in the report:
 
 ```sql
 SELECT DATE_TRUNC('DAY', "__time") AS date_day, customer, SUM(revenue) AS rev_daily
@@ -112,7 +112,7 @@ null|null|92|3
 Three things are worth noticing:
 
 - The `ROLLUP` aggregation creates a grouping hierarchy. We group by all columns in the list, then by all but the last, then by all but the last two, and so forth up to the grand total. Each dimension that is left out gets a _NULL_ in the respective place. (You can get all combinations with `CUBE`, or an explicit list with `GROUPING SETS`.)
-- In order to know which level a result row is aggregated to, you can use [the special `GROUPING()` aggregator](https://druid.apache.org/docs/latest/querying/aggregations.html#grouping-aggregator). The result of `GROUPING()` is a bitmask that has a `1` bit for every level that has been rolled up - the most fine grained reault rows give a `0` value, the grand total is all ones. We will pick the rollup per day on one side (this one will have a `1`), and the detail rows (they have a `0`).
+- In order to know which level a result row is aggregated to, you can use [the special `GROUPING()` aggregator](https://druid.apache.org/docs/latest/querying/aggregations.html#grouping-aggregator). The result of `GROUPING()` is a bitmask that has a `1` bit for every level that has been rolled up - the most fine grained result rows give a `0` value, the grand total is all ones. We will pick the rollup per day on one side (this one will have a `1`), and the detail rows (they have a `0`).
 - The timestamp in Druid cannot be _NULL_. If you try to use it as part of a grouping sets aggregation, Druid complains about not being able to convert a `TIMESTAMP(3) NOT NULL` to a `TIMESTAMP(3)`. I work around this with a somewhat unwieldy `CASE` expression that can (in theory) yield a _NULL_ value.
 
 With this, I am ready to assemble the final query:
