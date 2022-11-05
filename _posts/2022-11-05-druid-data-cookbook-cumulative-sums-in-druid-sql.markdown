@@ -141,6 +141,8 @@ Try it out!
 
 ## Conclusion
 
+While window aggregation functions are not explicitly available in Druid at the time of this writing, there are numerous ways to get to the desired results.
+
 - Many queries that use window aggregation functions can be modeled in Druid using self joins.
 - Make sure to push down aggregations and filters in order to keep the result sets manageable.
 - Grouping set aggregations can be helpful when you need multiple aggregation levels within the same query.
