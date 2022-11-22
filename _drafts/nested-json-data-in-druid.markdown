@@ -91,7 +91,7 @@ ingestion spec
 
 get out all the individual pizzas
 
-```
+```sql
 WITH pizza_lines AS (
   SELECT id, shop, TO_JSON_STRING(pizzas) AS order_total, name, pizzasMV AS order_item
   FROM pizza
