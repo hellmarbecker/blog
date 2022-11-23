@@ -220,6 +220,82 @@ Name this datasource `pizza-03`. This time, the JSON data has been ingested corr
 
 ![Final query](/assets/2022-11-23-06-final.jpg)
 
+Here is the final ingestion spec:
+
+```json
+{
+  "type": "kafka",
+  "spec": {
+    "ioConfig": {
+      "type": "kafka",
+      "consumerProperties": {
+        "bootstrap.servers": "localhost:9092"
+      },
+      "topic": "pizza",
+      "inputFormat": {
+        "type": "kafka",
+        "headerLabelPrefix": "kafka.header.",
+        "timestampColumnName": "kafka.timestamp",
+        "keyColumnName": "kafka.key",
+        "headerFormat": {
+          "type": "string"
+        },
+        "keyFormat": {
+          "type": "csv",
+          "columns": [
+            "k"
+          ]
+        },
+        "valueFormat": {
+          "type": "json",
+          "flattenSpec": {
+            "useFieldDiscovery": true,
+            "fields": [
+              {
+                "name": "pizzas",
+                "type": "root"
+              }
+            ]
+          }
+        }
+      },
+      "useEarliestOffset": true
+    },
+    "tuningConfig": {
+      "type": "kafka"
+    },
+    "dataSchema": {
+      "dataSource": "pizza-03",
+      "timestampSpec": {
+        "column": "kafka.timestamp",
+        "format": "millis"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          {
+            "type": "long",
+            "name": "id"
+          },
+          "shop",
+          "name",
+          "phoneNumber",
+          "address",
+          {
+            "type": "json",
+            "name": "pizzas"
+          }
+        ]
+      },
+      "granularitySpec": {
+        "queryGranularity": "none",
+        "rollup": false,
+        "segmentGranularity": "day"
+      }
+    }
+  }
+}
+```
+
 ## Conclusion
 
 - Nested columns allow structured JSON data inside Druid datasources.
