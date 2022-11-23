@@ -4,6 +4,14 @@ title:  "Processing Nested JSON Data and Kafka Metadata in Apache Druid"
 categories: blog imply druid kafka json tutorial
 ---
 
+[Druid 24.0](https://github.com/apache/druid/releases/tag/druid-24.0.0) brought the ability to [ingest and store nested (JSON) columns directly](https://druid.apache.org/docs/latest/querying/nested-columns.html). In simple cases, this would eliminate the need to [flatten JSON data during ingestion](https://druid.apache.org/docs/latest/ingestion/data-formats.html#flattenspec).
+
+Inspired by real world experience, I am showing how column flattening and nested columns complement each other to enable some more sophisticated use cases of nested columns.
+
+This tutorial uses [Aiven's pizza simulator](https://github.com/aiven/python-fake-data-producer-for-apache-kafka). I assume that you are running Kafka locally in a single broker configuration, and that you are producing data to a topic named `pizza`.
+
+The tutorial uses [Druid 24.0 quickstart](https://druid.apache.org/docs/latest/tutorials/index.html).
+
 ingestion spec
 
 ```json
