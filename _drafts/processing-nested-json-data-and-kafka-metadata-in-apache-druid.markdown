@@ -1,4 +1,8 @@
 ---
+layout: post
+title:  "Processing Nested JSON Data and Kafka Metadata in Apache Druid"
+categories: blog imply druid kafka json tutorial
+---
 
 ingestion spec
 
@@ -86,7 +90,6 @@ ingestion spec
   }
 }
 ```
-
 
 
 get out all the individual pizzas
