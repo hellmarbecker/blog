@@ -25,7 +25,7 @@ permalink: /about/
 ## Technology experience
 
 - Big Data Stack - Hadoop, Hive, HBase, Spark
-- Event Streaming - NiFi, Kafka
+- Event Streaming - NiFi, Kafka, Druid
 - Security and Governance, particulary with open source products
 - Digital Analytics, OmniChannel, Customer 360
 
