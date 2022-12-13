@@ -147,7 +147,7 @@ Player Age Days|Number|`TIMESTAMPDIFF(DAY, TIME_PARSE(t."signupdate"), t."__time
 Player Age Weeks|Number|`TIMESTAMPDIFF(DAY, TIME_PARSE(t."signupdate"), t."__time") / 7`|Never bucket
 Player Age Months|Number|`TIMESTAMPDIFF(MONTH, TIME_PARSE(t."signupdate"), t."__time")`|Never bucket
 
-(If you leave bucketing on, you will have to switch it of explicitly every time you build a chart, and we want the individual values in any case. You could achieve the same using a String dimension but that would mess up the sort order.)
+(If you leave bucketing on, you will have to switch it off explicitly every time you build a chart, and we want the individual values in any case. You could achieve the same using a String dimension but that would mess up the sort order.)
 
 After that, your data model should look like this:
 
