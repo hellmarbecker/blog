@@ -137,7 +137,7 @@ There's a nice way to return multiple quantile values from one function call usi
 ```sql
 SELECT 
   cn,
-   DS_GET_QUANTILES(DS_QUANTILES_SKETCH(qs_rn, 128), 0.25, 0.5, 0.75) AS quartiles_s
+  DS_GET_QUANTILES(DS_QUANTILES_SKETCH(qs_rn, 128), 0.25, 0.5, 0.75) AS quartiles_s
 FROM randstream_salary
 GROUP BY 1
 ```
