@@ -108,7 +108,7 @@ GROUP BY 1
 Let's export the full data into a newline delimited JSON file. This can be done using Druid's SQL API. There are a few caveats:
 
 - I am putting an alias on the `__time` column. The name `__time` is reserved in Druid and we will get into trouble if it occurs in the input data.
-- By default, Druid returns the result set in a JSON array. For playing back the data, we need newline delimied JSON. A quick incantation of `jq` fixes this.
+- By default, Druid returns the result set in a JSON array. For playing back the data, we need newline delimited JSON. A quick incantation of `jq` fixes this.
 - If you select any sketch field in a query, it is automatically converted into a base-64 encoded string and surrounded with an extra set of double quotes. These are then escaped as `'\"'` in the result set. The quick and dirty way to remove those is with `sed`.
 
 Here is the complete command line:
