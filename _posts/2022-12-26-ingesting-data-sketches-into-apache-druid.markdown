@@ -195,7 +195,7 @@ Within rounding error, the resulting table gives the same query results as the o
 
 ## Doing it with SQL Ingestion
 
-SQL based ingestion was added into Druid 24. There's also a wizard in the Query window that can convert a JSON ingestion spec into equivalent SQL. It is a bit hidden near the query options:
+SQL based ingestion was added in Druid 24. There's also a wizard in the Query window that can convert a JSON ingestion spec into equivalent SQL. It is a bit hidden near the query options:
 
 ![Talaria wizard](/assets/2022-12-26-02-talaria-convert.jpg)
 
