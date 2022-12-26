@@ -91,14 +91,98 @@ I am using the Wikipedia sample data that comes with each Druid version. This is
 }
 ```
 
+For reference, run a `GROUP BY` query in the console:
+
+```sql
+SELECT
+  __time,
+  SUM(__count) AS numRows,
+  HLL_SKETCH_ESTIMATE(DS_HLL(hll_user)) AS uniqueUsersHLL,
+  THETA_SKETCH_ESTIMATE(DS_THETA(theta_user)) AS uniqueUsersTheta
+FROM "wikipedia-rollup-00"
+GROUP BY 1
+```
+
+![]()
+
+
+
 Let's export these data into a newline delimited JSON file. This can be done using Druid's SQL API. There are a few caveats:
 
-- By default, Druid returns the reault set in a JSON array. For playing back the data, we need newline delimied JSON. A quick incantation of `jq` fixes this.
+- By default, Druid returns the result set in a JSON array. For playing back the data, we need newline delimied JSON. A quick incantation of `jq` fixes this.
 - If you select any sketch field in a query, it is automatically converted into a base 64 encoded string and surrounded with an extra set of double quotes. These are then escaped as `'\"'` in the result set. The quick and dirty way to remove those is with `sed`.
 
 Here is the complete command line:
 
 ```bash
 curl -XPOST -H "Content-Type: application/json" http://localhost:8888/druid/v2/sql/ -d'{ "query": "SELECT * FROM \"wikipedia-rollup-00\"" }' | jq -c '.[]' | sed -e 's/\\\"//g' >wikipedia-rollup-00.json
+```
+
+## Ingesting the sketches back into Druid
+
+In order to convert the base 64 strings back into binary sketches, we need to employ a few special options.
+
+Here is the ingestion spec:
+
+```
+{
+  "type": "index_parallel",
+  "spec": {
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "local",
+        "baseDir": "/Users/hellmarbecker/meetup-talks/talaria-sketches",
+        "filter": "wikipedia-rollup-00.json"
+      },
+      "inputFormat": {
+        "type": "json"
+      }
+    },
+    "tuningConfig": {
+      "type": "index_parallel",
+      "partitionsSpec": {
+        "type": "hashed"
+      },
+      "forceGuaranteedRollup": true
+    },
+    "dataSchema": {
+      "dataSource": "wikipedia-rollup-01",
+      "timestampSpec": {
+        "column": "__time",
+        "format": "auto"
+      },
+      "transformSpec": {},
+      "dimensionsSpec": {
+        "dimensions": [
+          "channel"
+        ]
+      },
+      "granularitySpec": {
+        "queryGranularity": "hour",
+        "rollup": true,
+        "segmentGranularity": "day"
+      },
+      "metricsSpec": [
+        {
+          "name": "__count",
+          "type": "longSum",
+          "fieldName": "__count"
+        },
+        {
+          "name": "theta_user",
+          "type": "thetaSketch",
+          "fieldName": "theta_user",
+          "isInputThetaSketch": true
+        },
+        {
+          "name": "hll_user",
+          "type": "HLLSketchMerge",
+          "fieldName": "hll_user"
+        }
+      ]
+    }
+  }
+}
 ```
 
