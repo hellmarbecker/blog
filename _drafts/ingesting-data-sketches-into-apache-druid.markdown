@@ -75,3 +75,15 @@ I am using the Wikipedia sample data that comes with each Druid version. This is
   }
 }
 ```
+
+Let's export these data into a newline delimited JSON file. This can be done using Druid's SQL API. There are a few caveats:
+
+- By default, Druid returns the reault set in a JSON array. For playing back the data, we need newline delimied JSON. A quick incantation of `jq` fixes this.
+- If you select any sketch field in a query, it is automatically converted into a base 64 encoded string and surrounded with an extra set of double quotes. These are then escaped as `'\"'` in the result set. The quick and dirty way to remove those is with `sed`.
+
+Here is the complete command line:
+
+```
+curl -XPOST -H "Content-Type: application/json" http://localhost:8888/druid/v2/sql/ -d'{ "query": "SELECT * FROM \"wikipedia-rollup-00\"" }' | jq -c '.[]' | sed -e 's/\\\"//g'
+```
+
