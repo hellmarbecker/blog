@@ -19,7 +19,7 @@ mvn clean install -Pdist -DskipTests
 
 Then follow the instructions to locate and install the tarball.
 
-_**Disclaimer:** The steps described here are using undocumented functionality. This blog is neither endorsed by Imply nor by the Apache Druid PMC. It merely describes the results of personal experiments. The features described here might, in the final release, work differently, or not at all. Your mileage may vary._
+_**Disclaimer:** This tutorial uses undocumented functionality. This blog is neither endorsed by Imply nor by the Apache Druid PMC. It merely collects the results of personal experiments. The features described here might, in the final release, work differently, or not at all. Your mileage may vary._
 
 ## Generating the Data Sample
 
