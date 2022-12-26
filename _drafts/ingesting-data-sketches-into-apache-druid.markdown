@@ -83,7 +83,7 @@ Let's export these data into a newline delimited JSON file. This can be done usi
 
 Here is the complete command line:
 
-```
+```bash
 curl -XPOST -H "Content-Type: application/json" http://localhost:8888/druid/v2/sql/ -d'{ "query": "SELECT * FROM \"wikipedia-rollup-00\"" }' | jq -c '.[]' | sed -e 's/\\\"//g'
 ```
 
