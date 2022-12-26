@@ -4,7 +4,7 @@ title:  "Ingesting Data Sketches into Apache Druid"
 categories: blog imply druid tutorial
 ---
 
-[Data Sketches](https://youtu.be/Hpd3f_MLdXo?t=398) are a powerful way to get fast approximations for a bunch of measures that are very expensive to compute precisely. This includes [distinct counts](https://druid.apache.org/docs/latest/querying/sql-scalar.html#hll-sketch-functions) and [quantiles](https://druid.apache.org/docs/latest/querying/sql-scalar.html#quantiles-sketch-functions).
+[Data Sketches](https://youtu.be/Hpd3f_MLdXo?t=398) are a powerful way to get fast approximations for a bunch of measures that are very expensive to compute precisely. This includes [distinct counts](/2022/06/05/druid-data-cookbook-counting-unique-visitors-for-overlapping-segments/) and [quantiles](/2022/03/20/druid-data-cookbook-quantiles-in-druid-with-datasketches/).
 
 While data sketches can be computed directly within Druid, some of my customers prefer to roll up the data and compute the sketches in the preprocessing stage. Today, I am going to look at a few scenarios around ingesting these sketches.
 
