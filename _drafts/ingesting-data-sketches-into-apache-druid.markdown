@@ -6,6 +6,21 @@ categories: blog imply druid tutorial
 
 [Data Sketches](https://youtu.be/Hpd3f_MLdXo?t=398) are a powerful way to get fast approximations for a bunch of measures that are very expensive to compute precisely. This includes [distinct counts](link) and [quantiles](link).
 
+While data sketches can be computed directly within Druid, some of my customers prefer to roll up the data and compute the sketches in the preprocessing stage. Today, I am going to look at a few scenarios around ingesting these sketches.
+
+This is a sneak peek into Druid 25 functionality. In order to use the new functions, you can (as of the time of writing) [build](https://druid.apache.org/docs/latest/development/build.html) the current release candidate:
+
+```bash
+git clone git@github.com:apache/druid.git
+cd druid
+git checkout druid-25.0.0-rc1
+mvn clean install -Pdist -DskipTests
+```
+
+Then follow the instructions to locate and install the tarball.
+
+_**Disclaimer:** The steps described here are using undocumented functionality. This blog is neither endorsed by Imply nor by the Apache Druid PMC. It merely describes the results of personal experiments. The features described here might, in the final release, work differently, or not at all. Your mileage may vary._
+
 ## Generating the Data Sample
 
 First, let's generate our data set that has precomputed data sketches. I am going to use Druid for this; in a real project, you might use Spark or whatever preprocessing you have in place.
@@ -84,6 +99,6 @@ Let's export these data into a newline delimited JSON file. This can be done usi
 Here is the complete command line:
 
 ```bash
-curl -XPOST -H "Content-Type: application/json" http://localhost:8888/druid/v2/sql/ -d'{ "query": "SELECT * FROM \"wikipedia-rollup-00\"" }' | jq -c '.[]' | sed -e 's/\\\"//g'
+curl -XPOST -H "Content-Type: application/json" http://localhost:8888/druid/v2/sql/ -d'{ "query": "SELECT * FROM \"wikipedia-rollup-00\"" }' | jq -c '.[]' | sed -e 's/\\\"//g' >wikipedia-rollup-00.json
 ```
 
