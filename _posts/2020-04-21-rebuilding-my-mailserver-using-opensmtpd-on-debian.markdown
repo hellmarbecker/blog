@@ -66,7 +66,7 @@ And voilà, I have a nice, working mail server. I used Gilles's instructions for
 - dovecot for my IMAP server
 - rspamd to filter spam
 
-The walkthrough in Gilles's blog is really detailed and can easily adapted to Linux. Really great work!
+The walkthrough in Gilles's blog is really detailed and can easily be adapted to Linux. Really great work!
 
 In addition, I installed `ufw` for a firewall, because I like things easy.
 
