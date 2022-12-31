@@ -11,7 +11,7 @@ While data sketches can be computed directly within Druid, some of my customers 
 This is a sneak peek into Druid 25 functionality. In order to use the new functions, you can (as of the time of writing) [build](https://druid.apache.org/docs/latest/development/build.html) the current release candidate:
 
 ```bash
-git clone git@github.com:apache/druid.git
+git clone https://github.com/apache/druid.git
 cd druid
 git checkout druid-25.0.0-rc1
 mvn clean install -Pdist -DskipTests
