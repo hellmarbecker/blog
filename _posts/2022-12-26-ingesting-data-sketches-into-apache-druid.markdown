@@ -25,7 +25,7 @@ _**Disclaimer:** This tutorial uses undocumented functionality. This blog is nei
 
 First, let's generate our data set that has precomputed data sketches. I am going to use Druid for this; in a real project, you might use Spark or whatever preprocessing you have in place.
 
-I am using the Wikipedia sample data that comes with each Druid version. This is one day's worth of Wikipedia edits, which for the purpose of this tutorial, I will roll up by hour. I am interested in unique users by hour and channel, and I will model those both as HLL sketches and theta sketches. Here is the ingestion spec for this:
+I am using the Wikipedia sample data that comes with each Druid version. This is one day's worth of Wikipedia edits, which for the purpose of this tutorial, I will [roll up by hour](https://sergioferragut.substack.com/p/rollup-ingestion-in-druid-using-sql). I am interested in unique users by hour and channel, and I will model those both as HLL sketches and theta sketches. Here is the ingestion spec for this:
 
 ```json
 {
