@@ -7,8 +7,19 @@ categories: blog apache druid imply tutorial
 
 ## with `jq`
 
+We want to select only those fields from the JSON object that have names that start with "f" and have only digits after that. Let's break this down into steps.
+
+- First, I use the `to_entries` function to transform the JSON object into an array of objects that have fields `key` and `value`.
+ 
+  So, `{ "a" : "1" }` becomes `[ { "key" : "a", "value" : "1" } ]`. 
+  
+- The first `map` statement selects only those keys that match the regular expression for the flag name ("f" + any number of digits, but nothing else).
+- The result is filtered by a `select` statement that keeps only the entries where the `value` evaluates to `true`.
+- The final `map` statement keeps only the keys for the matching entries and returns them in an array.
+
+
 ```
-to_entries | map(select(.["key"]|match("^f\\d+$")) | select(.["value"])) | map(.["key"])
+to_entries | map(select(.key | match("^f\\d+$")) | select(.value)) | map(.key)
 ```
 
 ## Flags in a nested object
