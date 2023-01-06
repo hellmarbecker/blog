@@ -17,6 +17,7 @@ We want to select only those fields from the JSON object that have names that st
 - The result is filtered by a `select` statement that keeps only the entries where the `value` evaluates to `true`.
 - The final `map` statement keeps only the keys for the matching entries and returns them in an array.
 
+This is the filter phrase as you would use it with `jq`:
 
 ```
 to_entries | map(select(.key | match("^f\\d+$")) | select(.value)) | map(.key)
