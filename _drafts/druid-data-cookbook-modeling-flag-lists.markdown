@@ -11,6 +11,12 @@ lorem ipsum
 
 ## With a completely flat structure
 
+data sample:
+
+```
+{ "timestamp" : "2023-01-05",  "lorem" : "ipsum",  "f1" : true,  "f2" : false,  "f3" : true, "sf3" : true,  "ffb" : true }
+```
+
 ```json
 {
   "type": "index_parallel",
