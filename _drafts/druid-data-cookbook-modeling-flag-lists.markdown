@@ -5,6 +5,12 @@ categories: blog apache druid imply tutorial
 ---
 ![Druid Cookbook](/assets/2021-12-21-elf.jpg)
 
+## with `jq`
+
+```
+to_entries | map(select(.["key"]|match("^f\\d+$")) | select(.["value"])) | map(.["key"])
+```
+
 ## Flags in a nested object
 
 lorem ipsum
