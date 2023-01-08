@@ -91,7 +91,7 @@ Upload the data that you generated into Druid. If you are running the local quic
 
 In the `Parse data` step, add a column flattening:
 
-![Select column flattening]()
+![Select column flattening](/assets/2023-01-08-01.jpg)
 
 And configure it to use `jq` and this transformation phrase (note the extra backslashes!):
 ```
@@ -99,7 +99,7 @@ to_entries | map(select(.key | match("^f\\\\d+$")) | select(.value)) | map(.key)
 ```
 While the console wizard will escape the double quotes on your behalf, the `\d` in the regular expression needs an extra level of escaping. That is why there are 4 backslashes now.
 
-![Configure column flattening]()
+![Configure column flattening](/assets/2023-01-08-02.jpg)
 
 Discard the individual flag columns. Here is the final ingestion spec:
 
