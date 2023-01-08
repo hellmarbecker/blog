@@ -5,7 +5,55 @@ categories: blog apache druid imply tutorial
 ---
 ![Druid Cookbook](/assets/2021-12-21-elf.jpg)
 
-## with `jq`
+In timeseries data, you may have lists of boolean flags that come with each data record. Running a Druid ingestion on that, you would create a large number of dimensions. If you have followed the [Druid Data Modeling class](https://learn.imply.io/apache-druid-ingestion-and-data-modeling), you know that reducing the number of dimensions is one goal of optimizing the data model in Druid.
+
+This is one of the prime use cases for [multi-value dimensions](https://blog.hellmar-becker.de/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/).
+
+Rather than having one dimension per flag, create one multi-value dimension for all flags. So
+
+## Generating Sample Data
+
+Let's generate ourselves some fake timeseries data. The data format is simple:
+
+- a timestamp
+- a quantity and value, where the quantity is a single random letter
+- various boolean flags that may or may not conform to the naming convention "f" plis any number of digits.
+
+Here's a small python script for generating the data, you will need the [Faker](https://pypi.org/project/Faker/) module installed:
+
+```python
+import json
+import time
+from faker import Faker
+
+maxRecords = 20000
+fake = Faker()
+flagsOrNot = [ "f1", "f2", "f3", "f10", "f1f", "ff1", "abc" ];
+
+def main():
+
+    ts = time.time() - 10 * 86400 # 10 days back
+    for id in range(maxRecords):
+
+        emitRecord = {
+            "timestamp" : int(round(ts)),
+            "quantity" : fake.random_element(elements=('a', 'b', 'c', 'd')),
+            "value" : fake.random_number(digits=3) / 100.0,
+        }
+        emitRecord.update( {
+            k : fake.boolean() for k in flagsOrNot
+        } )
+
+        print(json.dumps(emitRecord))
+        ts += fake.random_int(min=1, max=60)
+
+if __name__ == "__main__":
+    main()
+```
+
+Run the script and save the output in a file named `flags.json`.
+
+## Extracting the flag data with `jq`
 
 We want to select only those fields from the JSON object that have names that start with "f" and have only digits after that. Let's break this down into steps.
 
@@ -23,11 +71,17 @@ This is the filter phrase as you would use it with `jq`:
 to_entries | map(select(.key | match("^f\\d+$")) | select(.value)) | map(.key)
 ```
 
-## Flags in a nested object
+## Approach 1: Preprocessing
 
-lorem ipsum
+One way of ingesting the flags as a multi-value dimension is preprocessing. Let's just add a `flags` field to each JSON object:
 
-## With a completely flat structure
+```bash
+jq -c '. += { "flags": to_entries | map(select(.key | match("^f\\d+$")) | select(.value)) | map(.key) }' < flags.json
+```
+
+This does the trick and it may be good enough. But let's look at some more elegant solutions.
+
+## Approach 2: Using `flattenSpec`
 
 data sample:
 
