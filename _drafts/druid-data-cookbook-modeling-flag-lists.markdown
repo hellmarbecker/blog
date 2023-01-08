@@ -9,7 +9,11 @@ In timeseries data, you may have lists of boolean flags that come with each data
 
 This is one of the prime use cases for [multi-value dimensions](https://blog.hellmar-becker.de/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/).
 
-Rather than having one dimension per flag, create one multi-value dimension for all flags. So
+Rather than having one dimension per flag, create one multi-value dimension for all flags. So `{"f1":true, "f2":false, "f3":true, "f10":true}` is transformed to `{"flags":["f1","f3","f10"]}`. You can then 
+
+-  filter by the presence or absence of individual values, 
+-  count the number of occurrences of each value [in a single `GROUP BY` clause](https://druid.apache.org/docs/latest/querying/multi-value-dimensions.html#grouping),
+-  or apply set operations and complex filters with [MV functions](https://druid.apache.org/docs/latest/querying/sql-multivalue-string-functions.html).
 
 ## Generating Sample Data
 
@@ -83,11 +87,21 @@ This does the trick and it may be good enough. But let's look at some more elega
 
 ## Approach 2: Using `flattenSpec`
 
-data sample:
+Upload the data that you generated into Druid. If you are running the local quickstart, you can just use local file ingestion, otherwise just put it into S3.
 
+In the `Parse data` step, add a column flattening:
+
+![Select column flattening]()
+
+And configure it to use `jq` and this transformation phrase (note the extra backslashes!):
 ```
-{ "timestamp" : "2023-01-05",  "lorem" : "ipsum",  "f1" : true,  "f2" : false,  "f3" : true, "sf3" : true,  "ffb" : true }
+to_entries | map(select(.key | match("^f\\\\d+$")) | select(.value)) | map(.key)
 ```
+While the console wizard will escape the double quotes on your behalf, the `\d` in the regular expression needs an extra level of escaping. That is why there are 4 backslashes now.
+
+![Configure column flattening]()
+
+Discard the individual flag columns. Here is the final ingestion spec:
 
 ```json
 {
@@ -96,18 +110,18 @@ data sample:
     "ioConfig": {
       "type": "index_parallel",
       "inputSource": {
-        "type": "inline",
-        "data": "{   \"timestamp\" : \"2023-01-05\",  \"lorem\" : \"ipsum\",  \"f1\" : true,  \"f2\" : false,  \"f3\" : true, \"sf3\" : true,  \"ffb\" : true }"
+        "type": "local",
+        "filter": "flags.json",
+        "baseDir": "/Users/hellmarbecker/imply-utils/"
       },
       "inputFormat": {
         "type": "json",
         "flattenSpec": {
-          "useFieldDiscovery": true,
           "fields": [
             {
-              "type": "path",
-              "name": "alldata",
-              "expr": "$"
+              "type": "jq",
+              "name": "flags",
+              "expr": "to_entries | map(select(.key | match(\"^f\\\\d+$\")) | select(.value)) | map(.key)"
             }
           ]
         }
@@ -120,38 +134,28 @@ data sample:
       }
     },
     "dataSchema": {
-      "dataSource": "inline_data",
+      "dataSource": "flag_data",
       "timestampSpec": {
-        "column": "!!!_no_such_column_!!!",
-        "missingValue": "2010-01-01T00:00:00Z"
-      },
-      "transformSpec": {
-        "transforms": [
-          {
-            "type": "expression",
-            "expression": "json_value(root, '$.lorem')",
-            "name": "tsl"
-          }
-        ]
+        "column": "timestamp",
+        "format": "auto"
       },
       "granularitySpec": {
         "queryGranularity": "none",
-        "rollup": false
+        "rollup": false,
+        "segmentGranularity": "day"
       },
       "dimensionsSpec": {
         "dimensions": [
           {
-            "name": "alldata",
-            "type": "json"
+            "name": "flags",
+            "type": "string",
+            "multiValueHandling": "SORTED_ARRAY"
           },
-          "timestamp",
-          "lorem",
-          "f1",
-          "f2",
-          "f3",
-          "sf3",
-          "ffb",
-          "tsl"
+          "quantity",
+          {
+            "type": "double",
+            "name": "value"
+          }
         ]
       }
     }
@@ -159,12 +163,34 @@ data sample:
 }
 ```
 
+Let's convert this to SQL for MSQ ingestion:
+
+```sql
+-- This SQL query was auto generated from an ingestion spec
+REPLACE INTO "flag_data" OVERWRITE ALL
+WITH "source" AS (SELECT * FROM TABLE(
+  EXTERN(
+    '{"type":"local","filter":"flags.json","baseDir":"/Users/hellmarbecker/imply-utils/"}',
+    '{"type":"json","flattenSpec":{"fields":[{"type":"jq","name":"flags","expr":"to_entries | map(select(.key | match(\"^f\\\\d+$\")) | select(.value)) | map(.key)"}]}}',
+    '[{"name":"timestamp","type":"string"},{"name":"flags","type":"string"},{"name":"quantity","type":"string"},{"name":"value","type":"double"}]'
+  )
+))
+SELECT
+  CASE WHEN CAST("timestamp" AS BIGINT) > 0 THEN MILLIS_TO_TIMESTAMP(CAST("timestamp" AS BIGINT)) ELSE TIME_PARSE("timestamp") END AS __time,
+  "flags",
+  "quantity",
+  "value"
+FROM "source"
+PARTITIONED BY DAY
+```
+
+As you can see, the `inputSource` and `inputFormat` sections from the JSON spec are copied verbatim into the `EXTERN` clause used by the SQL ingestion.
+
 ## Conclusion
 
-lorem ipsum
-
-- ...
-- ...
+- When you find a long list of boolean fields (such as flags) in your data, consider modeling them as a multi-value dimension.
+- You can apply `jq` based preprocessing in the column flattening spec, which may save you a step of extra processing in your pipeline.
+- The same trick works with SQL based ingestion, too.
 
 ---
 
