@@ -32,7 +32,7 @@ This is how we used to do analytics, roughly 20 years ago. You would have your o
 
 OLTP databases are built to process single updates or inserts very quickly. In traditional relational modeling this means you have to normalize your data model, ideally to a point where each item exists only once in a database. The downside is when you want to run an analytical query that aggregates data from different parts of your database, these queries require complex joins and can become very expensive, hurting query times and interfering with the transactional performance of your database.
 
-Hence another type of databases was conceived which is optimized for these analytical queries: OLAP databases. These come in different shapes and flavours, but generally a certain amount of denormalization and possibly preaggregation is applied to the data.
+Hence another type of databases was conceived which is optimized for these analytical queries: OLAP databases. These come in different shapes and flavors, but generally a certain amount of denormalization and possibly preaggregation is applied to the data.
 
 The process that ships data from the transactional system to the OLAP database is called ETL - Extract, Transform, Load. It is a batch process that would run on a regular basis, for instance once a night or once every week. The frequency of the batch process determines how "fresh" your analytical data is.
 
