@@ -128,9 +128,97 @@ Here's the overview in a chart:
 
 The chart also suggests that we are going to need a total of three topics:
 
-- The original topic
+- The original topic `imply-news`
 - A topic that contains all click data
 - A topic that contains only filtered click data.
+
+We are going run some ksqlDB queries to achieve this. You can enter the queries directly into the ksqlDB editor in Confluent Cloud:
+
+![ksqlDB Editor](/assets/2023-01-12-03-ksql.jpg)
+
+### Creating a Stream
+
+ksqlDB uses abstractions on top of Kafka topics: _Streams_ and _Tables_. You can imagine Streams as describing a change log, and Tables as describing the last known state. For this tutorial, we will work with Streams only.
+
+Let's create a stream on top of the original topic. Because we have different types of objects, we have to treat the incoming events as unstructured data for now. We do this by specifying `VALUE_FORMAT='KAFKA'` in the statement, which interprets the data as a sequence of bytes without further assumptions:
+
+```sql
+CREATE OR REPLACE STREAM `imply-news-raw` (
+  `sid_key` STRING KEY, 
+  `payload` STRING 
+) 
+WITH ( KAFKA_TOPIC='imply-news', KEY_FORMAT='KAFKA', VALUE_FORMAT='KAFKA' );
+```
+
+This does not create any jobs or new topics yet!
+
+### Split by Type
+
+Now let's implement topic splitter. We will only retain records with type 'click'. This is one way to splice up a topic that has different types of records. Data is still regarded as a blob and the splicing criteria is extracted with an explicit JSON function:
+
+```sql
+CREATE OR REPLACE STREAM `imply-news-clicks` WITH (
+  KAFKA_TOPIC='imply-news-clicks',
+  PARTITIONS=6,
+  KEY_FORMAT='KAFKA',
+  VALUE_FORMAT='KAFKA' ) AS
+SELECT
+  `sid_key`,
+  `payload` 
+FROM `imply-news-raw` 
+WHERE EXTRACTJSONFIELD(`payload`, '$.recordType') = 'click';
+```
+
+While this statement looks similar to the first one, it does something very different: The idiom `CREATE STREAM ... AS SELECT` creates a new _push query_ and _a new topic_ to receive the result. Unlike a regular (pull) query, the push query continues to run and to produce new output for every input event!
+
+Viewed another way, by issuing this statement you have just deployed a realtime streaming application!
+
+### From Unstructured to Structured Data
+
+Now let's reinterpret the cleansed data as structured JSON records. This is another `CREATE STREAM` statement that, like the first one, does not spawn a new process. But the `VALUE_FORMAT` is now `JSON` and we specify the fields for our record type explicitly. (There are more elegant ways to do this using the Schema Registry, but that is another story for another time.)
+
+```sql
+CREATE OR REPLACE STREAM `imply-news-cooked` (
+  `sid_key` STRING KEY,
+  `sid` STRING,
+  `timestamp` BIGINT,
+  `recordType` STRING,
+  `url` STRING,
+  `useragent` STRING,
+  `statuscode` STRING,
+  `state` STRING,
+  `uid` STRING,
+  `isSubscriber` INT,
+  `campaign` STRING,
+  `channel` STRING,
+  `contentId` STRING,
+  `subContentId` STRING,
+  `gender` STRING,
+  `age` STRING,
+  `latitude` DOUBLE,
+  `longitude` DOUBLE,
+  `place_name` STRING,
+  `country_code` STRING,
+  `timezone` STRING
+)
+WITH ( KAFKA_TOPIC='imply-news-clicks', KEY_FORMAT='KAFKA', VALUE_FORMAT='JSON' );
+```
+
+### Filtering the Data
+
+And finally, let's do a minimalistic example of further processing by filtering out only click events that originate from Germany:
+
+```sql
+CREATE OR REPLACE STREAM `imply-news-de` WITH (
+  KAFKA_TOPIC='imply-news-de',
+  KEY_FORMAT='KAFKA',
+  VALUE_FORMAT='JSON' ) AS
+SELECT *
+FROM `imply-news-cooked`
+WHERE `country_code` = 'DE';
+```
+
+Here's where you would apply any other filtering, massaging, joining, or whatever you would do in an ETL process. But let's leave Confluent Cloud here and move on the the next step.
 
 
 
