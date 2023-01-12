@@ -78,7 +78,16 @@ In this tutorial, I will use [ksqlDB](https://ksqldb.io/). ksqlDB is a community
 
 With ksqlDB, you can write a complex event streaming application as simple SQL statements. ksqlDB queries are typically persistent: unlike database queries, they continue running until they are explicitly stopped, and they continue to emit new events as they process new input events in real time. ksqlDB abstracts away for the most part the detail of event and state handling.
 
+## High-Level Architecture
 
+So, here's the plan:
+
+![Streaming Analytics Architecture](/assets/2021-10-19-0-architecture.png)
+
+- Use Confluent Cloud (based on Kafka) for delivery
+- For streaming ETL, use ksqlDB - also in Confluent Cloud
+- ksqlDB will play data back into a Kafka topic
+- Use Imply Polaris's built in Confluent Cloud connectivity to ingest the preprocessed data into Polaris. 
 
 ## Prerequisites
 
