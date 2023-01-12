@@ -206,7 +206,7 @@ WITH ( KAFKA_TOPIC='imply-news-clicks', KEY_FORMAT='KAFKA', VALUE_FORMAT='JSON' 
 
 ### Filtering the Data
 
-And finally, let's do a minimalistic example of further processing by filtering out only click events that originate from Germany:
+And finally, let's do a minimalistic example of further processing by filtering out only click events that originate from Germany, creating another push query and a new topic:
 
 ```sql
 CREATE OR REPLACE STREAM `imply-news-de` WITH (
@@ -219,6 +219,8 @@ WHERE `country_code` = 'DE';
 ```
 
 Here's where you would apply any other filtering, massaging, joining, or whatever you would do in an ETL process. But let's leave Confluent Cloud here and move on the the next step.
+
+## Ingesting the Data into Polaris
 
 
 
