@@ -108,6 +108,22 @@ You can see that we have different kinds of objects in this topic, distinguished
 
 ## The ETL Pipeline
 
+Let's set up a basic ETL pipeline. We have two tasks:
+
+1. We need to filter the raw data, retaining only the records that have type `click`.
+2. Once we have a uniform structure, we want to filter out only records that originate from a specific country.
+
+Here's the overview in a chart:
+
+![ETL pipeline](/assets/2023-01-12-02-kafka-etl.png)
+
+The chart also suggests that we are going to need a total of three topics:
+
+- The original topic
+- A topic that contains all click data
+- A topic that contains only filtered click data.
+
+
 
 ---
 
