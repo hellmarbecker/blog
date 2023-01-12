@@ -222,8 +222,43 @@ Here's where you would apply any other filtering, massaging, joining, or whateve
 
 ## Ingesting the Data into Polaris
 
+In Polaris, create a new source using Confluent Cloud as the input:
+
+![Confluent Cloud Source](/assets/2023-01-12-04-polaris-connect.jpg)
+
+You will need your Confluent Cloud broker URL and credentials. How to acquire these, I have covered this in more detail [in this post](/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/). There is a `Test` button to verify that the connection is working.
+
+Once you are done, navigate to the `Tables` menu and create a new table:
+
+![New Table](/assets/2023-01-12-05-new-table.jpg)
+
+Follow the [documentation](https://docs.imply.io/polaris/ingestion-job/) to set up the table schema based on your newly created connection:
+
+![Populate Table](/assets/2023-01-12-06-populate-table.jpg)
+
+Start the ingestion job and watch the data coming in! Now you can continue with building dashboards like this:
+
+![Example Dashboard](/assets/2023-01-12-07-dashboard.jpg)
+
+## Conclusion
+
+What have we just learnt?
+
+It is easy to build a streaming analytics architecture on top of Kafka and Druid. I haven't had to write a line of code to put this together.
+
+We have seen two flavors of SQL which complement each other in streaming analytics, although they work in very different ways:
+
+- **ksqlDB enables streaming SQL for ETL and event processing.** This is called push queries - you continue to get new results. 
+- Each ksqlDB query generates a new stream. Also, each aggregation that you defined in ksqlDB creates a new stream.
+
+- **Druid enables streaming analytics.** It has a scalable and highly performant way to ingest streaming data.
+- Druid contains a (typically) fine grained model of all your data.
+- Druid queries can aggregate at any level and slice and dice every which way.
+- Druid queries are pull queries and give a snapshot of the data store at the time it was queried.
+
+Together, they form a powerful combo!
 
 
 ---
 
-Lambda and Kappa architecture diagrams are linked from [this Ericsson blog](https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa).
+Image source: Lambda and Kappa architecture diagrams are linked from [this Ericsson blog](https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa).
