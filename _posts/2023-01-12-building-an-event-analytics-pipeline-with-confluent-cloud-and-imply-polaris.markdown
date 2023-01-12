@@ -42,7 +42,7 @@ A better way of processing data for analytics was needed. And we'll look at that
 
 ### Big Data and the Lambda Architecture
 
-About ten years ago, the big data craze came up around the Hadoop ecosystem. Hadoop brought with it the ability to handle historical data to a previously unknown scale, but it also already had real time [note: this is not hard real time like in embedded systems! If necessary elaborate] capability, with tooling like Kafka, Flume, and HBase.
+About ten years ago, the big data craze came up around the Hadoop ecosystem. Hadoop brought with it the ability to handle historical data to a previously unknown scale, but it also already had real time[^1] capability, with tooling like Kafka, Flume, and HBase.
 
 The first approach to getting analytics more up to date was the so called lambda architecture, where incoming data would be sent across two parallel paths:
 
@@ -65,16 +65,46 @@ A better way needed to be found. It was created in the form of the kappa archite
 
 The kappa architecture handles incoming streaming data and historical data in a common, uniform way and is more robust than a lambda architecture. Ideally you still want to encapsulate the details of such an architecture and not concern the user with it. We will come to that in a moment.
 
+### Implementing the Kappa Architecture: Druid
+
+[Apache Druid](https://druid.apache.org/) is a high performance, real-time analytics database purpose-built for powering analytics applications at massive scale and concurrency on streaming and batch data. 
+
+Druid encapsulates the kappa architecture so you don't need to bother about all the implementation detail. Here is a quick, high level overview of the comoponents that make up a Druid instance.
+
+![Druid architecture](/assets/2023-01-12-08-druid-architecture.jpg)
+
+Druid is heavily distributed and exceptionally scalable, and here is how that works.
+
+In Druid, there are three type of servers: master, query, and data servers. Also there is deep storage (typically object storage, such as S3), and a relational database for metadata.
+
+Master servers handle data coordination, metadata processing, and service discovery. They know which bit of data lives where in the Druid cluster, and which processes and compute resources are available.
+
+Query servers serve as the entry point for clients. They receive a query, chop it up into partial queries that can be handled by a single machine independently, and assign each partial query to a process on a data server. When the partial results come back, the query server assembles them, applies final processing such as sorting and aggregations, and returns the result to the caller.
+
+The heavy lifting is mostly done by machines called data servers. A data server handles both data ingestion and partial queries.
+
+Let's look at streaming ingestion. An _indexer_ process consumes data directly from a Kafka stream. These data are stored in memory as a realtime segment. They are already queryable. When a configurable time interval has been passed, the segment is closed off and a new segment is started. The finished segment is transformed into a columnar format. Within the segment, data is ordered by time. All alphanumeric data are dictionary compressed and bitmap indexed. The final result is binary compressed again, and written to deep storage. Deep storage serves as an archive and the source of truth.
+
+From deep storage, segments are then loaded to the local storage of the data servers, typically twice replicated for resiliency and performance. Then they are available for querying by the historical processes.
+
+A query's result is collected from the realtime segments (via the indexers) and the historical segments. This encapsulates the kappa architecture and hides most of its detail from the database user.
+
+### Imply Polaris: Druid as a Service
+
+[Imply Polaris](https://imply.io/imply-polaris/) is a cloud based database-as-a-service based on Druid. Polaris is completely managed and offers a unified GUI and API to ingest, manage, and analyze your data. It can natively read from message streams with minimal configuration, and offers a built-in frontend for adhoc analytics, dashboarding and alerting.
+
+I will be using Polaris as the analytics database in this tutorial.
+
 ## Preparing your Data: Streaming ETL
 
-But first a few words about the part that I didn't cover in the last two slides: How to get the data out of the transactional systems into whatever analytics architecture you have.
+We also need to concern ourselves with getting the data out of the transactional systems into our analytics architecture - the ETL part.
 
 Instead of processing batches of data, streaming ETL has to be event driven. There are two ways of processing event data in a streaming ETL pipeline:
 
 - *Simple event processing* looks at one event at a time. Simple event processing is *stateless* which makes it easy to implement but limite the things you can do with it. This is used for format transformations, filtering, or data cleansing, for instance. An example for simple event processing is Apache NiFi.
 - *Complex event processing* looks at a collection of events over time, hence it is *stateful* and has to maintain a state store in the background. With that you can do things like windows aggregations, such as sliding averages or session aggregations. You can also join various event streams (think orders and shipments), or enrich data with lookup data that is itself event based. Complex event processing is possible using frameworks like Spark Streaming, Flink, or Kafka Streams.
 
-In this tutorial, I will use [ksqlDB](https://ksqldb.io/). ksqlDB is a community licensed SQL framework on top of Kafka Streams, by Confluent. It is also available as a managed offering in Confluent Cloud, and that is what I will be using.
+In this tutorial, I will use Confluent Cloud for data delivery, and [ksqlDB](https://ksqldb.io/) for streaming ETL. ksqlDB is a community licensed SQL framework on top of Kafka Streams, by Confluent. It is also available as a managed offering in Confluent Cloud, and that is what I will be using.
 
 With ksqlDB, you can write a complex event streaming application as simple SQL statements. ksqlDB queries are typically persistent: unlike database queries, they continue running until they are explicitly stopped, and they continue to emit new events as they process new input events in real time. ksqlDB abstracts away for the most part the detail of event and state handling.
 
@@ -264,5 +294,7 @@ Together, they form a powerful combo!
 
 
 ---
+
+[^1]: Not in the sense of hard real time like in embedded systems - here we speak of latencies in the range of seconds or fraction of a second.
 
 Image source: Lambda and Kappa architecture diagrams are linked from [this Ericsson blog](https://www.ericsson.com/en/blog/2015/11/data-processing-architectures--lambda-and-kappa).
