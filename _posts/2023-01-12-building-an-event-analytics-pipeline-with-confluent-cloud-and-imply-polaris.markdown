@@ -248,10 +248,14 @@ It is easy to build a streaming analytics architecture on top of Kafka and Druid
 
 We have seen two flavors of SQL which complement each other in streaming analytics, although they work in very different ways:
 
-- **ksqlDB enables streaming SQL for ETL and event processing.** This is called push queries - you continue to get new results. 
+**ksqlDB enables streaming SQL for ETL and event processing:**
+
+- ksqlDB queries are mostly push queries - you continue to get new results. You can also view each query as an encapsulated streaming application.
 - Each ksqlDB query generates a new stream. Also, each aggregation that you defined in ksqlDB creates a new stream.
 
-- **Druid enables streaming analytics.** It has a scalable and highly performant way to ingest streaming data.
+**Druid enables streaming analytics:** 
+
+- Druid has a scalable and highly performant way to ingest streaming data.
 - Druid contains a (typically) fine grained model of all your data.
 - Druid queries can aggregate at any level and slice and dice every which way.
 - Druid queries are pull queries and give a snapshot of the data store at the time it was queried.
