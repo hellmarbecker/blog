@@ -4,7 +4,7 @@ title:  "Building an Event Analytics Pipeline with Confluent Cloud and Imply Pol
 categories: blog apache druid imply kafka confluent
 ---
 
-![Streaming Analytics Architecture]()
+![Streaming Analytics Architecture](/assets/2021-10-19-0-architecture.png)
 
 A modern streaming analytics pipeline is built around two central components:
 
