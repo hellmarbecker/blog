@@ -4,7 +4,7 @@ title:  "Building an Event Analytics Pipeline with Confluent Cloud and Imply Pol
 categories: blog apache druid imply kafka confluent
 ---
 
-![Streaming Analytics Architecture](/assets/2021-10-19-0-architecture.png)
+![Example Dashboard](/assets/2023-01-12-07-dashboard.jpg)
 
 A modern streaming analytics pipeline is built around two central components:
 
@@ -18,7 +18,10 @@ In this blogpost, I am going to show you how to set up a pipeline that
 - generates a simulated clickstream event stream and sends it to Confluent Cloud
 - processes the raw clickstream data using managed [ksqlDB](https://ksqldb.io/) in Confluent Cloud
 - delivers the processed stream using Confluent Cloud
-- and ingests these JSON events, using a native connection, into Imply Polaris.
+- ingests these JSON events, using a native connection, into Imply Polaris
+- and visualizes the event data in a dashboard.
+
+All this, only with a few clicks and some SQL!
 
 But first, let's cover some of the basics.
 
