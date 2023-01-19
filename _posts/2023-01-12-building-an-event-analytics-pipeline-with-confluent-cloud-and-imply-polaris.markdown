@@ -251,7 +251,7 @@ FROM `imply-news-cooked`
 WHERE `country_code` = 'DE';
 ```
 
-Here's where you would apply any other filtering, massaging, joining, or whatever you would do in an ETL process. But let's leave Confluent Cloud here and move on the the next step.
+Here's where you would apply any other filtering, massaging, joining, or whatever you would do in an ETL process. But let's leave Confluent Cloud for now, and move on the the next step.
 
 ## Ingesting the Data into Polaris
 
