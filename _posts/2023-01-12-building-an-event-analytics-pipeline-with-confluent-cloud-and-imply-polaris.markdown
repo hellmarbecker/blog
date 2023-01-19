@@ -187,7 +187,7 @@ This does not create any jobs or new topics yet!
 
 ### Split by Type
 
-Now let's implement topic splitter. We will only retain records with type 'click'. This is one way to splice up a topic that has different types of records. Data is still regarded as a blob and the splicing criteria is extracted with an explicit JSON function:
+Now let's implement the topic splitter. We will only retain records with type 'click'. This is one way to splice up a topic that has different types of records. Data is still regarded as a blob and the splicing criteria is extracted with an explicit JSON function:
 
 ```sql
 CREATE OR REPLACE STREAM `imply-news-clicks` WITH (
