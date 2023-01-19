@@ -78,17 +78,17 @@ Druid encapsulates the kappa architecture so you don't need to bother about all 
 
 Druid is heavily distributed and exceptionally scalable, and here is how that works.
 
-In Druid, there are three type of servers: master, query, and data servers. Also there is deep storage (typically object storage, such as S3), and a relational database for metadata.
+In Druid, there are three type of servers: _master_, _query_, and _data_ servers. Also there is deep storage (typically object storage, such as S3), and a relational database for metadata.
 
-Master servers handle data coordination, metadata processing, and service discovery. They know which bit of data lives where in the Druid cluster, and which processes and compute resources are available.
+_Master servers_ handle data coordination, metadata processing, and service discovery. They know which bit of data lives where in the Druid cluster, and which processes and compute resources are available.
 
-Query servers serve as the entry point for clients. They receive a query, chop it up into partial queries that can be handled by a single machine independently, and assign each partial query to a process on a data server. When the partial results come back, the query server assembles them, applies final processing such as sorting and aggregations, and returns the result to the caller.
+_Query servers_ serve as the entry point for clients. They receive a query, chop it up into partial queries that can be handled by a single machine independently, and assign each partial query to a process on a data server. When the partial results come back, the query server assembles them, applies final processing such as sorting and aggregations, and returns the result to the caller.
 
-The heavy lifting is mostly done by machines called data servers. A data server handles both data ingestion and partial queries.
+The heavy lifting is mostly done by machines called _data servers_. A data server handles both data ingestion and partial queries.
 
 Let's look at streaming ingestion. An _indexer_ process consumes data directly from a Kafka stream. These data are stored in memory as a realtime segment. They are already queryable. When a configurable time interval has been passed, the segment is closed off and a new segment is started. The finished segment is transformed into a columnar format. Within the segment, data is ordered by time. All alphanumeric data are dictionary compressed and bitmap indexed. The final result is binary compressed again, and written to deep storage. Deep storage serves as an archive and the source of truth.
 
-From deep storage, segments are then loaded to the local storage of the data servers, typically twice replicated for resiliency and performance. Then they are available for querying by the historical processes.
+From deep storage, segments are then loaded to the local storage of the data servers, typically twice replicated for resiliency and performance. Then they are available for querying by the _historical_ processes.
 
 A query's result is collected from the realtime segments (via the indexers) and the historical segments. This encapsulates the kappa architecture and hides most of its detail from the database user.
 
