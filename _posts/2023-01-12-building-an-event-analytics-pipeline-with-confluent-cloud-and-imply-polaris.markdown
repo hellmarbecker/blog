@@ -72,7 +72,7 @@ The kappa architecture handles incoming streaming data and historical data in a 
 
 [Apache Druid](https://druid.apache.org/) is a high performance, real-time analytics database purpose-built for powering analytics applications at massive scale and concurrency on streaming and batch data. 
 
-Druid encapsulates the kappa architecture so you don't need to bother about all the implementation detail. Here is a quick, high level overview of the comoponents that make up a Druid instance.
+Druid encapsulates the kappa architecture so you don't need to bother about all the implementation detail. Here is a quick, high level overview of the components that make up a Druid instance.
 
 ![Druid architecture](/assets/2023-01-12-08-druid-architecture.jpg)
 
