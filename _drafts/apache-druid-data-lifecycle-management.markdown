@@ -29,7 +29,7 @@ Sometimes the requirement is a bit more complex, or staggered:
 - Roll up to weekly data for the last 3 months
 - and to monthly data for anything that is older than 3 months.
 
-It is this more complex scenario where some traps for the unwary are lurking, which I want to explore today. This tutorial works with the [Druid 25.0 quickstart](https://druid.apache.org/docs/latest/tutorials/index.html), and I am running Druid on my laptop - for other configurations you would have to adapt the API endpoint accordingly.
+It is this more complex scenario where lurk some traps for the unwary, which I want to explore today. This tutorial works with the [Druid 25.0 quickstart](https://druid.apache.org/docs/latest/tutorials/index.html), and I am running Druid on my laptop - for other configurations you would have to adapt the API endpoint accordingly.
 
 ### How Staggered Rollups Are Done in Druid
 
