@@ -414,7 +414,7 @@ Looking at the segments, we see one new segment spanning the whole month of May,
 
 Still, we are left with an open question. If truncating the timestamp to weekly would place some events into April, then why don't we see the same here?
 
-Let's run one more query. This time, we wnt to look at the exact timestamps in the new segments:
+Let's run one more query. This time, we want to look at the exact timestamps in the new segments:
 
 ```sql
 SELECT
