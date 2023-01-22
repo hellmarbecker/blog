@@ -404,7 +404,7 @@ date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
 2022-04-01T00:00:00.000Z|30|300|263
 2022-05-01T00:00:00.000Z|6|310|266
 2022-06-01T00:00:00.000Z|30|300|257
-null|156|1810|838
+_null_|156|1810|838
 
 This time, the results are correct!
 
