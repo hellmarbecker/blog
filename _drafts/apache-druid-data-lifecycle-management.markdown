@@ -8,7 +8,7 @@ categories: blog druid tutorial
 
 One feature that contributes greatly to the performance of Druid is [rollup](https://druid.apache.org/docs/latest/ingestion/rollup.html). Rolling up converts a detail table into an aggregate table that contains
 
-- a _truncated_ timestamp: the granularity of that timestamp is known as the _query granularity_
+- a _truncated timestamp_: the granularity of that timestamp is known as the _query granularity_
 - a number of _dimensions_, usually string fields that the data is grouped by
 - a number of _metrics_. These are usually aggregations of numeric fields, but in the case of Druid you could also find data sketches as metrics, such as theta sketches that allow you to get approximate distinct counts out of aggregated data.
 
