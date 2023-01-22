@@ -264,9 +264,99 @@ We chose the segment granularity and query granularity both to be a month; the `
 
 Submit the compaction task and wait for it to finish. Then run the same query again. Here is my result:
 
+date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
+---|---|---|---
+2022-01-01T00:00:00.000Z|1|310|266
+2022-02-01T00:00:00.000Z|1|280|244
+2022-03-01T00:00:00.000Z|1|310|258
+2022-04-01T00:00:00.000Z|1|300|263
+2022-05-01T00:00:00.000Z|1|310|266
+2022-06-01T00:00:00.000Z|30|300|257
+null|35|1810|838
 
+The first 5 months have been compacted into one row per month, but the total count of events and the number of unique users are unaffected. This is what we wanted to achieve doing the rollup. Now let's look at a more complex, staggered scenario.
 
+## Staggered Compaction in Practice
 
+Let's implement the following compaction scheme:
+
+- The latest month (June in our case) will be left at the current detail level (daily).
+- The previous month (May) should be rolled up to **weekly** granularity.
+- All older data should be rolled up to **monthly** granularity.
+
+### 1. Restoring the Detail Data
+
+Before you run this test, rerun the original ingestion so we can start with the detail data.
+
+### 2. First Attempt at Weekly Rollup for May
+
+Let's roll the May data up to weekly segments with a weekly query granularity.
+
+Submit this compaction spec:
+
+```json
+{
+  "type": "compact",
+  "dataSource": "user_data",
+  "ioConfig": {
+    "type": "compact",
+    "inputSpec": {
+      "type": "interval",
+      "interval": "2022-05-01/2022-06-01"
+    }
+  },
+  "granularitySpec": {
+    "segmentGranularity": "week",
+    "queryGranularity": "week"
+  },
+  "tuningConfig": {
+    "type": "index_parallel",
+    "maxRowsPerSegment": 5000000,
+    "maxRowsInMemory": 1000000,
+    "partitionsSpec": {
+      "type": "range",
+      "maxRowsPerSegment": 5000000,
+      "partitionDimensions": [
+        "dummy1",
+        "dummy2"
+      ]
+    },
+    "forceGuaranteedRollup": true
+  }
+}
+```
+
+Run the same query again:
+
+date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
+---|---|---|---
+2022-01-01T00:00:00.000Z|31|310|266
+2022-02-01T00:00:00.000Z|28|280|244
+2022-03-01T00:00:00.000Z|31|310|258
+2022-04-01T00:00:00.000Z|25|250|221
+2022-05-01T00:00:00.000Z|5|300|260
+2022-06-01T00:00:00.000Z|25|250|215
+null|145|1700|816
+
+This does not look good. As result of our operation, some data in the April and June months seems to have gone missing, also the count for May is not correct, nor is the total count. What happened?
+
+A look at the `Segments` view explains the problem:
+
+![Segment view](/assets/2023-01-22-03-segments.jpg)
+
+Because calendar weeks don't align with months, Druid has created segments that extend into the surrounding months. <mark>These segments overshadow some of the original data in those months.</mark> For instance, we have one segment for the week of 30 May to 5 June. This means all the original data for 1-5 June are invisible now.
+
+Even worse, there's a segment that has a timestamp (beginning of calendar week) in April, but data from May, and it overshadows the original April data:
+
+![Segment view](/assets/2023-01-22-04-segments2.jpg)
+
+Maybe we can fix the problem by forcing the segment granularity to `MONTH`? 
+
+### 3. Restoring the Detail Data
+
+Ingest the original data set again.
+
+### 4. Weekly Rollup with Monthly Segment Granularity
 
 
 
