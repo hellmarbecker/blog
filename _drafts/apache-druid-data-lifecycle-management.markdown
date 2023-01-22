@@ -258,7 +258,7 @@ Let's first implement a simple compaction strategy. All data except the latest m
 }
 ```
 
-We chose the segment granularity and query granularity both to be a month; the `tuningConfig` section has been copied from the ingestion spec.
+We chose the segment granularity and query granularity both to be `month`; the `tuningConfig` section has been copied from the ingestion spec in order to get the same (range) partitioning.
 
 <mark>If you do not specify the `tuningConfig -> partitionsSpec`, you will end up with dynamic partitioning, which is usually not what you want.</mark>
 
