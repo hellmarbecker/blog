@@ -272,9 +272,11 @@ date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
 2022-04-01T00:00:00.000Z|1|300|263
 2022-05-01T00:00:00.000Z|1|310|266
 2022-06-01T00:00:00.000Z|30|300|257
-null|35|1810|838
+_null_|35|1810|838
 
-The first 5 months have been compacted into one row per month, but the total count of events and the number of unique users are unaffected. This is what we wanted to achieve doing the rollup. Now let's look at a more complex, staggered scenario.
+The first 5 months have been compacted into one row per month, but the total count of events and the number of unique users are unaffected. (The unique estimate would likely differ slightly for a bigger data set.) 
+
+This is what we wanted to achieve doing the rollup. Now let's look at a more complex, staggered scenario.
 
 ## Staggered Compaction in Practice
 
@@ -336,7 +338,7 @@ date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
 2022-04-01T00:00:00.000Z|25|250|221
 2022-05-01T00:00:00.000Z|5|300|260
 2022-06-01T00:00:00.000Z|25|250|215
-null|145|1700|816
+_null_|145|1700|816
 
 This does not look good. As result of our operation, some data in the April and June months seems to have gone missing, also the count for May is not correct, nor is the total count. What happened?
 
@@ -358,8 +360,121 @@ Ingest the original data set again.
 
 ### 4. Weekly Rollup with Monthly Segment Granularity
 
+Let's give it another try. Use the same compaction spec, only changing the segment granularity:
 
+```json
+{
+  "type": "compact",
+  "dataSource": "user_data",
+  "ioConfig": {
+    "type": "compact",
+    "inputSpec": {
+      "type": "interval",
+      "interval": "2022-05-01/2022-06-01"
+    }
+  },
+  "granularitySpec": {
+    "segmentGranularity": "month",
+    "queryGranularity": "week"
+  },
+  "tuningConfig": {
+    "type": "index_parallel",
+    "maxRowsPerSegment": 5000000,
+    "maxRowsInMemory": 1000000,
+    "partitionsSpec": {
+      "type": "range",
+      "maxRowsPerSegment": 5000000,
+      "partitionDimensions": [
+        "dummy1",
+        "dummy2"
+      ]
+    },
+    "forceGuaranteedRollup": true
+  }
+}
+```
 
+Submit this spec, and run the reference query again:
+
+date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
+---|---|---|---
+2022-01-01T00:00:00.000Z|31|310|266
+2022-02-01T00:00:00.000Z|28|280|244
+2022-03-01T00:00:00.000Z|31|310|258
+2022-04-01T00:00:00.000Z|30|300|263
+2022-05-01T00:00:00.000Z|6|310|266
+2022-06-01T00:00:00.000Z|30|300|257
+null|156|1810|838
+
+This time, the results are correct!
+
+Looking at the segments, we see one new segment spanning the whole month of May, surrounded by the older daily segments:
+
+![Segment view](/assets/2023-01-22-05-segments3.jpg)
+
+Still, we are left with an open question. If truncating the timestamp to weekly would place some events into April, then why don't we see the same here?
+
+Let's run one more query. This time, we wnt to look at the exact timestamps in the new segments:
+
+```sql
+SELECT
+  __time AS "date",
+  COUNT(*) AS numRowsCompacted,
+  SUM(__count) AS numRowsOrig,
+  THETA_SKETCH_ESTIMATE(DS_THETA(theta_user)) AS uniqueUsersTheta
+FROM "user_data"
+WHERE FLOOR(__time TO MONTH) = TIMESTAMP'2022-05-01'
+GROUP BY 1
+```
+
+date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
+---|---|---|---
+2022-05-01T00:00:00.000Z|1|10|10
+2022-05-02T00:00:00.000Z|1|70|63
+2022-05-09T00:00:00.000Z|1|70|69
+2022-05-16T00:00:00.000Z|1|70|67
+2022-05-23T00:00:00.000Z|1|70|68
+2022-05-30T00:00:00.000Z|1|20|20
+
+The timestamp of the records at the beginning of the months has _not_ been truncated all the way down to the beginning of the calendar week, but only to the beginning of the segment! Our data is still good.
+
+If you relied on the precise calendar weeks though, your results would be incorrect.
+
+### 5. Monthly Rollup of Older Data
+
+Let's proceed to stage 2: rollup of older data. This looks much like the earlier monthly rollup, albeit with a changed interval:
+
+```json
+{
+  "type": "compact",
+  "dataSource": "user_data",
+  "ioConfig": {
+    "type": "compact",
+    "inputSpec": {
+      "type": "interval",
+      "interval": "2022-01-01/2022-05-01"
+    }
+  },
+  "granularitySpec": {
+    "segmentGranularity": "month",
+    "queryGranularity": "month"
+  },
+  "tuningConfig": {
+    "type": "index_parallel",
+    "maxRowsPerSegment": 5000000,
+    "maxRowsInMemory": 1000000,
+    "partitionsSpec": {
+      "type": "range",
+      "maxRowsPerSegment": 5000000,
+      "partitionDimensions": [
+        "dummy1",
+        "dummy2"
+      ]
+    },
+    "forceGuaranteedRollup": true
+  }
+}
+```
 
 
 
