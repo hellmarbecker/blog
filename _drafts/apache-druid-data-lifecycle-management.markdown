@@ -20,7 +20,7 @@ Rollup can significantly reduce the amount of storage needed for a dataset and t
 
 Many of my customers would like to take advantage of the space savings promised by rollup. Their requirement is often like this:
 
-- For a limited period of time, such as the current and last month, keep the data at a relatively detailed level, such as daily of hourly.
+- For a limited period of time, such as the current and last month, keep the data at a relatively detailed level, such as daily or hourly.
 - Older data should be aggregated on a monthly level.
 
 Sometimes the requirement is a bit more complex, or staggered:
