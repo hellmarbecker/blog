@@ -508,7 +508,7 @@ date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
 2022-04-01T00:00:00.000Z|1|300|263
 2022-05-01T00:00:00.000Z|6|310|266
 2022-06-01T00:00:00.000Z|30|300|257
-null|40|1810|838
+_null_|40|1810|838
 
 We have achieved the desired result. In a production scenario, you would want to automatically generate these compaction specs with the correct time intervals, and have the process controlled by a scheduler.
 
