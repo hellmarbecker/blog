@@ -516,7 +516,7 @@ We have achieved the desired result. In a production scenario, you would want to
 
 Data rollup helps a lot in controlling the amount of data in a Druid datasource. It is possible to have multiple stages of rollup as data ages in the system. Rollup is controlled by the query granularity and can be adjusted using compaction tasks.
 
-When staggering multiple stages of rollup, always make sure segment granularities are aligned. Whe in doubt, use the coarsest segment granularity for all stages:
+When staggering multiple stages of rollup, always make sure segment granularities are aligned. When in doubt, use the coarsest segment granularity for all stages:
 
 - **If segment granularity is not aligned between stages of compaction, compaction tasks can lead to data loss.**
 - If segment granularity is not aligned with query granularity, the result of timestamp truncation might sometimes be unexpected because the minimum timestamp that can result is governed by segment granularity, not query granularity. However, this can be mitigated by using another `FLOOR` phrase during query time.
