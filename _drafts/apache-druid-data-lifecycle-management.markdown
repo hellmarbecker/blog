@@ -220,7 +220,7 @@ date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
 2022-06-01T00:00:00.000Z|30|300|257
 _null_|181|1810|838
 
-We have 1810 events, aggregated into 181 database rows. Each month's event coount is 10x the number of days in the month.
+We have 1810 events, aggregated into 181 database rows. Each month's event count is 10x the number of days in the month.
 
 ## Compaction of Older Data
 
