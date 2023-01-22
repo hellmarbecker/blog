@@ -438,7 +438,29 @@ date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
 
 The timestamp of the records at the beginning of the months has _not_ been truncated all the way down to the beginning of the calendar week, but only to the beginning of the segment! Our data is still good.
 
-If you relied on the precise calendar weeks though, your results would be incorrect.
+If you relied on the precise calendar weeks though, your results would be incorrect. What you should do in such a case is add another `FLOOR` expression to your query:
+
+```sql
+SELECT
+  FLOOR(__time TO WEEK) AS "date",
+  COUNT(*) AS numRowsCompacted,
+  SUM(__count) AS numRowsOrig,
+  THETA_SKETCH_ESTIMATE(DS_THETA(theta_user)) AS uniqueUsersTheta
+FROM "user_data"
+WHERE FLOOR(__time TO MONTH) = TIMESTAMP'2022-05-01'
+GROUP BY 1
+```
+
+date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
+---|---|---|---
+**2022-04-25T00:00:00.000Z**|1|10|10
+2022-05-02T00:00:00.000Z|1|70|63
+2022-05-09T00:00:00.000Z|1|70|69
+2022-05-16T00:00:00.000Z|1|70|67
+2022-05-23T00:00:00.000Z|1|70|68
+2022-05-30T00:00:00.000Z|1|20|20
+
+This is not really a restriction because you should select the correct timestamp granularity in your queries anyway.
 
 ### 5. Monthly Rollup of Older Data
 
@@ -476,5 +498,30 @@ Let's proceed to stage 2: rollup of older data. This looks much like the earlier
 }
 ```
 
+And the result:
+
+date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
+---|---|---|---
+2022-01-01T00:00:00.000Z|1|310|266
+2022-02-01T00:00:00.000Z|1|280|244
+2022-03-01T00:00:00.000Z|1|310|258
+2022-04-01T00:00:00.000Z|1|300|263
+2022-05-01T00:00:00.000Z|6|310|266
+2022-06-01T00:00:00.000Z|30|300|257
+null|40|1810|838
+
+We have achieved the desired result. In a production scenario, you would want to automatically generate these compaction specs with the correct time intervals, and have the process controlled by a scheduler.
+
+## Conclusion
+
+When staggering multiple stages of rollup, always make sure to use segment granularities that are aligned. Whe in doubt, use the coarsest segment granularity for all stages.
+
+In practice:
+
+- Data rollup helps a lot in controlling the amount of data in a Druid datasource. It is possible to have multiple stages of rollup as data ages in the system.
+- Rollup is controlled by the query granularity and can be adjusted using compaction tasks.
+- If segment granularity is not aligned between stages of compaction, compaction tasks can lead to data loss.
+- If segment granularity is not aligned with query granularity, the result of timestamp truncation might sometimes be unexpected because the minimum timestamp that can result is governed by segment granularity, not query granularity.
+- However, this can be mitigated by using another `FLOOR` phrase during query time.
 
 
