@@ -346,7 +346,7 @@ A look at the `Segments` view explains the problem:
 
 ![Segment view](/assets/2023-01-22-03-segments.jpg)
 
-Because calendar weeks don't align with months, Druid has created segments that extend into the surrounding months. <mark>These segments overshadow some of the original data in those months.</mark> For instance, we have one segment for the week of 30 May to 5 June. This means all the original data for 1-5 June are invisible now.
+Because calendar weeks don't align with months, Druid has created segments that extend into the surrounding months. _These segments overshadow some of the original data in those months._ For instance, we have one segment for the week of 30 May to 5 June. This means all the original data for 1-5 June are invisible now.
 
 Even worse, there's a segment that has a timestamp (beginning of calendar week) in April, but data from May, and it overshadows the original April data:
 
