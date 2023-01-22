@@ -79,7 +79,7 @@ Run the script and save the output to a file `data.csv`.
 
 ### Data Ingestion
 
-Let's ingest the data. Here is the ingestion spec:
+Let's ingest the data. Here is the ingestion spec (edit the file path):
 
 ```json
 {
@@ -141,7 +141,7 @@ Let's ingest the data. Here is the ingestion spec:
       "type": "index_parallel",
       "inputSource": {
         "type": "local",
-        "baseDir": "/Users/hellmarbecker/meetup-talks/data-lifecycle",
+        "baseDir": "/path/to/file/",
         "filter": "data.csv"
       },
       "inputFormat": {
