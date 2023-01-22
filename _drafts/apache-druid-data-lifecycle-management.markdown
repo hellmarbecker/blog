@@ -44,9 +44,143 @@ curl -XPOST -H "Content-Type: application/json" http://localhost:8888/druid/inde
 
 ## The Data
 
+### Data Generation
 
-## Submitting Tasks
+Let's generate ourselves some data. I want to create a data set with 6 months' worth of data, 10 records per day, and each record has a random user ID because I want to count unique users as well.
 
+This little Python script does the job:
+
+```python
+import random
+from datetime import date, timedelta
+
+MAXUSERS = 1000
+ROWSPERDAY = 10
+
+def daterange(start_date, end_date):
+    for n in range(int((end_date - start_date).days)):
+        yield start_date + timedelta(n)
+
+def main():
+
+    start_date = date(2022, 1, 1)
+    end_date = date(2022, 7, 1)
+    for single_date in daterange(start_date, end_date):
+        this_day = single_date.strftime("%Y-%m-%d")
+        for i in range(ROWSPERDAY):
+            print(this_day + ",u" + "{:04d}".format(random.randrange(MAXUSERS)))
+
+
+if __name__ == "__main__":
+    main()
+```
+
+Run the script and save the output to a file `data.csv`.
+
+### Data Ingestion
+
+Let's ingest the data. Here is the ingestion spec:
+
+```json
+{
+  "type": "index_parallel",
+  "spec": {
+    "dataSchema": {
+      "dataSource": "user_data",
+      "timestampSpec": {
+        "column": "ts",
+        "format": "auto"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          "dummy1",
+          "dummy2"
+        ]
+      },
+      "metricsSpec": [
+        {
+          "type": "count",
+          "name": "__count"
+        },
+        {
+          "type": "thetaSketch",
+          "name": "theta_user",
+          "fieldName": "user",
+          "size": 16384
+        },
+        {
+          "type": "HLLSketchBuild",
+          "name": "hll_user",
+          "fieldName": "user",
+          "lgK": 12,
+          "tgtHllType": "HLL_4"
+        }
+      ],
+      "granularitySpec": {
+        "type": "uniform",
+        "segmentGranularity": "DAY",
+        "queryGranularity": "DAY",
+        "rollup": true
+      },
+      "transformSpec": {
+        "transforms": [
+          {
+            "type": "expression",
+            "name": "dummy1",
+            "expression": "'A'"
+          },
+          {
+            "type": "expression",
+            "name": "dummy2",
+            "expression": "'B'"
+          }
+        ]
+      }
+    },
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "local",
+        "baseDir": "/Users/hellmarbecker/meetup-talks/data-lifecycle",
+        "filter": "data.csv"
+      },
+      "inputFormat": {
+        "type": "csv",
+        "columns": [
+          "ts",
+          "user"
+        ],
+        "findColumnsFromHeader": false
+      },
+      "appendToExisting": false,
+      "dropExisting": false
+    },
+    "tuningConfig": {
+      "type": "index_parallel",
+      "maxRowsPerSegment": 5000000,
+      "maxRowsInMemory": 1000000,
+      "partitionsSpec": {
+        "type": "range",
+        "maxRowsPerSegment": 5000000,
+        "partitionDimensions": [
+          "dummy1",
+          "dummy2"
+        ]
+      },
+      "forceGuaranteedRollup": true
+    }
+  }
+}
+```
+
+A few notes:
+
+- I am rolling up by day and also creating daily segments.
+- I created two dummy dimensions using [transforms](/2022/02/09/druid-data-cookbook-ingestion-transforms/). This is so I can enforce [range partitioning](/2022/01/25/partitioning-in-druid-part-3-multi-dimension-range-partitioning/) and make sure it is preserved during my lifecycle management operations.
+
+You can submit the ingestion task using the API call above, or by pasting into the Druid console wizard.
+
+### Querying the Data
 
 Let's first craft a query to verify our data before and after each step. We are going to look at
 
@@ -67,3 +201,75 @@ GROUP BY ROLLUP(1)
 ```
 
 The reason for the somewhat awkward incantation around the date expression is explained [here](/2022/11/05/druid-data-cookbook-cumulative-sums-in-druid-sql).
+
+Note this query down, we will repeat it after every step.
+
+### Reference Result
+
+![Query in Druid Workbench](/assets/2023-01-22-02-query.jpg)
+
+Once the data has been ingested, run the above query. Here's my result - your unique user counts will likely be different:
+
+date|numRowsCompacted|numRowsOrig|uniqueUsersTheta
+---|---|---|---
+2022-01-01T00:00:00.000Z|31|310|266
+2022-02-01T00:00:00.000Z|28|280|244
+2022-03-01T00:00:00.000Z|31|310|258
+2022-04-01T00:00:00.000Z|30|300|263
+2022-05-01T00:00:00.000Z|31|310|266
+2022-06-01T00:00:00.000Z|30|300|257
+_null_|181|1810|838
+
+We have 1810 events, aggregated into 181 database rows. Each month's event coount is 10x the number of days in the month.
+
+## Compaction of Older Data
+
+Let's first implement a simple compaction strategy. All data except the latest month should be rolled up monthly. Here's the compaction spec for this:
+
+```json
+{
+  "type": "compact",
+  "dataSource": "user_data",
+  "ioConfig": {
+    "type": "compact",
+    "inputSpec": {
+      "type": "interval",
+      "interval": "2022-01-01/2022-06-01"
+    }
+  },
+  "granularitySpec": {
+    "segmentGranularity": "month",
+    "queryGranularity": "month"
+  },
+  "tuningConfig": {
+    "type": "index_parallel",
+    "maxRowsPerSegment": 5000000,
+    "maxRowsInMemory": 1000000,
+    "partitionsSpec": {
+      "type": "range",
+      "maxRowsPerSegment": 5000000,
+      "partitionDimensions": [
+        "dummy1",
+        "dummy2"
+      ]
+    },
+    "forceGuaranteedRollup": true
+  }
+}
+```
+
+We chose the segment granularity and query granularity both to be a month; the `tuningConfig` section has been copied from the ingestion spec.
+
+<mark>If you do not specify the `tuningConfig -> partitionsSpec`, you will end up with dynamic partitioning, which is usually not what you want.</mark>
+
+Submit the compaction task and wait for it to finish. Then run the same query again. Here is my result:
+
+
+
+
+
+
+
+
+
+
