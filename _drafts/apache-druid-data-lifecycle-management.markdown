@@ -224,7 +224,7 @@ We have 1810 events, aggregated into 181 database rows. Each month's event count
 
 ## Compaction of Older Data
 
-Let's first implement a simple compaction strategy. All data except the latest month should be rolled up monthly. Here's the compaction spec for this:
+Let's first implement a simple compaction strategy. All data except the latest month should be rolled up to monthly. Here's the compaction spec:
 
 ```json
 {
