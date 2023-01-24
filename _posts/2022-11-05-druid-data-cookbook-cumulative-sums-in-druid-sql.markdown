@@ -11,7 +11,7 @@ Many thanks to [Gian Merlino](https://www.linkedin.com/in/gianmerlino/) and [Joh
 
 The dataset for today's tutorial looks like this:
 
-```
+```csv
 ts,customer,revenue
 2022-01-01,alice,10.50
 2022-01-01,bob,11.50
@@ -104,10 +104,10 @@ date_day|customer|rev_daily|rollup_bits
 2022-01-02T00:00:00.000Z|bob|27.5|0
 2022-01-03T00:00:00.000Z|alice|14.5|0
 2022-01-03T00:00:00.000Z|bob|15.5|0
-2022-01-01T00:00:00.000Z|null|22|1
-2022-01-02T00:00:00.000Z|null|40|1
-2022-01-03T00:00:00.000Z|null|30|1
-null|null|92|3
+2022-01-01T00:00:00.000Z|_null_|22|1
+2022-01-02T00:00:00.000Z|_null_|40|1
+2022-01-03T00:00:00.000Z|_null_|30|1
+_null_|_null_|92|3
 
 Three things are worth noticing:
 
