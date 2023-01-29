@@ -31,7 +31,7 @@ Ingest the above data sample using the classic batch ingestion wizard in the Dru
 
 Name the datasource `ristorante_json` and ingest the data.
 
-### First Query
+## First Query
 
 Let's just look at the table in SQL.
 
@@ -44,7 +44,7 @@ FROM "ristorante_json"
 
 It doesn't look too different from the MVD modeling. Only the little tree symbol next to the column name indicates that we are dealing with a nested column.
 
-### `GROUP BY` - Where's the Magic?
+## `GROUP BY` - Where's the Magic?
 
 Let's try to `GROUP` like before:
 
@@ -87,7 +87,7 @@ But these are simple `STRING`s with no grouping magic.
 
 However, this is the path to a solution ...
 
-### Here's the Magic!
+## Here's the Magic!
 
 If we could parse the JSON string representation into an MVD, maybe the original grouping would work again. In an [earlier post](/2021/12/18/druid-lab---processing-movie-tag-data/) I mentioned that `STRING_TO_MV()` splits a string _by a regular expression_. This, and the ability to `TRIM` characters from the beginning and or end of a string, gives us all the tools we need.
 
