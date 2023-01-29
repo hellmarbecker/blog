@@ -87,20 +87,51 @@ But these are simple `STRING`s with no grouping magic.
 
 However, this is the path to a solution ...
 
-### Here's the Magic
+### Here's the Magic!
 
-If we could parse the JSON string representation into an MVD, maybe the original grouping would work again. In an [earlier post](/2021/12/18/druid-lab---processing-movie-tag-data/) I mentioned that `STRING_TO_MV()` splits a string _by a regular expresion_. This, and the ability to `TRIM` characters from the beginning and or end of a string, gives us all the tools we need.
+If we could parse the JSON string representation into an MVD, maybe the original grouping would work again. In an [earlier post](/2021/12/18/druid-lab---processing-movie-tag-data/) I mentioned that `STRING_TO_MV()` splits a string _by a regular expression_. This, and the ability to `TRIM` characters from the beginning and or end of a string, gives us all the tools we need.
 
-Let's first 
+- We will have to strip leading and trailing square brackets, and also the double quotes. Therefore the strip set for `TRIM` will be `["]`.
+- We want to split only where a comma is enclosed by double quotes, possibly with whitespace after the comma. The regular expression for this is `",\s*"`.
 
+Let's first try the transformation:
 
+```sql
+SELECT
+  customer,
+  orders,
+  STRING_TO_MV(
+    TRIM('["]' FROM TO_JSON_STRING(orders)), 
+    '",\s*"') AS orders_mv
+FROM "ristorante_json"
+```
 
+![Cast to MV](/assets/2023-01-29-06-mv.jpg)
 
+Note the different type symbol next to `orders_mv`.
 
+And now, to the finale:
 
+```sql
+SELECT
+  STRING_TO_MV(
+    TRIM('["]' FROM TO_JSON_STRING(orders)), 
+    '",\s*"') AS order_item,
+  COUNT(customer) AS num_orders
+FROM "ristorante_json"
+GROUP BY 1
+```
 
+![Group by MV](/assets/2023-01-29-07-mv-groupby.jpg)
 
+The group by behavior is what we expect from an MVD!
 
+## Learnings
+
+- Array fields can now be ingested as nested JSON columns into Druid.
+- However, one cannot `GROUP BY` a JSON column.
+- Individual elements can be extracted using JSON Path expressions, bu for now there is no way to iterate over all the fields or array elements.
+- As a workaround, you can parse the JSON array into a multi-value dimension and use existing Druid functionality to unnest it.  
 
 ---
 
