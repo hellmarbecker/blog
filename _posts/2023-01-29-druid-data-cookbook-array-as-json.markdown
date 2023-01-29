@@ -83,7 +83,7 @@ GROUP BY 1
 
 But these are simple `STRING`s with no grouping magic.
 
-![Transform JSON into string](/assets/]2023-01-29-05-groupby-json-string.jpg)
+![Transform JSON into string](/assets/2023-01-29-05-groupby-json-string.jpg)
 
 However, this is the path to a solution ...
 
