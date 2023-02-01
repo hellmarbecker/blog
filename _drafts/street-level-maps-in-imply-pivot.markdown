@@ -43,13 +43,31 @@ Find your token and click the clipboard icon to copy the token string:
 
 ### Configuring the Pivot Instance
 
-note that there is a separate yaml file for the quickstart
+Before you start up Imply, you have to enter the MapBox token into the Pivot configuration file. After you untar the Imply distribution, edit the file `conf-quickstart/pivot/config.yaml` and add the following lines to the end:
+
+```yaml
+mapboxConfig:
+  token: <your mapbox token>
+```
+
+replacing the token placeholder with the token string you just copied. Save the configuration file.
 
 ### Enabling the Feature Flag
 
-fire up Pivot and show a screenshot
+Start Imply:
 
-![Pivot Settings](/assets/xxxx.jpg)
+```
+bin/supervise -c conf/supervise/quickstart.conf
+```
+
+and navigate your browser to `localhost:9095` to access Pivot. Open the `Settings` page
+
+![Pivot Settings](/assets/2023-02-01-05-pivotcfg1.jpg)
+
+and select `Feature flags`. You will find the flag for street level maps at the very bottom. Toggle the flag and save the settings:
+
+![Pivot Settings for flag](/assets/2023-02-01-06-pivotcfg2.jpg)
+
 
 ## The Data
 
