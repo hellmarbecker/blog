@@ -73,7 +73,7 @@ and select `Feature flags`. You will find the flag for street level maps at the 
 
 ### Data Generation
 
-I am using datsa from an ADS-B receiver that decodes transponder data from aircraft that fly over my house. 
+The data source for this tutorial is an ADS-B receiver that decodes transponder data from aircraft that fly over my house. 
 
 A sample of the data looks like this:
 
@@ -94,11 +94,153 @@ MSG,5,333,1985,4841A8,2085,2023/01/04,07:04:00.187,2023/01/04,07:04:00.187,,2520
 
 My blog [describes how to get these data into Confluent Cloud](/2022/08/30/processing-flight-radar-ads-b-data-with-decodable-and-imply/) from your Raspberry Pi.
 
-describe quickly the adsb format, paste a sample
 
 ### Data Ingestion
 
-paste the ingestion spec here, note either kafka or static sample
+Ingest the data into Druid using this ingestion spec, replacing the placeholders with your own Confluent access data:
+
+```json
+{
+  "type": "kafka",
+  "spec": {
+    "ioConfig": {
+      "type": "kafka",
+      "consumerProperties": {
+        "bootstrap.servers": "<CONFLUENT BOOTSTRAP SERVER>",
+        "security.protocol": "SASL_SSL",
+        "sasl.mechanism": "PLAIN",
+        "sasl.jaas.config": "org.apache.kafka.common.security.plain.PlainLoginModule  required username=\"<CONFLUENT API KEY>\" password=\"<CONFLUENT API SECRET>\";"
+      },
+      "topic": "adsb-raw",
+      "inputFormat": {
+        "type": "csv",
+        "findColumnsFromHeader": false,
+        "columns": [
+          "MT",
+          "TT",
+          "SID",
+          "AID",
+          "Hex",
+          "FID",
+          "DMG",
+          "TMG",
+          "DML",
+          "TML",
+          "CS",
+          "Alt",
+          "GS",
+          "Trk",
+          "Lat",
+          "Lng",
+          "VR",
+          "Sq",
+          "Alrt",
+          "Emer",
+          "SPI",
+          "Gnd"
+        ]
+      },
+      "useEarliestOffset": true
+    },
+    "tuningConfig": {
+      "type": "kafka"
+    },
+    "dataSchema": {
+      "dataSource": "adsb-raw",
+      "timestampSpec": {
+        "column": "!!!_no_such_column_!!!",
+        "missingValue": "2010-01-01T00:00:00Z"
+      },
+      "transformSpec": {
+        "transforms": [
+          {
+            "name": "__time",
+            "type": "expression",
+            "expression": "timestamp_parse(concat(\"DMG\", ' ', \"TMG\"), 'yyyy/M/d HH:mm:ss.SSS')"
+          }
+        ]
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          "MT",
+          {
+            "type": "long",
+            "name": "TT"
+          },
+          {
+            "type": "long",
+            "name": "SID"
+          },
+          {
+            "type": "long",
+            "name": "AID"
+          },
+          "Hex",
+          {
+            "type": "long",
+            "name": "FID"
+          },
+          "DMG",
+          "TMG",
+          "DML",
+          "TML",
+          "CS",
+          {
+            "type": "long",
+            "name": "Alt"
+          },
+          {
+            "type": "long",
+            "name": "GS"
+          },
+          {
+            "type": "double",
+            "name": "Trk"
+          },
+          {
+            "type": "double",
+            "name": "Lat"
+          },
+          {
+            "type": "double",
+            "name": "Lng"
+          },
+          {
+            "type": "long",
+            "name": "VR"
+          },
+          "Sq",
+          {
+            "type": "long",
+            "name": "Alrt"
+          },
+          {
+            "type": "long",
+            "name": "Emer"
+          },
+          {
+            "type": "long",
+            "name": "SPI"
+          },
+          {
+            "type": "long",
+            "name": "Gnd"
+          }
+        ]
+      },
+      "granularitySpec": {
+        "queryGranularity": "none",
+        "rollup": false,
+        "segmentGranularity": "day"
+      }
+    }
+  }
+}
+```
+
+If you don't have access to Confluent Cloud, you can use another Kafka service and adapt the consumer settings accordingly.
+
+Submit the spec and wait for some data to arrive.
 
 ### Logical Data Model
 
