@@ -4,7 +4,7 @@ title:  "Street Level Maps in Imply Pivot with flight data and Confluent Cloud"
 categories: blog druid imply pivot tutorial
 ---
 
-![Street Level Map: Pivot Screenshot](/assets/xxxx.jpg)
+![Street Level Map: Pivot Screenshot](/assets/2023-02-01-00-map.jpg)
 
 [Imply Pivot](https://docs.imply.io/latest/pivot-overview/) has had map visualizations for a while. But the builtin map outline was limited to mostly by-country resolution (with ISO codes), or to the grid points defined by geohashes. Consequently, the map overlay was static and the maximum resoluton limited.
 
@@ -24,7 +24,7 @@ The tutorial works with the [Imply 2023.01 quickstart](https://docs.imply.io/lat
 
 ### Obtaining a Mapbox API Token
 
-First of all, you will need to create a free account on the [MapBox](https://www.mapbox.com/) website. MapBox has a free tier that is sufficient for this tutorial. Navigate to your account page and click the `Create a token` button:
+Create a free account on the [MapBox](https://www.mapbox.com/) website. MapBox has a free tier that is sufficient for this tutorial. Navigate to your account page and click the `Create a token` button:
 
 ![Mapbox API token page](/assets/2023-02-01-01-mapbox1.jpg)
 
@@ -268,16 +268,30 @@ Save, and repeat the same steps for the `Lat` dimension, selecting `Latitude coo
 
 ### Selecting the Street Level Map
 
-yada yada screenshot
+In the Pivot Cube view, select the Street map visualization:
 
-![Street Level Map: Pivot Screenshot (same as above)](/assets/xxxx.jpg)
+![Select Street Level Map](/assets/2023-02-01-11-prepmap1.jpg)
+
+Pivot will ask you to select the dimensions to plot by, just confirm the suggestion:
+
+<img src="/assets/2023-02-01-12-prepmap2.jpg" width="50%" />
+
+Once you do that, you will be presented with a detailed, zoomable map view! Here you can see (presumably) a private aircraft making its rounds near my town:
+
+![Street Level Map: Grid](/assets/2023-02-01-13-map1.jpg)
+
 
 ### Configuring the Street Level Map
 
-heatmap vs blur
+On the right side panel, you can find visualization options under the paintbrush panel. Here you can switch between a grid based heatmap and a more blurred view (which I prefer):
 
-![Street Level Map: Pivot Screenshot with heatmap](/assets/xxxx.jpg)
+![Street Level Map: Blur](/assets/2023-02-01-14-map2.jpg)
+
+Stay tuned for more options that will be added in future versions!
 
 ## Conclusion
 
-how cool is this
+- Imply Pivot has detailed maps now.
+- With Confluent or Kafka, this enables new use cases - real time visualization of data such as traffic or deliveries on a detailed map is easy.
+- You need to bring your own MapBox API key, and you need to enable a feature flag to try this out.
+- The street level map view is based on longitude and latitude coordinates.
