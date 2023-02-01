@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Street Level Maps in Imply Pivot with flight data and Confluent Cloud"
+title:  "Street Level Maps in Imply Pivot with Flight Data and Confluent Cloud"
 categories: blog druid imply pivot confluent kafka tutorial
 ---
 
