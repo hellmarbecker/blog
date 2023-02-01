@@ -17,7 +17,7 @@ In this tutorial, you will:
 - configure your Pivot cube to use longitude and latitude data
 - and configure a visualization, exploring some of the options.
 
-The tutorial works with the [Imply 2023.01 quickstart](https://docs.imply.io/latest/quickstart/).
+The tutorial works with the [Imply 2023.01 quickstart](https://docs.imply.io/latest/quickstart/#use-unmanaged-imply-enterprise).
 
 ## Prerequisites
 
