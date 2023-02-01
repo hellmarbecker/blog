@@ -23,7 +23,7 @@ In this tutorial, you will:
 create a free account
 do create a pk key not an sk
 
-![Street Level Map: Pivot Screenshot](/assets/xxxx.jpg)
+![Mapbox API token page](/assets/xxxx.jpg)
 
 ### Configuring the Pivot Instance
 
