@@ -245,9 +245,24 @@ Submit the spec and wait for some data to arrive.
 
 ### Logical Data Model
 
-IN PIVOT, yada yada lon lat dimensions
+In Pivot, navigate to `Visuals > Create new data cube`.
 
-![Lon/Lat Geo Dimensions in Pivot](/assets/xxxx.jpg)
+![Create cube in Pivot](/assets/2023-02-01-07-cube1.jpg)
+
+Create the cube from your new datasource, making sure that you have SQL enabled:
+
+![Create cube in Pivot](/assets/2023-02-01-08-cube2.jpg)
+
+From the `Dimensions` menu, select the `Lng` dimension and edit it.
+
+![Lon/Lat Geo Dimensions in Pivot](/assets/2023-02-01-09-cube3.jpg)
+
+Change the dimension type to `Geo` and select `Longitude coordinates` as Geo encoding:
+
+![Lon/Lat Geo Dimensions in Pivot](/assets/2023-02-01-10-cube4.jpg)
+
+Save, and repeat the same steps for the `Lat` dimension, selecting `Latitude coordinates`.
+
 
 ## Creating a Visualization
 
