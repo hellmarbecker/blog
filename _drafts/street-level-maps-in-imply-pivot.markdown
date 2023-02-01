@@ -8,22 +8,38 @@ categories: blog druid imply pivot tutorial
 
 [Imply Pivot](https://docs.imply.io/latest/pivot-overview/) has had map visualizations for a while. But the builtin map outline was limited to mostly by-country resolution (with ISO codes), or to the grid points defined by geohashes. Consequently, the map overlay was static and the maximum resoluton limited.
 
-With Imply Private and Hybrid, you can use fine grained maps now the display data points by their exact longitude/latitude coordinates. The maps are provided by Mapbox and are zoomable to the individual street level. Let's see how street level maps work with Imply Pivot in the quickstart version.
+With Imply Private and Hybrid, you can use fine grained maps now the display data points by their exact longitude/latitude coordinates. The maps are provided by [MapBox](https://www.mapbox.com/) and are zoomable to the individual street level. Let's see how street level maps work with Imply Pivot in the quickstart version.
 
 In this tutorial, you will:
 
-- yada yada
-- ...
-- 
+- set up Pivot for street level maps with your own MapBox token to use MapBox overlays
+- ingest a data set with ADS-B flight data
+- configure your Pivot cube to use longitude and latitude data
+- and configure a visualization, exploring some of the options.
+
+The tutorial works with the [Imply 2023.01 quickstart](https://docs.imply.io/latest/quickstart/).
 
 ## Prerequisites
 
 ### Obtaining a Mapbox API Token
 
-create a free account
-do create a pk key not an sk
+First of all, you will need to create a free account on the [MapBox](https://www.mapbox.com/) website. MapBox has a free tier that is sufficient for this tutorial. Navigate to your account page and click the `Create a token` button:
 
-![Mapbox API token page](/assets/xxxx.jpg)
+![Mapbox API token page](/assets/2023-02-01-01-mapbox1.jpg)
+
+This takes you to the token creation page. Enter a name for your key and do not change any of the default options. In particular, _do not select any of the options under_ `Secret scopes`. Selecting any of those will create a secret key with a different prefix that Pivot cannot use.
+
+![Mapbox API token page](/assets/2023-02-01-02-mapbox2.jpg)
+
+Hit the `Create token` button 
+
+![Mapbox API token page](/assets/2023-02-01-03-mapbox3.jpg)
+
+and you will be taken to the `Tokens` page.
+
+Find your token and click the clipboard icon to copy the token string:
+
+![Mapbox API token page](/assets/2023-02-01-04-mapbox4.jpg)
 
 ### Configuring the Pivot Instance
 
