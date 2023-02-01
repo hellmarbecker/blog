@@ -13,7 +13,8 @@ With Imply Private and Hybrid, you can use fine grained maps now the display dat
 In this tutorial, you will:
 
 - set up Pivot for street level maps with your own MapBox token to use MapBox overlays
-- ingest a data set with ADS-B flight data
+- connect to a data source with ADS-B flight data using Confluent Cloud
+- ingest a data set with flight data
 - configure your Pivot cube to use longitude and latitude data
 - and configure a visualization, exploring some of the options.
 
