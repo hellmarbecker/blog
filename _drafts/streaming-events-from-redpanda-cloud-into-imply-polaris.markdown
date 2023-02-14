@@ -49,7 +49,7 @@ You have to set up ACLs to grant access rights. Click the name of the user you j
 
 This gives my user full access rights. In a production setup, you wouldnot do that: you would restrict that user's access rights to a topic or group of topics.
 
-## Populating the Redpanda Topic
+### Populate the Redpanda Topic
 
 Once more, I am using [Francesco's pizza simulator](https://github.com/aiven/python-fake-data-producer-for-apache-kafka). I have described that [in a previous blog](/2022/11/23/processing-nested-json-data-and-kafka-metadata-in-apache-druid/).
 
@@ -80,15 +80,92 @@ After a moment, you can see the incoming messages in the Redpanda console too:
 
 ### Create an API key
 
-Creating a Kafka Pull connection
+Follow the [documentation](https://docs.imply.io/polaris/api-keys/#create-api-keys) to create an API key. API authentication is HTTP Basic authentication, where the API key stands in place of the username and the password is empty. I am going to use `curl` in this tutorial to access the API, but of course you can also use a tool like Postman.
 
-Adding credentials to the connection
+For convenience, I assume that the API key and URL are in environment variables: 
 
-Testing the connection
+- `BASEURL` is the API base URL, which generally looks like this: https://ORGANIZATION_NAME.REGION.CLOUD_PROVIDER.api.imply.io/
+- `APIKEY` is the API key. Hence the general scheme of an API call will be:
 
-Creating a Polaris table
+```bash
+curl -X POST ${BASEURL}/... endpoint .../ -u ${APIKEY}: -H "Content-Type: application/json" -d'{ ... }'
+```
 
-Setting the table schema
+with a JSON payload for `POST` and `PUT` requests.
+
+If you forget to add the Content-Type header, you will generally get a `415 Unsupported media type` error. Don't forget to add the Content-Type.
+
+### Create a Kafka Pull connection
+
+Create a connection with the new type `kafka`. In the first step, only supply the server detail.
+
+```bash
+curl -X POST ${BASEURL}/v2/connections/ -u ${APIKEY}: -H "Content-Type: application/json" -d'{             
+  "type": "kafka",
+  "name": "pizza_connection",
+  "bootstrapServers": "<Redpanda bootstrap server>:9092",
+  "topicName": "pizza"
+}'
+```
+
+After that, add credentials to the connection:
+
+```bash
+curl -X PUT ${BASEURL}/v2/connections/pizza_connection/secrets/ -u ${APIKEY}: -H "Content-Type: application/json" -d'{
+  "type": "sasl_scram",
+  "mechanism": "SCRAM-SHA-512",
+  "username": "<Redpanda username>",
+  "password": "<Redpanda password>"
+}'
+```
+
+You can test the connection
+
+### Create a Polaris table
+
+Create a detail table in Polaris. In the GUI, it is also possible to create a table first and add the schema later - her we specify it all in one single call.
+
+```bash
+curl -X POST ${BASEURL}/v2/tables/ -u ${APIKEY}: -H "Content-Type: application/json" -d'{
+    "schema": [
+        {
+            "name": "__time",
+            "dataType": "timestamp"
+        },
+        {
+            "name": "id",
+            "dataType": "long"
+        },
+        {
+            "name": "name",
+            "dataType": "string"
+        },
+        {
+            "name": "pizzas",
+            "dataType": "json"
+        },
+        {
+            "name": "address",
+            "dataType": "string"
+        },
+        {
+            "name": "phoneNumber",
+            "dataType": "string"
+        },
+        {
+            "name": "shop",
+            "dataType": "string"
+        }
+    ],
+    "type": "detail",
+    "name": "pizza",
+    "version": 0,
+    "partitioningGranularity": "day"
+}'
+```
+
+The API should respond with a JSON object decribing the new table.
+
 
 Firing up the ingestion job
 
