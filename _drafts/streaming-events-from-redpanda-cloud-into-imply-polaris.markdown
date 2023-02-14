@@ -55,7 +55,7 @@ Once more, I am using [Francesco's pizza simulator](https://github.com/aiven/pyt
 
 Find the bootstrap server from the Redpanda overview page:
 
-![](/assets/2023-02-14-04-redpanda-overview)
+![](/assets/2023-02-14-04-redpanda-overview.jpg)
 
 Check out the data generator repository, and using the bootstrap address, and the username and password you just configured, start the data generator like so:
 
@@ -71,6 +71,10 @@ python3 main.py \
   --nr-messages 0 \
   --max-waiting-time 0
 ```
+
+After a moment, you can see the incoming messages in the Redpanda console too:
+
+![](/assets/2023-02-14-05-redpanda-messages.jpg)
 
 ## Setting up Imply Polaris
 
