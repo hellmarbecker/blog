@@ -10,7 +10,7 @@ categories: blog druid imply polaris saas eventstreaming redpanda kafka
 
 Polaris has recently upgraded with connectivity to multiple streaming services. This includes Kafka with SCRAM authentication, which is one way how Redpanda implements security. Today I am going to show how to build a realtime analytics pipeline using only fully managed cloud services: Redpanda Cloud and Imply Polaris.
 
-In this tutorial, you will learn how to create a connection to a dedicated Redpanda cluster and to populate a Polaris table with realtime data using the Polaris API, which allows for automatied scripting and zero touch configuration.
+In this tutorial, you will learn how to create a connection to a dedicated Redpanda cluster and to populate a Polaris table with realtime data using the Polaris API, allowing for automated scripting and zero touch configuration.
 
 As prerequisites, you will need:
 
