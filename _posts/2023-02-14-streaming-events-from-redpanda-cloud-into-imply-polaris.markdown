@@ -6,9 +6,9 @@ categories: blog druid imply polaris saas eventstreaming redpanda kafka
 
 ![From Redpanda to Imply](/assets/2023-02-14-00-title.jpg)
 
-[Redpanda](https://redpanda.com/) offers a data streaming platform with a Kafka compatible API. There are a variety of deployment options - you can run Redpanda on premise, but today I am going to look at Redpanda's fully managed cloud service, which I want to connect to Imply's [Polaris](https://imply.io/imply-polaris/) database-as-a-service, which offers fast, near realtime analytics based on [Apache Druid](https://druid.apache.org/).
+[Redpanda](https://redpanda.com/) offers a data streaming platform with a Kafka compatible API. There are a variety of deployment options - you can run Redpanda on premise or in a hybrid cloud mode, but here I am going to look at Redpanda's fully managed cloud service. I want to connect this to Imply's [Polaris](https://imply.io/imply-polaris/) database-as-a-service, which offers fast, near realtime analytics based on [Apache Druid](https://druid.apache.org/).
 
-Polaris has recently upgraded with connectivity to multiple streaming services. This includes Kafka with SCRAM authentication, which is one way how Redpanda implements security. Today I am going to show how to build a realtime analytics pipeline using Redpanda Cloud and Imply Polaris, that is, only fully managed cloud services.
+Polaris has recently upgraded with connectivity to multiple streaming services. This includes Kafka with SCRAM authentication, which is one way how Redpanda implements security. Today I am going to show how to build a realtime analytics pipeline using only fully managed cloud services: Redpanda Cloud and Imply Polaris.
 
 In this tutorial, you will learn how to create a connection to a dedicated Redpanda cluster and to populate a Polaris table with realtime data using the Polaris API, which allows for automatied scripting and zero touch configuration.
 
@@ -23,7 +23,7 @@ As prerequisites, you will need:
 
 I am assuming that you have a Redpanda Cloud account created. 
 
-In Redpanda Cloud, a cluster exists in a namespace, and you can have multiple namespaces inside an organization. Create a namespace, and in that namespace reate a cluster according to the [documentation](https://docs.redpanda.com/docs/deploy/deployment-option/cloud/create-dedicated-cloud-cluster-aws/). The smallest cluster option is sufficient for this experiment.
+In Redpanda Cloud, a cluster exists in a namespace, and you can have multiple namespaces inside an organization. Create a namespace, and in that namespace create a cluster according to the [documentation](https://docs.redpanda.com/docs/deploy/deployment-option/cloud/create-dedicated-cloud-cluster-aws/). The smallest cluster option is sufficient for this experiment.
 
 I created a cluster in AWS, single region and single AZ. I am not using VPC peering - make sure your cluster is connected to the public Internet. While VPC peering between Redpanda Cloud and Imply Polaris is possible, that is a story for another blog.
 
