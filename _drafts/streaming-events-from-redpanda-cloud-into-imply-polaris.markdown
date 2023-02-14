@@ -4,7 +4,7 @@ title:  "Streaming Events from Redpanda Cloud into Imply Polaris"
 categories: blog druid imply polaris saas eventstreaming redpanda kafka
 ---
 
-[Redpanda](https://redpanda.com/) offers a data streaming platform with a Kafka comaptible API. There are a variety of deployment options - you can run Redpanda on premise, but today I am going to look at Redpanda's fully managed cloud service, which I want to connect to Imply's [Polaris](https://imply.io/imply-polaris/) database-as-a-service, which offers fast, near realtime analytics based on [Apache Druid](https://druid.apache.org/).
+[Redpanda](https://redpanda.com/) offers a data streaming platform with a Kafka compatible API. There are a variety of deployment options - you can run Redpanda on premise, but today I am going to look at Redpanda's fully managed cloud service, which I want to connect to Imply's [Polaris](https://imply.io/imply-polaris/) database-as-a-service, which offers fast, near realtime analytics based on [Apache Druid](https://druid.apache.org/).
 
 Polaris has recently upgraded with connectivity to multiple streaming services. Today I am going to show how to build a realtime analytics pipeline using Redpanda Cloud and Imply Polaris, that is, only fully managed cloud services.
 
@@ -121,9 +121,15 @@ curl -X PUT ${BASEURL}/v2/connections/pizza_connection/secrets/ -u ${APIKEY}: -H
 
 You can test the connection
 
+```bash
+curl -X POST ${BASEURL}/v2/connections/pizza_connection/test/ -u ${APIKEY}: -H "Content-Type: application/json"
+```
+
+Note that this is a POST request without a payload. A 200 status with an empty response means everything is good.
+
 ### Create a Polaris table
 
-Create a detail table in Polaris. In the GUI, it is also possible to create a table first and add the schema later - her we specify it all in one single call.
+Create a detail table in Polaris. In the GUI, it is also possible to create a table first and add the schema later - here we specify it all in one single call.
 
 ```bash
 curl -X POST ${BASEURL}/v2/tables/ -u ${APIKEY}: -H "Content-Type: application/json" -d'{
@@ -166,6 +172,100 @@ curl -X POST ${BASEURL}/v2/tables/ -u ${APIKEY}: -H "Content-Type: application/j
 
 The API should respond with a JSON object decribing the new table.
 
+### Fire up the ingestion job
 
-Firing up the ingestion job
+To get the ingestion going, create an ingestion job that references the new connection. This one is a bit lengthy because it needs two sets of metadata:
 
+- the `inputSchema` object describes the fields found in the original data
+- `mappings` describes how input fields are mapped to table columns, and can also include SQL transformations.
+
+```bash
+curl -X POST ${BASEURL}/v2/jobs/ -u ${APIKEY}: -H "Content-Type: application/json" -d'{
+
+    "type": "streaming",
+    "target": {
+        "type": "table",
+        "tableName": "pizza",
+        "intervals": [ "1000/3000" ]
+    },
+    "desiredExecutionStatus": "running",
+    "source": {
+        "type": "connection",
+        "connectionName": "pizza_connection",
+        "formatSettings": {
+            "format": "nd-json"
+        },
+        "inputSchema": [
+            {
+                "name": "timestamp",
+                "dataType": "long"
+            },
+            {
+                "name": "id",
+                "dataType": "long"
+            },
+            {
+                "name": "name",
+                "dataType": "string"
+            },
+            {
+                "name": "pizzas",
+                "dataType": "json"
+            },
+            {
+                "name": "address",
+                "dataType": "string"
+            },
+            {
+                "name": "phoneNumber",
+                "dataType": "string"
+            },
+            {
+                "name": "shop",
+                "dataType": "string"
+            }
+        ]
+    },
+    "mappings": [
+        {
+            "columnName": "__time",
+            "expression": "MILLIS_TO_TIMESTAMP(\"timestamp\")"
+        },
+        {
+            "columnName": "id",
+            "expression": "\"id\""
+        },
+        {
+            "columnName": "name",
+            "expression": "\"name\""
+        },
+        {
+            "columnName": "pizzas",
+            "expression": "\"pizzas\""
+        },
+        {
+            "columnName": "address",
+            "expression": "\"address\""
+        },
+        {
+            "columnName": "phoneNumber",
+            "expression": "\"phoneNumber\""
+        },
+        {
+            "columnName": "shop",
+            "expression": "\"shop\""
+        }
+    ],
+    "readFromPoint": "earliest"
+}'
+```
+
+This should respond with a summary of the job that has been created.
+
+Go to the Imply Polaris GUI and verify that data is coming in:
+
+![](/assets/2023-02-14-06-imply-ingesting.jpg)
+
+## Conclusion
+
+- ...
