@@ -49,7 +49,7 @@ You have to set up ACLs to grant access rights. Click the name of the user you j
 
 ![Set up ACLs](/assets/2023-02-14-03-redpanda-acl.jpg)
 
-This gives my user full access rights. In a production setup, you wouldnot do that: you would restrict that user's access rights to a topic or group of topics.
+This gives my user full access rights. In a production setup, you would not do that: you would restrict that user's access rights to a topic or group of topics.
 
 ### Populate the Redpanda Topic
 
@@ -86,8 +86,10 @@ Follow the [documentation](https://docs.imply.io/polaris/api-keys/#create-api-ke
 
 For convenience, I assume that the API key and URL are in environment variables: 
 
-- `BASEURL` is the API base URL, which generally looks like this: https://ORGANIZATION_NAME.REGION.CLOUD_PROVIDER.api.imply.io/
-- `APIKEY` is the API key. Hence the general scheme of an API call will be:
+- `BASEURL` is the API base URL, which generally looks like this: `https://ORGANIZATION_NAME.REGION.CLOUD_PROVIDER.api.imply.io/`
+- `APIKEY` is the API key.
+ 
+Hence the general scheme of an API call will be:
 
 ```bash
 curl -X POST ${BASEURL}/... endpoint .../ -u ${APIKEY}: -H "Content-Type: application/json" -d'{ ... }'
