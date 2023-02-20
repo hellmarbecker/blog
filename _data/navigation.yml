@@ -5,5 +5,7 @@ main:
     url: /about/
   - title: "Archives"
     url: /archives/
+  - title: "Blogroll"
+    url: /blogroll/
   - title: "GitHub"
     url: https://github.com/hellmarbecker
