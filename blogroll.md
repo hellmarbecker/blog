@@ -19,6 +19,6 @@ an incomplete, poorly curated list, in no particular order
 ## Stream Processing in General
 
 - [Dunith Dhanushka's Medium blog](https://medium.com/event-driven-utopia)
-- [Pere's Substack](https://purbon.substack.com/)
+- [Pere Urbón-Bayes's Substack](https://purbon.substack.com/)
 - [Tim Spann's blog](https://www.datainmotion.dev/) and [DZone](https://dzone.com/users/297029/bunkertor.html)
 - [Robin Moffatt](https://rmoff.net/)
