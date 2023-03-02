@@ -135,14 +135,14 @@ Partition 2:
  749 #ja.wikipedia
  565 #pl.wikipedia
 ```
-We got segments of roughly the same size, and each value of `channel` ends up in only one segment. However, as a rule, similar values of the partition key do not end up in the same segment. Thus, range queries will not benefit. Queries with a single value filter can be faster, though. Also, [_TopN_ queries](https://druid.apache.org/docs/latest/querying/topnquery.html) will give more accurate results than with dynamic partitiioing.
+We got segments of roughly the same size, and each value of `channel` ends up in only one segment. However, as a rule, similar values of the partition key do not end up in the same segment. Thus, range queries will not benefit. Queries with a single value filter can be faster, though. Also, [_TopN_ queries](https://druid.apache.org/docs/latest/querying/topnquery.html) will give more accurate results than with dynamic partitioning.
 
 ## Conclusion
 
 So, why would you even use _dynamic partitioning?_ There are two reasons, or maybe three:
 - If you are ingesting realtime data, you need to use dynamic partitioning.
 - Also, you can always add (append) data to an existing time chunk with dynamic partitioning.
-- The third reason: you do not need to reshuffle data between partitions, so ingestion is faster and less resource intensive than iwht other partitioning schemes.
+- The third reason: you do not need to reshuffle data between partitions, so ingestion is faster and less resource intensive than with other partitioning schemes.
 
 _Hash partitioning_ helps ensure a proper distribution of the data, but has limited query performance benefits.
 
