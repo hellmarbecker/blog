@@ -9,7 +9,7 @@ an incomplete, poorly curated list, in no particular order
 ## Druid Related
 
 - [Kyle Hoondert's Medium blog](https://medium.com/@kyle.hoondert)
-- [Vijay Narayanan's blog](https://meditationsonbigdata.blog/) and [dev.to space](https://dev.to/vnarayaj)
+- [Vijay Narayanan's blog](https://meditationsonbigdata.blog/), [Medium](https://vijay-narayanan-bigdata.medium.com/), and [dev.to space](https://dev.to/vnarayaj)
 - [Saydul Bashar's Substack](https://saydul.substack.com/)
 - [Ben Krug's blog](https://intertubes.wordpress.com/)
 - [Peter Marshall's blog](https://pmio.hashnode.dev/) and [Substack](https://pmio.substack.com/)
