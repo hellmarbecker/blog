@@ -81,7 +81,7 @@ Bummer! These segments are _very_ different in size! Why is that?
 
 Recall the value histogram that we retrieved in the beginning. The distribution is very skewed: Two values (`#en.wikipedia`, `#vi.wikipedia`) account for half of all the rows! If all rows for one value go into the same partition, there is no way we can get a balanced size distribution. That is why the remaining partition (number 1 in this case) ends up with only 4,000 rows and 660K in size, while the biggest partition is five times that size. If we had real data rather than this small sample, this would have a big effect on performance.
 
-This is not good news for query tuning. You want to get uniform partition sizes, like what we got with hash partitioning. In the next installment of the series, we will look at a way to achieve both uniform partitiion size and a data layout that optimizes query performance.
+This is not good news for query tuning. You want to get uniform partition sizes, like what we got with hash partitioning. In the next installment of the series, we will look at a way to achieve both uniform partition size and a data layout that optimizes query performance.
 
 ---
 
