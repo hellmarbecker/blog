@@ -232,6 +232,21 @@ explain how it is done
 - #2: pulls in the new data
   - logical complement of filter #1: and(network_key=gaggle, timestamp in \[interval\])
 
+Caveat: The documentation mentions that
+
+> The secondary partitioning method determines the requisite number of concurrent worker tasks that run in parallel to complete ingestion with the Combining input source. Set this value in `maxNumConcurrentSubTasks` in `tuningConfig` based on the secondary partitioning method:
+>
+> - `range` or `single_dim` partitioning: greater than or equal to 1
+> - `hashed` or `dynamic` partitioning: greater than or equal to 2
+
+This advice is to be taken seriously. If you try to run with an insufficient number of subtasks you will get a highly misleading error message that looks like:
+
+```
+java.lang.UnsupportedOperationException: Implement this method properly if needsFormat() = true
+```
+
+Make sure you configure at least two concurrent subtasks if you are using `hashed` or `dynamic` partitioning.
+
 and done!
 
 ## Conclusion
