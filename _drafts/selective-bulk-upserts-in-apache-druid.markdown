@@ -20,16 +20,28 @@ If we want to make these data available in Druid, we will have to cut out existi
 
 ## Solution Outline
 
-explain combining inputSource
+In order to achieve this behavior in Druid, we will use a [`combining` input source](https://druid.apache.org/docs/latest/ingestion/native-batch-input-sources.html#combining-input-source) in the ingestion spec. A combining input source contains a list of delegate input sources - we will use two, but you can actually have more than two.
+
+The ingestion process will read data from all delegate input sources and ingest them, much like what a `union all` in SQL does.
+
+We have to make sure that all input sources have the same schema and, where that applies, the same input format. In practice this means:
+
+- you can combine multiple external sources only if they are all parsed in the same way
+- or you can combine external sources like above with any number of `druid` input sources (reindexing).
+
+The latter is what we are going to do.
 
 ## Tutorial: How to do it in practise
 
-yada yada what we will do today
-- load initial data sample for multiple ad networks
-- do the upsert for one network
-this can be done with the current OSS druid quickstart
+In this tutorial, we will set up a bulk upsert using the combining input source technique and two stripped down sample data set.
 
-note, where do we place the files, local file system for a 1 node install but a cluster would use s3 or whatever
+We will:
+- load an initial data sample for multiple ad networks
+- show the upsert technique by replacing data for one network and a specific date range.
+
+The tutorial can be done using the [Druid 25.0 quickstart](https://druid.apache.org/docs/latest/tutorials/index.html).
+
+Note: Because the tutorial assumes that you are running all Druid processes on a single machine, it can work with local file system data. In a cluster  setup, you would have to use a network mount or (more commonly) cloud storage, like S3.
 
 ### The data sample
 
