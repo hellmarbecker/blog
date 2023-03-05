@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Bulk Upserts in Apache Druid"
+title:  "Selective Bulk Upserts in Apache Druid"
 categories: blog druid imply adtech tutorial update crud
 ---
 
