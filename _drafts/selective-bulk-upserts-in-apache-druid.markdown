@@ -43,20 +43,184 @@ The tutorial can be done using the [Druid 25.0 quickstart](https://druid.apache.
 
 Note: Because the tutorial assumes that you are running all Druid processes on a single machine, it can work with local file system data. In a cluster  setup, you would have to use a network mount or (more commonly) cloud storage, like S3.
 
-### The data sample
-
-- sample 1: 2 weeks worth of data, 2-3 networks, possibly campaign id
-- sample 2: 1 weeks worth data, 1 network, some numbers will have changed
-all json, or csv who cares
-
 ### Initial load
 
-ingest sample 1 with this ingestion spec: (paste spec)
-note this can be done with the wizard
+The first data sample serves to populate the table. It has one week's worth of data from three networks:
+
+```
+{"date": "2023-01-01T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 2770, "ads_revenue": 330.69}
+{"date": "2023-01-01T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 9646, "ads_revenue": 137.85}
+{"date": "2023-01-01T00:00:00Z", "ad_network": "twottr", "ads_impressions": 1139, "ads_revenue": 493.73}
+{"date": "2023-01-02T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 9066, "ads_revenue": 368.66}
+{"date": "2023-01-02T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 4426, "ads_revenue": 170.96}
+{"date": "2023-01-02T00:00:00Z", "ad_network": "twottr", "ads_impressions": 9110, "ads_revenue": 452.2}
+{"date": "2023-01-03T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 3275, "ads_revenue": 363.53}
+{"date": "2023-01-03T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 9494, "ads_revenue": 426.37}
+{"date": "2023-01-03T00:00:00Z", "ad_network": "twottr", "ads_impressions": 4325, "ads_revenue": 107.44}
+{"date": "2023-01-04T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 8816, "ads_revenue": 311.53}
+{"date": "2023-01-04T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 8955, "ads_revenue": 254.5}
+{"date": "2023-01-04T00:00:00Z", "ad_network": "twottr", "ads_impressions": 6905, "ads_revenue": 211.74}
+{"date": "2023-01-05T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 3075, "ads_revenue": 382.41}
+{"date": "2023-01-05T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 4870, "ads_revenue": 205.84}
+{"date": "2023-01-05T00:00:00Z", "ad_network": "twottr", "ads_impressions": 1418, "ads_revenue": 282.21}
+{"date": "2023-01-06T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 7413, "ads_revenue": 322.43}
+{"date": "2023-01-06T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 1251, "ads_revenue": 265.52}
+{"date": "2023-01-06T00:00:00Z", "ad_network": "twottr", "ads_impressions": 8055, "ads_revenue": 394.56}
+{"date": "2023-01-07T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 4279, "ads_revenue": 317.84}
+{"date": "2023-01-07T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 5848, "ads_revenue": 162.96}
+{"date": "2023-01-07T00:00:00Z", "ad_network": "twottr", "ads_impressions": 9449, "ads_revenue": 379.21}
+```
+
+Save this smple locally to a file and ingest it using this ingestion spec (replace the path in `baseDir` with the path you saved the sample file to):
+
+```json
+{
+  "type": "index_parallel",
+  "spec": {
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "local",
+        "baseDir": "/<my base path>",
+        "filter": "data1.json"
+      },
+      "inputFormat": {
+        "type": "json"
+      },
+      "appendToExisting": false
+    },
+    "tuningConfig": {
+      "type": "index_parallel",
+      "partitionsSpec": {
+        "type": "hashed"
+      },
+      "forceGuaranteedRollup": true
+    },
+    "dataSchema": {
+      "dataSource": "ad_data",
+      "timestampSpec": {
+        "column": "date",
+        "format": "iso"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          "ad_network",
+          {
+            "type": "long",
+            "name": "ads_impressions"
+          },
+          {
+            "name": "ads_revenue",
+            "type": "double"
+          }
+        ]
+      },
+      "granularitySpec": {
+        "queryGranularity": "none",
+        "rollup": false,
+        "segmentGranularity": "week"
+      }
+    }
+  }
+}
+```
+
+You can create this ingestion spec by clicking through the console wizard, too. There are a few notable settings here though:
+
+- I've used hash partitioning over all partitions here. The default in the wizard is dynamic partitioning, but you would usually use dymanic partitioning with batch data only if you want to append data to an existing data sets. In all other cases, use hash or range partitioning.
+- I've configured weekly segments. This is to show that the technique works even if the updated range does not align with segment boundaries. 
 
 ### Doing the upsert
 
 now replace with new data (paste spec)
+
+```json
+{
+  "type": "index_parallel",
+  "spec": {
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "combining",
+        "delegates": [
+          {
+            "type": "druid",
+            "dataSource": "ad_data",
+            "interval": "1000/3000",
+            "filter": {
+              "type": "not",
+              "field": {
+                "type": "or",
+                "fields": [
+                  {
+                    "type": "and",
+                    "fields": [
+                      {
+                        "type": "selector",
+                        "dimension": "ad_network",
+                        "value": "gaagle"
+                      },
+                      {
+                        "type": "interval",
+                        "dimension": "__time",
+                        "intervals": [
+                          "2023-01-03T00:00:00Z/2023-01-10T00:00:00Z"
+                        ],
+                        "extractionFn": null
+                      }
+                    ]
+                  }
+                ]
+              }
+            }          
+          },
+          {
+            "type": "local",
+            "baseDir": "/Users/hellmarbecker/meetup-talks/upsert",
+            "filter": "data1.json"
+          }
+        ]
+      }
+      "inputFormat": {
+        "type": "json"
+      },
+      "appendToExisting": false
+    },
+    "tuningConfig": {
+      "type": "index_parallel",
+      "partitionsSpec": {
+        "type": "hashed"
+      },
+      "forceGuaranteedRollup": true
+    },
+    "dataSchema": {
+      "dataSource": "ad_data",
+      "timestampSpec": {
+        "column": "date",
+        "format": "iso"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          "ad_network",
+          {
+            "type": "long",
+            "name": "ads_impressions"
+          },
+          {
+            "name": "ads_revenue",
+            "type": "double"
+          }
+        ]
+      },
+      "granularitySpec": {
+        "queryGranularity": "none",
+        "rollup": false,
+        "segmentGranularity": "week"
+      }
+    }
+  }
+}
+```
 
 explain how it is done
 - combining input source is like a UNION
