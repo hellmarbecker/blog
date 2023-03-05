@@ -14,8 +14,9 @@ Sometimes in analytics, you have to update or insert rows of data in a segment. 
 
 I encountered this scenario with some of my AdTech customers. They obtain performance analytics data by issuing API calls to the ad network providers. These API calls allow only certain predefined time ranges to specified - data is downloaded in bulk. Moreover, depending on late arriving conversion data and other factors, metrics associated with the data rows may change over time.
 
-If we want to make these data available in Druid, we will have to cut out existing data by key and interval, and transplant the new data instead. 
+If we want to make these data available in Druid, we will have to cut out existing data by key and interval, and transplant the new data instead, like in this diagram: 
 
+![Combining ingestion](/assets/2023-03-05-01.png)
 
 ## Solution Outline
 
