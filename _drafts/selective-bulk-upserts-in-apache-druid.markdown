@@ -269,8 +269,13 @@ _2023-01-07T00:00:00.000Z_|_gaagle_|_9762_|_76.27_
 _2023-01-08T00:00:00.000Z_|_gaagle_|_1484_|_188.17_
 _2023-01-09T00:00:00.000Z_|_gaagle_|_1845_|_287.5_
 
+Note how all the rows in _italics_ come from the second data set. They have either been inserted (the last two rows), or they replace previous rows for the same time interval and network.
+
 ### Taking a closer look
 
+Let's go through some interesting points in the ingestion spec.
+
+#### The input sources
 
 - combining input source is like a UNION
 - delegates are the parts of the union, they can be any inputsource, there can be more than 2
@@ -279,16 +284,21 @@ _2023-01-09T00:00:00.000Z_|_gaagle_|_1845_|_287.5_
   - filters are a kind of boolean prefix notation, they tell us which rows to _keep_
   - so here it is: not(and(network_key=gaggle, timestamp in \[interval\]))
 - #2: pulls in the new data
-  - logical complement of filter #1: and(network_key=gaggle, timestamp in \[interval\])
+  - logical complement of filter #1: and(network_key=gaggle, timestamp in \[interval\]) but cannot do this explicitly
+- schema matches but not quite
 
-**Caveat:** The documentation mentions that
+#### Schema alignment: Timestamp definition
+
+#### Tuning configuration
+
+The documentation mentions that
 
 > The secondary partitioning method determines the requisite number of concurrent worker tasks that run in parallel to complete ingestion with the Combining input source. Set this value in `maxNumConcurrentSubTasks` in `tuningConfig` based on the secondary partitioning method:
 >
 > - `range` or `single_dim` partitioning: greater than or equal to 1
 > - `hashed` or `dynamic` partitioning: greater than or equal to 2
 
-This advice is to be taken seriously. If you try to run with an insufficient number of subtasks you will get a highly misleading error message that looks like:
+**This advice is to be taken seriously.** If you try to run with an insufficient number of subtasks you will get a highly misleading error message that looks like:
 
 ```
 java.lang.UnsupportedOperationException: Implement this method properly if needsFormat() = true
