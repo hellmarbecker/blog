@@ -33,7 +33,7 @@ The latter is what we are going to do.
 
 ## Tutorial: How to do it in practise
 
-In this tutorial, we will set up a bulk upsert using the combining input source technique and two stripped down sample data set.
+In this tutorial, we will set up a bulk upsert using the combining input source technique and two stripped down sample data sets.
 
 We will:
 - load an initial data sample for multiple ad networks
@@ -293,12 +293,28 @@ Let's go through some interesting points in the ingestion spec.
         ]
       }
 ```
+
+#### Druid reindexing: Interval boundaries
+
+Any Druid reindexing job needs to define the interval that will be considered as the domain of reindexing. If you want to consider all data that exists in the datasource, specify an interval that is large enough to cover all possible timestamps:
+
+```
+            "interval": "1000/3000",
+```
+
+This shorthand is actually a set of two ISO timestamps with year granularity!
+
+#### Ingestion filter on the Druid reindexing part
+
+```
+
+```
 - combining input source is like a UNION
 - delegates are the parts of the union, they can be any inputsource, there can be more than 2
 - #1: reindexes the existing data
   - there is a filter that leaves out the interval and key we want to replace
   - filters are a kind of boolean prefix notation, they tell us which rows to _keep_
-  - so here it is: not(and(network_key=gaggle, timestamp in \[interval\]))
+  - so here it is: not(and(network_key=gaagle, timestamp in \[interval\]))
 - #2: pulls in the new data
   - logical complement of filter #1: and(network_key=gaggle, timestamp in \[interval\]) but cannot do this explicitly
 - schema matches but not quite
