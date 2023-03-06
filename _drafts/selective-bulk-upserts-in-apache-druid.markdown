@@ -183,7 +183,7 @@ Save this sample as `data2.json` and proceed to replace/insert the new data usin
           },
           {
             "type": "local",
-            "files": ["/Users/hellmarbecker/meetup-talks/upsert/data2.json"]
+            "files": ["/<my base path>/data2.json"]
           }
         ]
       },
@@ -277,6 +277,22 @@ Let's go through some interesting points in the ingestion spec.
 
 #### The input sources
 
+```
+      "inputSource": { 
+        "type": "combining",
+        "delegates": [
+          {
+            "type": "druid",
+            "dataSource": "ad_data",
+            ...   
+          },
+          {
+            "type": "local",
+            "files": ["/<my base path>/data2.json"]
+          }
+        ]
+      }
+```
 - combining input source is like a UNION
 - delegates are the parts of the union, they can be any inputsource, there can be more than 2
 - #1: reindexes the existing data
