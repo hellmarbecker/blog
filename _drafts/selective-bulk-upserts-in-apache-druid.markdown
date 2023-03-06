@@ -10,7 +10,7 @@ Sometimes in analytics, you have to update or insert rows of data in a segment. 
 
 [This Imply blog](https://imply.io/blog/upserts-and-data-deduplication-with-druid/) talks about the various strategies to handle such scenarios with Druid. But today, I want to look at a special case of Upsert, where you want to update or insert a bunch of rows based on a key and time interval.
 
-## The Use Case
+## The use case
 
 I encountered this scenario with some of my AdTech customers. They obtain performance analytics data by issuing API calls to the ad network providers. These API calls allow only certain predefined time ranges to specified - data is downloaded in bulk. Moreover, depending on late arriving conversion data and other factors, metrics associated with the data rows may change over time.
 
@@ -18,7 +18,7 @@ If we want to make these data available in Druid, we will have to cut out existi
 
 ![Combining ingestion](/assets/2023-03-05-01.png)
 
-## Solution Outline
+## Solution outline
 
 In order to achieve this behavior in Druid, we will use a [`combining` input source](https://druid.apache.org/docs/latest/ingestion/native-batch-input-sources.html#combining-input-source) in the ingestion spec. A combining input source contains a list of delegate input sources - we will use two, but you can actually have more than two.
 
@@ -71,7 +71,7 @@ The first data sample serves to populate the table. It has one week's worth of d
 {"date": "2023-01-07T00:00:00Z", "ad_network": "twottr", "ads_impressions": 9449, "ads_revenue": 379.21}
 ```
 
-Save this smple locally to a file and ingest it using this ingestion spec (replace the path in `baseDir` with the path you saved the sample file to):
+Save this sample locally to a file named `daa1.json` and ingest it using this ingestion spec (replace the path in `baseDir` with the path you saved the sample file to):
 
 ```json
 {
@@ -132,7 +132,19 @@ You can create this ingestion spec by clicking through the console wizard, too. 
 
 ### Doing the upsert
 
-now replace with new data (paste spec)
+Now, let's fast-forward two days in time. We have downloaded a bunch of new and updated data from the `gaggle` network. The new data looks like this:
+
+```json
+{"date": "2023-01-03T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 4521, "ads_revenue": 378.65}
+{"date": "2023-01-04T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 4330, "ads_revenue": 464.02}
+{"date": "2023-01-05T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 6088, "ads_revenue": 320.57}
+{"date": "2023-01-06T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 3417, "ads_revenue": 162.77}
+{"date": "2023-01-07T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 9762, "ads_revenue": 76.27}
+{"date": "2023-01-08T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 1484, "ads_revenue": 188.17}
+{"date": "2023-01-09T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 1845, "ads_revenue": 287.5}
+```
+
+Save this sample as `data2.json` and proceed to replace/insert the new data using this spec:
 
 ```json
 {
@@ -140,7 +152,7 @@ now replace with new data (paste spec)
   "spec": {
     "ioConfig": {
       "type": "index_parallel",
-      "inputSource": {
+      "inputSource": { 
         "type": "combining",
         "delegates": [
           {
@@ -150,61 +162,72 @@ now replace with new data (paste spec)
             "filter": {
               "type": "not",
               "field": {
-                "type": "or",
+                "type": "and",
                 "fields": [
                   {
-                    "type": "and",
-                    "fields": [
-                      {
-                        "type": "selector",
-                        "dimension": "ad_network",
-                        "value": "gaagle"
-                      },
-                      {
-                        "type": "interval",
-                        "dimension": "__time",
-                        "intervals": [
-                          "2023-01-03T00:00:00Z/2023-01-10T00:00:00Z"
-                        ],
-                        "extractionFn": null
-                      }
-                    ]
+                    "type": "selector",
+                    "dimension": "ad_network",
+                    "value": "gaagle"
+                  },
+                  {
+                    "type": "interval",
+                    "dimension": "__time",
+                    "intervals": [
+                      "2023-01-03T00:00:00Z/2023-01-10T00:00:00Z"
+                    ],
+                    "extractionFn": null
                   }
                 ]
               }
-            }          
+            }      
           },
           {
             "type": "local",
-            "baseDir": "/Users/hellmarbecker/meetup-talks/upsert",
-            "filter": "data1.json"
+            "files": ["/Users/hellmarbecker/meetup-talks/upsert/data2.json"]
           }
         ]
-      }
+      },
       "inputFormat": {
         "type": "json"
-      },
-      "appendToExisting": false
+      }
     },
     "tuningConfig": {
       "type": "index_parallel",
       "partitionsSpec": {
         "type": "hashed"
       },
-      "forceGuaranteedRollup": true
+      "forceGuaranteedRollup": true,
+      "maxNumConcurrentSubTasks": 2
     },
     "dataSchema": {
-      "dataSource": "ad_data",
       "timestampSpec": {
-        "column": "date",
-        "format": "iso"
+        "column": "__time",
+        "missingValue": "2010-01-01T00:00:00Z"
+      },
+      "transformSpec": {
+        "transforms": [
+          {
+            "name": "__time",
+            "type": "expression",
+            "expression": "nvl(timestamp_parse(date), \"__time\")"
+          }
+        ]
+      },
+      "granularitySpec": {
+        "rollup": false,
+        "queryGranularity": "none",
+        "segmentGranularity": "week",
+        "intervals": ["1000/3000"]
       },
       "dimensionsSpec": {
         "dimensions": [
-          "ad_network",
           {
-            "type": "long",
-            "name": "ads_impressions"
+            "name": "ad_network",
+            "type": "string"
+          },
+          {
+            "name": "ads_impressions",
+            "type": "long"
           },
           {
             "name": "ads_revenue",
@@ -212,17 +235,43 @@ now replace with new data (paste spec)
           }
         ]
       },
-      "granularitySpec": {
-        "queryGranularity": "none",
-        "rollup": false,
-        "segmentGranularity": "week"
-      }
+      "dataSource": "ad_data"
     }
   }
 }
 ```
 
-explain how it is done
+Here's the result of a `SELECT *` query after the ingestion finishes:
+
+__time|ad_network|ads_impressions|ads_revenue
+---|---|---|---
+2023-01-01T00:00:00.000Z|fakebook|9646|137.85
+2023-01-01T00:00:00.000Z|gaagle|2770|330.69
+2023-01-01T00:00:00.000Z|twottr|1139|493.73
+2023-01-02T00:00:00.000Z|fakebook|4426|170.96
+2023-01-02T00:00:00.000Z|gaagle|9066|368.66
+2023-01-02T00:00:00.000Z|twottr|9110|452.2
+2023-01-03T00:00:00.000Z|fakebook|9494|426.37
+_2023-01-03T00:00:00.000Z_|_gaagle_|_4521_|_378.65_
+2023-01-03T00:00:00.000Z|twottr|4325|107.44
+2023-01-04T00:00:00.000Z|fakebook|8955|254.5
+_2023-01-04T00:00:00.000Z_|_gaagle_|_4330_|_464.02_
+2023-01-04T00:00:00.000Z|twottr|6905|211.74
+2023-01-05T00:00:00.000Z|fakebook|4870|205.84
+_2023-01-05T00:00:00.000Z_|_gaagle_|_6088_|_320.57_
+2023-01-05T00:00:00.000Z|twottr|1418|282.21
+2023-01-06T00:00:00.000Z|fakebook|1251|265.52
+_2023-01-06T00:00:00.000Z_|_gaagle_|_3417_|_162.77_
+2023-01-06T00:00:00.000Z|twottr|8055|394.56
+2023-01-07T00:00:00.000Z|fakebook|5848|162.96
+_2023-01-07T00:00:00.000Z_|_gaagle_|_9762_|_76.27_
+2023-01-07T00:00:00.000Z|twottr|9449|379.21
+_2023-01-08T00:00:00.000Z_|_gaagle_|_1484_|_188.17_
+_2023-01-09T00:00:00.000Z_|_gaagle_|_1845_|_287.5_
+
+### Taking a closer look
+
+
 - combining input source is like a UNION
 - delegates are the parts of the union, they can be any inputsource, there can be more than 2
 - #1: reindexes the existing data
