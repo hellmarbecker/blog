@@ -22,7 +22,7 @@ If we want to make these data available in Druid, we will have to cut out existi
 
 In order to achieve this behavior in Druid, we will use a [`combining` input source](https://druid.apache.org/docs/latest/ingestion/native-batch-input-sources.html#combining-input-source) in the ingestion spec. A combining input source contains a list of delegate input sources - we will use two, but you can actually have more than two.
 
-The ingestion process will read data from all delegate input sources and ingest them, much like what a `union all` in SQL does.
+The ingestion process will read data from all delegate input sources and ingest them, much like what a `union all` in SQL does. The nice thing is that this process is transactional - it will suceed either completely, or not at all.
 
 We have to make sure that all input sources have the same schema and, where that applies, the same input format. In practice this means:
 
@@ -301,11 +301,11 @@ Here is the combine clause for our tutorial:
       }
 ```
 
-The first part pulls data from the existing Druid datasource. It will apply a filter which I am covering in the next paragraph. The second part gets the new data from a file. 
+The first part pulls data from the existing Druid datasource. It will apply a filter (left out above for brevity), which I am covering in the next paragraph. The second part gets the new data from a file. 
 
 The file input source does not have the ability to specify a filter but then, we don't need it because the file contains exactly the data we want to ingest.
 
-The schema of the two datsources matches but not quite. We will come to this when we look at the timestamp definition.
+The schemas of the two datasources match almost but not quite. We will come to this when we look at the timestamp definition.
 
 #### Druid reindexing: Interval boundaries
 
@@ -353,6 +353,14 @@ This filter will keep all rows that satisfiy a condition of `not(and(ad_network=
 
 #### Schema alignment: Timestamp definition
 
+Most of the fields in the Druid datasource and in the input file match by name and type, because we defined it that way. There is one notable exception though:
+
+The primary timestamp comes from a column `date` and is in ISO-8601 format, but in Druid the timestamp is a `long` value, expressed in milliseconds since Epoch, and is always named `__time`.
+
+**If you do not reconcile these different timestamps, you will get confusing errors.** Maybe Druid will not ingest fresh data at all. In another scenario, I saw an error complaining about a missing interval definition in the partition configuration. At any rate, watch out for your timestamps.
+
+Luckily, it is easy to [populate the timestamp using a Druid expression](https://blog.hellmar-becker.de/2022/02/09/druid-data-cookbook-ingestion-transforms/#composite-timestamps). Here's how it works:
+
 ```
       "timestampSpec": {
         "column": "__time",
@@ -368,6 +376,9 @@ This filter will keep all rows that satisfiy a condition of `not(and(ad_network=
         ]
       }
 ```
+
+- The default is to pick up the timestamp from the `__time` column, which works for the reindexing case. This is coded in `timestampSpec`.
+- A transform overrides the value, replacing it by what is found in the `date` column (the file case.) If that value doesn't exist, we fall back to `__time`.
 
 #### Tuning configuration
 
@@ -386,11 +397,9 @@ java.lang.UnsupportedOperationException: Implement this method properly if needs
 
 Make sure you configure at least two concurrent subtasks if you are using `hashed` or `dynamic` partitioning.
 
-and done!
-
 ## Conclusion
 
-yada yada
-
-
-
+- Selective bulk upserts are done using the `combining inputSource` idiom in Druid.
+- Ingestion filters are very expressive and allow a detailed specification of which data to retain or replace.
+- Make sure timestamp definitions are aligned between your Druid datasource and external data.
+- Configure a sufficient number of subtasks, according to the documentation.
