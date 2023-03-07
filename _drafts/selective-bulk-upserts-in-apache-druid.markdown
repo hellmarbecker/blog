@@ -16,7 +16,7 @@ I encountered this scenario with some of my AdTech customers. They obtain perfor
 
 If we want to make these data available in Druid, we will have to cut out existing data by key and interval, and transplant the new data instead, like in this diagram: 
 
-![Combining ingestion](/assets/2023-03-05-01.png)
+![Combining ingestion](/assets/2023-03-07-01.png)
 
 ## Solution outline
 
@@ -41,11 +41,11 @@ We will:
 
 The tutorial can be done using the [Druid 25.0 quickstart](https://druid.apache.org/docs/latest/tutorials/index.html).
 
-Note: Because the tutorial assumes that you are running all Druid processes on a single machine, it can work with local file system data. In a cluster  setup, you would have to use a network mount or (more commonly) cloud storage, like S3.
+Note: Because the tutorial assumes that you are running all Druid processes on a single machine, it can work with local file system data. In a cluster setup, you would have to use a network mount or (more commonly) cloud storage, like S3.
 
 ### Initial load
 
-The first data sample serves to populate the table. It has one week's worth of data from three networks:
+The first data sample serves to populate the table. It has one week's worth of data from three ad networks:
 
 ```
 {"date": "2023-01-01T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 2770, "ads_revenue": 330.69}
@@ -71,7 +71,7 @@ The first data sample serves to populate the table. It has one week's worth of d
 {"date": "2023-01-07T00:00:00Z", "ad_network": "twottr", "ads_impressions": 9449, "ads_revenue": 379.21}
 ```
 
-Save this sample locally to a file named `daa1.json` and ingest it using this ingestion spec (replace the path in `baseDir` with the path you saved the sample file to):
+Save this sample locally to a file named `data1.json` and ingest it using this ingestion spec (replace the path in `baseDir` with the path you saved the sample file to):
 
 ```json
 {
@@ -280,7 +280,7 @@ As mentioned above, the `combining` input source works like a `union all`. The m
 
 This tutorial uses only two input sources, but generally you could have more than two. A delegate input source can be any input source, but with one important restriction: all input sources that need an `inputFormat` have to share the same `inputFormat`.
 
-This means that as soon as file-shaped input sources are involved, the all have to share the same format. But you can freely combine file-shaped input with Druid reindexing, and probably also with SQL input (although I haven't tested that.)
+This means that as soon as file-shaped input sources are involved, the all have to be the same format. But you can freely combine file-shaped input with Druid reindexing, and probably also with SQL input (although I haven't tested that.)
 
 Here is the combine clause for our tutorial:
 
@@ -303,7 +303,7 @@ Here is the combine clause for our tutorial:
 
 The first part pulls data from the existing Druid datasource. It will apply a filter (left out above for brevity), which I am covering in the next paragraph. The second part gets the new data from a file. 
 
-The file input source does not have the ability to specify a filter but then, we don't need it because the file contains exactly the data we want to ingest.
+The file input source does not have the ability to specify a filter, but then, we don't need it because the file contains exactly the data we want to ingest.
 
 The schemas of the two datasources match almost but not quite. We will come to this when we look at the timestamp definition.
 
@@ -398,6 +398,8 @@ java.lang.UnsupportedOperationException: Implement this method properly if needs
 Make sure you configure at least two concurrent subtasks if you are using `hashed` or `dynamic` partitioning.
 
 ## Conclusion
+
+This tutorial showed how to fold new and updated data into an existing datasource, to the effect of a _selective bulk upsert_. Let's recap a few learnings:
 
 - Selective bulk upserts are done using the `combining inputSource` idiom in Druid.
 - Ingestion filters are very expressive and allow a detailed specification of which data to retain or replace.
