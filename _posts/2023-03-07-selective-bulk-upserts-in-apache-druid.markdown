@@ -351,7 +351,7 @@ Here's where cutting out of data happens. The Druid input source allows you to i
             }      
 ```
 
-This filter will keep all rows that satisfiy a condition of `not(and(ad_network=gaagle, timestamp in [interval]))`. Or, to express it in simpler words, it drops all rows that are from `gaagle` and within the time interval 3 to 10 January (left inclusive).
+This filter will keep all rows that satisfy a condition of `not(and(ad_network=gaagle, timestamp in [interval]))`. Or, to express it in simpler words, it drops all rows that are from `gaagle` and within the time interval 3 to 10 January (left inclusive).
 
 #### Schema alignment: Timestamp definition
 
