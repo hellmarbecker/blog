@@ -325,7 +325,7 @@ Why do we not specify the timestamp filter here? We cannot use the `"interval"` 
 
 Here's where cutting out of data happens. The Druid input source allows you to introduce a set of filters that work the same way as filters inside the `transformSpec`, but, and this is important, are applied to that input source only.
 
-[Filters](https://druid.apache.org/docs/latest/querying/filters.html) offer various ways to specify filter conditions, and to string them together using a kind of boolean operator prefic notation. The condition tells us which rows to _keep_. Here is what the filter for our case looks like:
+[Filters](https://druid.apache.org/docs/latest/querying/filters.html) offer various ways to specify filter conditions, and to string them together using boolean operators in prefix notation. The condition tells us which rows to _keep_. Here is what the filter for our case looks like:
 
 ```
            "filter": {
