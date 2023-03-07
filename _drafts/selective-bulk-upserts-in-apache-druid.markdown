@@ -301,19 +301,48 @@ Any Druid reindexing job needs to define the interval that will be considered as
             "interval": "1000/3000",
 ```
 
-This shorthand is actually a set of two ISO timestamps with year granularity!
+This shorthand is actually a set of two [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) timestamps with year granularity! The numbers are year numbers, and year numbers alone are perfectly legal timestamps.
+
+Why do we not specify the timestamp filter here? We cannot use the `"interval"` setting because we want to _cut out_ an interval. I'll come to this in the next paragraph.
 
 #### Ingestion filter on the Druid reindexing part
 
-```
+Here's where cutting out of data happens. The Druid input source allows you to introduce a set of filters that work the same way as filters inside the `transformSpec`, but, and this is important, are applied to that input source only.
+
+[Filters](https://druid.apache.org/docs/latest/querying/filters.html) offer various ways to specify filter conditions, and to string them together using a kind of boolean operator prefic notation. The condition tells us which rows to _keep_. Here is what the filter for our case looks like:
 
 ```
+           "filter": {
+              "type": "not",
+              "field": {
+                "type": "and",
+                "fields": [
+                  {
+                    "type": "selector",
+                    "dimension": "ad_network",
+                    "value": "gaagle"
+                  },
+                  {
+                    "type": "interval",
+                    "dimension": "__time",
+                    "intervals": [
+                      "2023-01-03T00:00:00Z/2023-01-10T00:00:00Z"
+                    ],
+                    "extractionFn": null
+                  }
+                ]
+              }
+            }      
+```
+
+This filter will keep all rows that satisfies a condition of `not(and(ad_network=gaagle, timestamp in \[interval\]))`. Or, to express it in simpler words, it drops all rows that are from `gaagle` and within the time interval 3 to 10 January (left inclusive).
+
 - combining input source is like a UNION
 - delegates are the parts of the union, they can be any inputsource, there can be more than 2
 - #1: reindexes the existing data
   - there is a filter that leaves out the interval and key we want to replace
   - filters are a kind of boolean prefix notation, they tell us which rows to _keep_
-  - so here it is: not(and(network_key=gaagle, timestamp in \[interval\]))
+  - so here it is: not(and(ad_network=gaagle, timestamp in \[interval\]))
 - #2: pulls in the new data
   - logical complement of filter #1: and(network_key=gaggle, timestamp in \[interval\]) but cannot do this explicitly
 - schema matches but not quite
