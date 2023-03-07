@@ -319,6 +319,8 @@ This shorthand is actually a set of two [ISO 8601](https://en.wikipedia.org/wiki
 
 Why do we not specify the timestamp filter here? We cannot use the `"interval"` setting because we want to _cut out_ an interval. I'll come to this in the next paragraph.
 
+(What we _can_ do with `"interval"` though, is limit the amount of data that Druid needs to reindex. If you know that all the data you are going to touch is within a specific time range, this can speed up things. But make sure that your interval boundaries are aligned with the segment boundaries in Druid, otherwise you will lose data.)
+
 #### Ingestion filter on the Druid reindexing part
 
 Here's where cutting out of data happens. The Druid input source allows you to introduce a set of filters that work the same way as filters inside the `transformSpec`, but, and this is important, are applied to that input source only.
