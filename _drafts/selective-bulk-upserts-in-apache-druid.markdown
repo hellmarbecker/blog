@@ -216,8 +216,7 @@ Save this sample as `data2.json` and proceed to replace/insert the new data usin
       "granularitySpec": {
         "rollup": false,
         "queryGranularity": "none",
-        "segmentGranularity": "week",
-        "intervals": ["1000/3000"]
+        "segmentGranularity": "week"
       },
       "dimensionsSpec": {
         "dimensions": [
