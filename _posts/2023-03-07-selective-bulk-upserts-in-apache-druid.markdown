@@ -22,7 +22,7 @@ If we want to make these data available in Druid, we will have to cut out existi
 
 In order to achieve this behavior in Druid, we will use a [`combining` input source](https://druid.apache.org/docs/latest/ingestion/native-batch-input-sources.html#combining-input-source) in the ingestion spec. A combining input source contains a list of delegate input sources - we will use two, but you can actually have more than two.
 
-The ingestion process will read data from all delegate input sources and ingest them, much like what a `union all` in SQL does. The nice thing is that this process is transactional - it will suceed either completely, or not at all.
+The ingestion process will read data from all delegate input sources and ingest them, much like what a `union all` in SQL does. The nice thing is that this process is transactional - it will succeed either completely, or not at all.
 
 We have to make sure that all input sources have the same schema and, where that applies, the same input format. In practice this means:
 
