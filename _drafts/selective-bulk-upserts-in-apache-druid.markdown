@@ -276,6 +276,14 @@ Let's go through some interesting points in the ingestion spec.
 
 #### The input sources
 
+As mentioned above, the `combining` input source works like a `union all`. The members of the union are specified in the `delegates` array, and they are input source definitions themselves.
+
+This tutorial uses only two input sources, but generally you could have more than two. A delegate input source can be any input source, but with one important restriction: all input sources that need an `inputFormat` have to share the same `inputFormat`.
+
+This means that as soon as file-shaped input sources are involved, the all have to share the same format. But you can freely combine file-shaped input with Druid reindexing, and probably also with SQL input (although I haven't tested that.)
+
+Here is the combine clause for our tutorial:
+
 ```
       "inputSource": { 
         "type": "combining",
@@ -292,6 +300,12 @@ Let's go through some interesting points in the ingestion spec.
         ]
       }
 ```
+
+The first part pulls data from the existing Druid datasource. It will apply a filter which I am covering in the next paragraph. The second part gets the new data from a file. 
+
+The file input source does not have the ability to specify a filter but then, we don't need it because the file contains exactly the data we want to ingest.
+
+The schema of the two datsources matches but not quite. We will come to this when we look at the timestamp definition.
 
 #### Druid reindexing: Interval boundaries
 
@@ -337,17 +351,23 @@ Here's where cutting out of data happens. The Druid input source allows you to i
 
 This filter will keep all rows that satisfiy a condition of `not(and(ad_network=gaagle, timestamp in [interval]))`. Or, to express it in simpler words, it drops all rows that are from `gaagle` and within the time interval 3 to 10 January (left inclusive).
 
-- combining input source is like a UNION
-- delegates are the parts of the union, they can be any inputsource, there can be more than 2
-- #1: reindexes the existing data
-  - there is a filter that leaves out the interval and key we want to replace
-  - filters are a kind of boolean prefix notation, they tell us which rows to _keep_
-  - so here it is: not(and(ad_network=gaagle, timestamp in \[interval\]))
-- #2: pulls in the new data
-  - logical complement of filter #1: and(network_key=gaggle, timestamp in \[interval\]) but cannot do this explicitly
-- schema matches but not quite
-
 #### Schema alignment: Timestamp definition
+
+```
+      "timestampSpec": {
+        "column": "__time",
+        "missingValue": "2010-01-01T00:00:00Z"
+      },
+      "transformSpec": {
+        "transforms": [
+          {
+            "name": "__time",
+            "type": "expression",
+            "expression": "nvl(timestamp_parse(date), \"__time\")"
+          }
+        ]
+      }
+```
 
 #### Tuning configuration
 
