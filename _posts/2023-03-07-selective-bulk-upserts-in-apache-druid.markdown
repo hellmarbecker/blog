@@ -404,6 +404,7 @@ Make sure you configure at least two concurrent subtasks if you are using `hashe
 This tutorial showed how to fold new and updated data into an existing datasource, to the effect of a _selective bulk upsert_. Let's recap a few learnings:
 
 - Selective bulk upserts are done using the `combining inputSource` idiom in Druid.
+- For reindexing Druid data, choose the `interval` to align with segment boundaries, or to be large enough to cover all data. You can apply fine grained date/time filters in the `filter` clause.
 - Ingestion filters are very expressive and allow a detailed specification of which data to retain or replace.
 - Make sure timestamp definitions are aligned between your Druid datasource and external data.
 - Configure a sufficient number of subtasks, according to the documentation.
