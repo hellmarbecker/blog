@@ -6,7 +6,7 @@ categories: blog druid imply adtech tutorial update crud
 
 [Apache Druid](https://druid.apache.org/) is designed for high query speed. The [data segments](https://druid.apache.org/docs/latest/design/segments.html) that make up a Druid datasource (think: table) are generally immutable: You do not update or replace individual rows of data; however you can replace an entire segment by a new version of itself.
 
-Sometimes in analytics, you have to update or insert rows of data in a segment. This may be due to a change in status - such as an order being shipped, or canceled, or returned. Generally, you would have a _key_ column in your data, and based on that key you would update a row if it exists in the table already, and insert it otherwise. This is called `upsert`, after the name of the command that is used in many SQL dialects.
+Sometimes in analytics, you have to update or insert rows of data in a segment. This may be due to a state change - such as an order being shipped, or canceled, or returned. Generally, you would have a _key_ column in your data, and based on that key you would update a row if it exists in the table already, and insert it otherwise. This is called `upsert`, after the name of the command that is used in many SQL dialects.
 
 [This Imply blog](https://imply.io/blog/upserts-and-data-deduplication-with-druid/) talks about the various strategies to handle such scenarios with Druid. But today, I want to look at a special case of Upsert, where you want to update or insert a bunch of rows based on a key and time interval.
 
