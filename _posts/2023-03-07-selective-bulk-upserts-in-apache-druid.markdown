@@ -127,7 +127,7 @@ Save this sample locally to a file named `data1.json` and ingest it using this i
 
 You can create this ingestion spec by clicking through the console wizard, too. There are a few notable settings here though:
 
-- I've used hash partitioning over all partitions here. The default in the wizard is dynamic partitioning, but you would usually use dymanic partitioning with batch data only if you want to append data to an existing data sets. In all other cases, use hash or range partitioning.
+- I've used hash partitioning over all partitions here. The default in the wizard is dynamic partitioning, but you would usually use dymanic partitioning with batch data only if you want to append data to an existing data set. In all other cases, use hash or range partitioning.
 - I've configured weekly segments. This is to show that the technique works even if the updated range does not align with segment boundaries. 
 
 ### Doing the upsert
