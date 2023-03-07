@@ -132,7 +132,7 @@ You can create this ingestion spec by clicking through the console wizard, too. 
 
 ### Doing the upsert
 
-Now, let's fast-forward two days in time. We have downloaded a bunch of new and updated data from the `gaggle` network. The new data looks like this:
+Now, let's fast-forward two days in time. We have downloaded a bunch of new and updated data from the `gaagle` network. The new data looks like this:
 
 ```json
 {"date": "2023-01-03T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 4521, "ads_revenue": 378.65}
