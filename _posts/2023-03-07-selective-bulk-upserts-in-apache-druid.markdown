@@ -305,7 +305,7 @@ The first part pulls data from the existing Druid datasource. It will apply a fi
 
 The file input source does not have the ability to specify a filter, but then, we don't need it because the file contains exactly the data we want to ingest.
 
-The schemas of the two datasources match almost but not quite. We will come to this when we look at the timestamp definition.
+The schemas of the two sources match almost but not quite. We will come to this when we look at the timestamp definition.
 
 #### Druid reindexing: Interval boundaries
 
