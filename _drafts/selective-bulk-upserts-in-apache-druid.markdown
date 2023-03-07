@@ -335,7 +335,7 @@ Here's where cutting out of data happens. The Druid input source allows you to i
             }      
 ```
 
-This filter will keep all rows that satisfies a condition of `not(and(ad_network=gaagle, timestamp in \[interval\]))`. Or, to express it in simpler words, it drops all rows that are from `gaagle` and within the time interval 3 to 10 January (left inclusive).
+This filter will keep all rows that satisfiy a condition of `not(and(ad_network=gaagle, timestamp in [interval]))`. Or, to express it in simpler words, it drops all rows that are from `gaagle` and within the time interval 3 to 10 January (left inclusive).
 
 - combining input source is like a UNION
 - delegates are the parts of the union, they can be any inputsource, there can be more than 2
