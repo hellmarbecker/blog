@@ -22,3 +22,4 @@ an incomplete, poorly curated list, in no particular order
 - [Pere Urbón-Bayes's Substack](https://purbon.substack.com/)
 - [Tim Spann's blog](https://www.datainmotion.dev/) and [DZone](https://dzone.com/users/297029/bunkertor.html)
 - [Robin Moffatt](https://rmoff.net/)
+- [Elliot West](https://medium.com/@teabot)
