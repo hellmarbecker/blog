@@ -92,7 +92,7 @@ Look at the data with a `SELECT * FROM "events"` query:
 
 ![Select all data](/assets/2023-03-26-03-selectstar.jpg)
 
-We are interested in `buy` events: for these, the amount of the purchase is in the `price` subfield that we can extract with `JSON_VALUE`. One of the latest additions in Druid is tat you can specify the expected return type inside the function call like so:
+We are interested in `buy` events: for these, the amount of the purchase is in the `price` subfield that we can extract with `JSON_VALUE`. One of the latest additions in Druid is that you can specify the expected return type inside the function call like so:
 
 ```
 JSON_VALUE(extra_data, '$.price' RETURNING DOUBLE)
