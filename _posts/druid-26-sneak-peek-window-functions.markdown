@@ -19,7 +19,7 @@ mvn clean install -Pdist -DskipTests
 
 Then follow the instructions to locate and install the tarball.
 
-All this is still under development so it is undocumented, and hidden behind a secret query context option. I will show that in a moment. Also notice, that window functions only work within `GROUP BY` queries, and there are still some other limitations. But this is fast progressing.
+All this is still under development so it is undocumented, and hidden behind a secret query context option. (We will look at that in a moment). Also notice, that window functions only work within `GROUP BY` queries, and there are still some other limitations. But it is fast progressing work.
 
 In this tutorial, you will 
 
@@ -33,7 +33,7 @@ _**Disclaimer:** This tutorial uses undocumented functionality and unreleased co
 I am taking a data sample from [the Tinybird blog](https://www.tinybird.co/blog-posts/coming-soon-on-clickhouse-window-functions) which is simulated data from an ecommerce store. The data is downloadable from https://storage.googleapis.com/tinybird-assets/datasets/guides/events_10K.csv and has a straightforward format:
 
 - a _timestamp_
-- string fields for _product id, user_id,_ and _event type_
+- string fields for _product id, user id,_ and _event type_
 - an _extra data_ field: this is a variable JSON object whose schema depends on the event type.
 
 Let's see if we can do some interesting things with this!
@@ -72,7 +72,7 @@ or you can enter the same SQL in the SQL ingestion wizard and monitor progress i
 
 Let's get an idea of the amount of data in there. One of the neat things in the Druid console is that it has the queries for these basic aggregations in the context menu for each datasource in the query window:
 
-![Select time range](/assets/2023-03-26-02-selectminmaxtime.jpg)
+<img src="/assets/2023-03-26-02-selectminmaxtime.jpg" width="50%" />
 
 This gives us a quick query for the date range of the sample
 
@@ -129,11 +129,11 @@ Here, we filter the data, extract the `price` field, and group everything by day
 
 From the menu next to the `Run` button, select `Edit Context`
 
-![Edit Context menu](/assets/2023-03-26-04-editcontext.jpg)
+<img src="/assets/2023-03-26-04-editcontext.jpg" width="50%" />
 
 and enter the option `"windowsAreForClosers": true` to enable window functions:
 
-![Enter secret option](/assets/2023-03-26-05-contextoption.jpg)
+<img src="/assets/2023-03-26-05-contextoption.png" width="50%" />
 
 You could also specify the context when running the query through the [REST API endpoint](https://druid.apache.org/docs/latest/querying/sql-api.html) (unfortunately not yet through JDBC, though.)
 
@@ -178,12 +178,12 @@ The columns named _cume..._ contain the result of the window aggregations.
 
 And using the `Explain` function, notice that this SQL actually translates to a new native query type:
 
-![Native window query](/assets/2023-03-26-07-nativequery.jpg)
+<img src="/assets/2023-03-26-07-nativequery.jpg" width="70%" />
 
 ## Conclusion
 
 - If you take a sneak peek at the public Druid repository, you can follow the work that is being done on window functions. While these are currently a bit rough around the edges, you can already do quite a bit with this new functionality.
-- Because it is work in progress, this is currently undocumented and hidden behind a feature flag that needs to be enabled in the qwuery context for eac h query that uses it.
+- Because it is work in progress, this is currently undocumented and hidden behind a feature flag that needs to be enabled in the qwuery context for each query that uses it.
 - This is evolving rapidly and will likely see a lot of enhancements very soon.
 
 ---
