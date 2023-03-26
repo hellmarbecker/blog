@@ -123,7 +123,7 @@ In order to prepare that report, let's first collect the fields we need in a _[c
   GROUP BY 1
 ```
 
-Here, we filter the data, extract the `price` field, and group everything by day.
+Here, we filter the data, extract the `price` field, and group everything by day. We will package that into a `WITH` clause that defines the input for the main query.
 
 ### Setting the context flag to enable experimental window functions
 
