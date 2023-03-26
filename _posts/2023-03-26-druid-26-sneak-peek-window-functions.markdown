@@ -30,7 +30,7 @@ _**Disclaimer:** This tutorial uses undocumented functionality and unreleased co
 
 ## Let's do it in practice
 
-I am taking a data sample from [the Tinybird blog](https://www.tinybird.co/blog-posts/coming-soon-on-clickhouse-window-functions) which is simulated data from an ecommerce store. The data is downloadable from https://storage.googleapis.com/tinybird-assets/datasets/guides/events_10K.csv and has a straightforward format:
+I am taking a data sample from [the Tinybird blog](https://www.tinybird.co/blog-posts/coming-soon-on-clickhouse-window-functions) which is simulated data from an ecommerce store. The data is downloadable from [here](https://storage.googleapis.com/tinybird-assets/datasets/guides/events_10K.csv) and has a straightforward format:
 
 - a _timestamp_
 - string fields for _product id, user id,_ and _event type_
@@ -90,7 +90,7 @@ This is why I chose monthly time partitions - given the small size of the sample
 
 Look at the data with a `SELECT * FROM "events"` query:
 
-![Select all data](/assets/2023-03-26-03-selectstar)
+![Select all data](/assets/2023-03-26-03-selectstar.jpg)
 
 We are interested in `buy` events: for these, the amount of the purchase is in the `price` subfield that we can extract with `JSON_VALUE`. One of the latest additions in Druid is tat you can specify the expected return type inside the function call like so:
 
