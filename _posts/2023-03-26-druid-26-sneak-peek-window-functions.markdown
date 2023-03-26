@@ -183,7 +183,7 @@ And using the `Explain` function, notice that this SQL actually translates to a 
 ## Conclusion
 
 - If you take a sneak peek at the public Druid repository, you can follow the work that is being done on window functions. While these are currently a bit rough around the edges, you can already do quite a bit with this new functionality.
-- Because it is work in progress, this is currently undocumented and hidden behind a feature flag that needs to be enabled in the qwuery context for each query that uses it.
+- Because it is work in progress, this is currently undocumented and hidden behind a feature flag that needs to be enabled in the query context for each query that uses it.
 - This is evolving rapidly and will likely see a lot of enhancements very soon.
 
 ---
