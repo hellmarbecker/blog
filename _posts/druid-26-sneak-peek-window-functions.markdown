@@ -84,7 +84,7 @@ FROM "events"
 GROUP BY ()
 ```
 
-which shows data is from more than 3 years (2017-2020).
+which shows that the data is from more than 3 years (2017-2020).
 
 This is why I chose monthly time partitions - given the small size of the sample, yearly would also work well.
 
