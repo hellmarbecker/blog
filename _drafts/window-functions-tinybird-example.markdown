@@ -4,6 +4,18 @@ disclaimer
 
 this is still under development so it is hidden behind a secret query context option
 
+This is a sneak peek into Druid 26 functionality. In order to use the new functions, you can (as of the time of writing) [build Druid](https://druid.apache.org/docs/latest/development/build.html) from the HEAD of the master branch:
+
+```bash
+git clone https://github.com/apache/druid.git
+cd druid
+mvn clean install -Pdist -DskipTests
+```
+
+Then follow the instructions to locate and install the tarball.
+
+_**Disclaimer:** This tutorial uses undocumented functionality and unreleased code. This blog is neither endorsed by Imply nor by the Apache Druid PMC. It merely collects the results of personal experiments. The features described here might, in the final release, work differently, or not at all. In addition, the entire build, or execution, may fail. Your mileage may vary._
+
 ## now let's do it in practice
 
 blog page: https://www.tinybird.co/blog-posts/coming-soon-on-clickhouse-window-functions
