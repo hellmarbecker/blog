@@ -142,10 +142,10 @@ You could also specify the context when running the query through the [REST API 
 Now we have everything we need. The cumulative sums will be computed using a window clause like this:
 
 ```sql
-SUM(SUM(purchases)) OVER (ORDER BY "date" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
+SUM(purchases) OVER (ORDER BY "date" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW)
 ```
 
-where the inner `SUM` is the aggregation from the global `GROUP BY` clause, and the outer `SUM` is the actual window aggregation.
+where the daily sums have been computed by the `GROUP BY` in the CTE, and the window aggregation does the cumulative sums.
 
 Here is the whole query:
 
@@ -161,12 +161,11 @@ WITH cte AS (
 )
 SELECT
   "date",
-  SUM(purchases) AS daily_purchases,
-  SUM(SUM(purchases)) OVER (ORDER BY "date" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cume_purchases,
-  SUM(revenue) AS daily_revenue,
-  SUM(SUM(revenue)) OVER (ORDER BY "date" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cume_revenue
+  purchases AS daily_purchases,
+  SUM(purchases) OVER (ORDER BY "date" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cume_purchases,
+  revenue AS daily_revenue,
+  SUM(revenue) OVER (ORDER BY "date" ASC ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW) AS cume_revenue
 FROM cte
-GROUP BY 1
 ORDER BY 1 ASC
 ```
 
@@ -185,6 +184,8 @@ And using the `Explain` function, notice that this SQL actually translates to a 
 - If you take a sneak peek at the public Druid repository, you can follow the work that is being done on window functions. While these are currently a bit rough around the edges, you can already do quite a bit with this new functionality.
 - Because it is work in progress, this is currently undocumented and hidden behind a feature flag that needs to be enabled in the query context for each query that uses it.
 - This is evolving rapidly and will likely see a lot of enhancements very soon.
+
+_Edit 2023-03-27:_ One of my readers pointed out a simplification of the query - the first version carried a redundant `GROUP BY` in the final query, but it turns out that Druid is smart enough to plan a grouped (timeseries) query based on the grouping in the CTE. This is reflected above now.
 
 ---
 
