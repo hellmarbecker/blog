@@ -30,7 +30,99 @@ _**Disclaimer:** This tutorial uses undocumented functionality and unreleased co
 
 ## data sample
 
+```csv
+date_start,temperature
+2023-04-07T00:00:00Z,5
+2023-04-07T06:00:00Z,8
+2023-04-07T12:00:00Z,14
+2023-04-07T18:00:00Z,12
+2023-04-08T00:00:00Z,3
+2023-04-08T06:00:00Z,6
+2023-04-08T12:00:00Z,11
+2023-04-08T18:00:00Z,5
+```
+
+ingestion spec:
+
+```json
+{
+  "type": "index_parallel",
+  "spec": {
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "inline",
+        "data": "date_start,temperature\n2023-04-07T00:00:00Z,5\n2023-04-07T06:00:00Z,8\n2023-04-07T12:00:00Z,14\n2023-04-07T18:00:00Z,12\n2023-04-08T00:00:00Z,3\n2023-04-08T06:00:00Z,6\n2023-04-08T12:00:00Z,11\n2023-04-08T18:00:00Z,5"
+      },
+      "inputFormat": {
+        "type": "csv",
+        "findColumnsFromHeader": true
+      }
+    },
+    "tuningConfig": {
+      "type": "index_parallel",
+      "partitionsSpec": {
+        "type": "dynamic"
+      }
+    },
+    "dataSchema": {
+      "dataSource": "iot_data",
+      "timestampSpec": {
+        "column": "date_start",
+        "format": "iso"
+      },
+      "granularitySpec": {
+        "queryGranularity": "none",
+        "rollup": false,
+        "segmentGranularity": "month"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          {
+            "type": "double",
+            "name": "temperature"
+          }
+        ]
+      }
+    }
+  }
+}
+```
+
 ## query it
+
+query context:
+
+```json
+{
+  "windowsAreForClosers": true,
+  "enableUnnest": true
+}
+```
+
+final query:
+
+```sql
+WITH cte AS (
+  SELECT 
+    __time AS thisTime, 
+    temperature,
+    LEAD(__time,  1) OVER (ORDER BY __time) nextTime,
+    LEAD(temperature,  1) OVER (ORDER BY __time) nextTemperature
+  FROM "iot_data"
+  GROUP BY 1,2
+)
+SELECT
+  thisTime, nextTime, timeByHour, temperature, nextTemperature,
+  CASE (TIMESTAMP_TO_MILLIS(nextTime) - TIMESTAMP_TO_MILLIS(thisTime)) 
+    WHEN 0 THEN temperature
+    ELSE ((TIMESTAMP_TO_MILLIS(nextTime) - TIMESTAMP_TO_MILLIS(timeByHour)) * temperature 
+            + (TIMESTAMP_TO_MILLIS(timeByHour) - TIMESTAMP_TO_MILLIS(thisTime)) * nextTemperature) 
+          / (TIMESTAMP_TO_MILLIS(nextTime) - TIMESTAMP_TO_MILLIS(thisTime))
+    END interpTemp
+FROM cte, UNNEST(DATE_EXPAND(TIMESTAMP_TO_MILLIS(thisTime), TIMESTAMP_TO_MILLIS(NVL(nextTime, thisTime)), 'PT1H')) AS t(timeByHour)
+WHERE timeByHour <> nextTime
+```
 
 ---
 
