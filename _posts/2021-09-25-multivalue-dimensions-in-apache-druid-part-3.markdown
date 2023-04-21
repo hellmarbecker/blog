@@ -101,9 +101,10 @@ There are various functions in Druid to handle multi-value dimensions. Do not co
 Instead, let's look at the _multi-value functions_, those are the ones starting with `MV_`.
 
 Specifically, `MV_TO_STRING` concatenates all the values in a multi-value column using a configurable delimiter. So,
-- `MV_TO_STRING(orders, ',')` returns the (alphabetically) ordered list of all items that each customer ordered, including double orders. <mark>This enables me to compare or aggregate customers that had the exact same menu basket including repeated items.</mark>
+
+- `MV_TO_STRING(orders_sorted, ',')` returns the (alphabetically) ordered list of all items that each customer ordered, including double orders. <mark>This enables me to compare or aggregate customers that had the exact same menu basket including repeated items.</mark>
 - `MV_TO_STRING(orders_set, ',')` returns the menu basket for each customer, not counting items. <mark>With this I can do cross selling analytics.</mark>
-- `MV_TO_STRING(orders_unsorted, ',')` lets me compare the customer journey of each customer in original order (by time). <mark>This unlocks timeline and customer journey analytics.</mark>
+- `MV_TO_STRING(orders, ',')` lets me compare the customer journey of each customer in original order (by time). <mark>This unlocks timeline and customer journey analytics.</mark>
 
 Here we go:
 
