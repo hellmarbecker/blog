@@ -8,6 +8,7 @@ This is part 2 of a miniseries about multi-value dimensions in Apache Druid. Mor
 - [part 1](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)
 - [part 3](/2021/09/25/multivalue-dimensions-in-apache-druid-part-3/)
 - [part 4](/2021/10/03/multivalue-dimensions-in-apache-druid-part-4/)
+- [part 5](/2023/04/23/multivalue-dimensions-in-apache-druid-part-5/)
 
 Let's continue our journey into the world of multi-value dimensions in Apache Druid - with this here:
 
