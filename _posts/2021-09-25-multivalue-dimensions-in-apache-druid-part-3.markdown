@@ -10,6 +10,7 @@ This is part 3 of the miniseries about multi-value dimensions in Apache Druid. M
 - [part 1](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)
 - [part 2](/2021/08/29/multivalue-dimensions-in-apache-druid-part-2/)
 - [part 4](/2021/10/03/multivalue-dimensions-in-apache-druid-part-4/)
+- [part 5](/2023/04/23/multivalue-dimensions-in-apache-druid-part-5/)
 
 After part 2 of the multi-value series, one reader asked what the difference between the types of handling is and why he would even bother about it. Let's look at some scenarios.
 
