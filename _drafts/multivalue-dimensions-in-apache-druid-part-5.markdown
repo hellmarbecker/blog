@@ -100,35 +100,54 @@ Unfortunately, now the result set has rows even for customers that didn't order 
 
 ## More complex filters
 
-This is how Druid has always behaved. However, the new thing (and please forgive me that I got a bit confused about this among all the other things yesterday), is that we have now an option to enable this strict filtering in our Pivot front-end as well, and I just tested it with release imply-2023.03.01 on Hybrid.
-If you filter by an MVD, there is now an additional checkbox “Hide filtered-out values” that enables the behavior you would like to achieve (see attached picture.)
-
-Queries in both cases:
-
-With the checkbox unchecked:
+What if we want to list the orders not for one, but for multiple items? Sure, you could write a query like
 
 ```sql
-SELECT
-(t."statesVisited") AS "statesVisited",
-(COUNT(*) FILTER (WHERE t.recordType = 'click' AND t."state" = 'subscribe')) AS "COUNTFI-5a3"
-FROM "imply-news" AS t
-WHERE (((TIMESTAMP '2023-04-21 12:02:00'<=(t."__time") AND (t."__time")<TIMESTAMP '2023-04-21 13:02:00') AND MV_OVERLAP((t."statesVisited"), ARRAY['content'])) AND MV_OVERLAP((t."statesVisited"), ARRAY['content','plusContent','home','subscribe','clickbait','affiliateLink','exitSession']))
-GROUP BY 1
+SELECT 
+  customer, 
+  MV_FILTER_ONLY(orders, ARRAY['espresso', 'tiramisu']) AS orderItem,
+  COUNT(*) AS numOrders
+FROM "ristorante"
+WHERE orders = 'tiramisu' OR orders = 'espresso'
+GROUP BY 1,2
 ```
 
-With the checkbox checked:
+with a boolean condition in the `WHERE` clause. But there is a more elegant way, and it involves more `MV_` functions. Instead of the `OR` condition, write this:
 
 ```sql
-SELECT
-MV_FILTER_ONLY((t."statesVisited"), ARRAY['content']) AS "statesVisited",
-(COUNT(*) FILTER (WHERE t.recordType = 'click' AND t."state" = 'subscribe')) AS "COUNTFI-5a3"
-FROM "imply-news" AS t
-WHERE ((TIMESTAMP '2023-04-21 11:47:00'<=(t."__time") AND (t."__time")<TIMESTAMP '2023-04-21 12:47:00') AND MV_OVERLAP((t."statesVisited"), ARRAY['content']))
-GROUP BY 1
-ORDER BY "COUNTFI-5a3" DESC
-LIMIT 1000
+SELECT 
+  customer, 
+  MV_FILTER_ONLY(orders, ARRAY['espresso', 'tiramisu']) AS orderItem,
+  COUNT(*) AS numOrders
+FROM "ristorante"
+WHERE MV_OVERLAP(orders, ARRAY['espresso', 'tiramisu'])
+GROUP BY 1,2
 ```
+
+![](/assets/2023-04-23-06.jpg)
+
+- `MV_OVERLAP` returns 1 when both array arguments have any elements in common, meaning it can be used to model an `OR` condition which is true if any of the filter elements is in the data column.
+- Likewise, `MV_CONTAINS` returns 1 if _all_ elements of its second parameter array are contained within the first parameter, and can be used to model an `AND` condition.
+
+## Visualizing it with Imply Pivot
+ 
+Imply Pivot now has an option to enable this strict filtering. If you filter by an MVD, there is an additional checkbox “Hide filtered-out values” that enables the behavior we just built manually with `MV` functions.
+
+![](/assets/2023-04-23-07.jpg)
+
+With the checkbox checked, we get the correct result:
+
+![](/assets/2023-04-23-08.jpg)
+
+With the checkbox unchecked, we get the same result as in the beginning - all orders of all people that had Tiramisu:
+
+![](/assets/2023-04-23-09.jpg)
 
 ## Learnings
 
-- lorem ipsum
+- Because of the way implicit unnesting works with Apache Druid, you may be surprised by the result when you filter and group by the same multi-value column.
+- Strict filtering can be enabled using sql multi-value functions.
+- `MV_FILTER_ONLY` and `MV_FILTER_NONE` are used in the projection clause to eliminate unwanted values.
+- `MV_CONTAINS` and `MV_OVERLAP` are used in the filter clause to eliminate rows that have none of the wanted values at all, and would not be caught in the projection clause.
+- The two sets of functions usually have to be used together to obtain correct results.
+- Imply Pivot is able to apply this logic transparently when querying one of its data cubes.
