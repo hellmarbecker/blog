@@ -4,6 +4,8 @@ title:  "Multi-Value Dimensions in Apache Druid (Part 5)"
 categories: blog apache druid imply
 ---
 
+![](/assets/2023-04-23-07.jpg)
+
 An interesting discussion that I had with a Druid user prompts me to continue the loose miniseries about multi-value dimensions in Apache Druid. The previous posts can be found here:
 
 - [part 1](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/)
@@ -46,7 +48,7 @@ GROUP BY 1,2
 
 The result contains a lot of items that are definitely not Tiramisu! We got the filtering behavior from the plain query (without `GROUP BY`) and only after that the unnesting was applied!
 
-Maybe if we try to filter after the grouping step, it would work?
+Maybe if we try to filter _after_ the grouping step, it would work?
 
 ```sql
 SELECT customer, orders, COUNT(*) AS numOrders
@@ -65,9 +67,9 @@ The same paragraph also mentions [SQL multi-value functions](https://docs.imply.
 
 The core to the solution is the `MV_FILTER_ONLY` function, which is applied to a multi-value field in the _projection_ clause of the `SELECT` statement. Its first argument is the field that you want to filter on, the second argument is an _array literal_ of the values that you want to keep. 
 
-Arrays are currently the redheaded stepchildren of Druid data modeling, although this is about to change soon and there will be a lot more support for them. For now, you cannot declare an `ARRAY` column (MVDs are of type string), but you can define an array literal with the `ARRAY` constructor.
+Arrays are currently the red-headed stepchild of Druid data modeling, although this is about to change soon and there will be a lot more support for them. For now, you cannot declare an `ARRAY` column (MVDs are of type string). But you can define an array literal with the `ARRAY` constructor. There is also a set of multi-value functions that manipulate such `ARRAY`s, but that is another story for another time.
 
-(There is also a complementary function, `MV_FILTER_NONE`, that keeps only the values that are _not_ contained in the array that you pass as the second argument.)
+(The complementary function to `MV_FILTER_ONLY`, `MV_FILTER_NONE`, keeps only the values that are _not_ contained in the array that you pass as the second argument.)
 
 Let's put together the query:
 
@@ -146,7 +148,7 @@ With the checkbox unchecked, we get the same result as in the beginning - all or
 ## Learnings
 
 - Because of the way implicit unnesting works with Apache Druid, you may be surprised by the result when you filter and group by the same multi-value column.
-- Strict filtering can be enabled using sql multi-value functions.
+- Strict filtering can be enabled using SQL multi-value functions.
 - `MV_FILTER_ONLY` and `MV_FILTER_NONE` are used in the projection clause to eliminate unwanted values.
 - `MV_CONTAINS` and `MV_OVERLAP` are used in the filter clause to eliminate rows that have none of the wanted values at all, and would not be caught in the projection clause.
 - The two sets of functions usually have to be used together to obtain correct results.
