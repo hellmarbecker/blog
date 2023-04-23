@@ -16,6 +16,7 @@ The other parts of this miniseries can be found here:
 - [part 2](/2021/08/29/multivalue-dimensions-in-apache-druid-part-2/)
 - [part 3](/2021/09/25/multivalue-dimensions-in-apache-druid-part-3/)
 - [part 4](/2021/10/03/multivalue-dimensions-in-apache-druid-part-4/)
+- [part 5](/2023/04/23/multivalue-dimensions-in-apache-druid-part-5/)
 
 Let's get started!
 
