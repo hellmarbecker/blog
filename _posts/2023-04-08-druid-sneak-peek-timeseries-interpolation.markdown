@@ -17,7 +17,7 @@ In this tutorial, you will
 Why is it cool? It uses 
 
 -  the new `UNNEST` function, which takes a collection and joins it laterally against the main table
--  the new `DATE_EXPAND` function, which takes a start and end date and a step interval, and created an array of timestamps, spaced by the step interval, between the start and end points
+-  the new `DATE_EXPAND` function, which takes a start and end date and a step interval, and creates an array of timestamps, spaced by the step interval, between the start and end points
 -  [window functions](/2023/03/26/druid-26-sneak-peek-window-functions/), in our case the `LEAD` function to retrieve values from the succeeding row.
 
 ## The data sample
