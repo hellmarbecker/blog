@@ -53,7 +53,7 @@ Notice how Druid has automatically detected that `orders` is an array of primiti
 
 In order to take the arrays apart, we can once again make use of the `UNNEST` function. This has to be enabled using a query context flag. In the console, use the `Edit context` function inside the query engine menu
 
-<img src="/assets/2023-05-01-04-editcontext.jpg" width="50%" />
+<img src="/assets/2023-05-01-04-editcontext.jpg" width="40%" />
 
 and enter the context:
 
