@@ -41,3 +41,58 @@ The `dimensionsSpec` has an empty dimension list, but there is a new flag `useSc
       }
 ```
 
+## Querying the data
+
+Let's look at the resulting data with a simple `SELECT *` query:
+
+![Select all](/assets/2023-05-01-03-select-trueArray.jpg)
+
+Notice how Druid has automatically detected that `orders` is an array of primitives (strings, in this case.) In older versions, this would have been either a multi-value string. But now, Druid has true `ARRAY` columns!
+
+(In the more general case of nested objects, Druid would have generated a nested JSON column.)
+
+In order to take the arrays apart, we can once again make use of the `UNNEST` function. This has to be enabled using a query context flag. In the console, use the `Edit context` function inside the query engine menu
+
+<img src="/assets/2023-05-01-04-editcontext.jpg" width="50%" />
+
+and enter the context:
+
+```json
+{
+  "enableUnnest": true
+}
+```
+
+In the REST API, you can pass the context directly.
+
+Then, unnest and group the items:
+
+```sql
+SELECT 
+  order_item, 
+  COUNT(*) AS order_count
+FROM "ristorante_auto", UNNEST(orders) AS t(order_item)
+GROUP BY 1
+```
+
+![Select groupby](/assets/2023-05-01-06-groupby.jpg)
+
+Once you have done this, you can filter by individual order items and you don't have all the quirks that we talked about when doing multi-value dimensions:
+
+```sql
+SELECT
+  customer,
+  order_item, 
+  COUNT(*) AS order_count
+FROM "ristorante_auto", UNNEST(orders) AS t(order_item)
+WHERE order_item = 'tiramisu'
+GROUP BY 1, 2
+```
+
+![Filtered groupby](/assets/2023-05-01-07-filter.jpg)
+
+## Conclusion
+
+- Druid can now do schema inference.
+- It can automatically detect primitive types, but also nested objects and arrays of primitives.
+- Typical Druid queries that would use multi-value dimensions in the past can now be done in a more standard way using array columns and `UNNEST`.
