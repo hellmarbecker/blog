@@ -75,7 +75,7 @@ FROM "ristorante_auto", UNNEST(orders) AS t(order_item)
 GROUP BY 1
 ```
 
-![Select groupby](/assets/2023-05-01-06-groupby.jpg)
+![Select groupby](/assets/2023-05-01-05-groupby.jpg)
 
 Once you have done this, you can filter by individual order items and you don't have all the quirks that we talked about when doing multi-value dimensions:
 
@@ -89,7 +89,7 @@ WHERE order_item = 'tiramisu'
 GROUP BY 1, 2
 ```
 
-![Filtered groupby](/assets/2023-05-01-07-filter.jpg)
+![Filtered groupby](/assets/2023-05-01-06-filter.jpg)
 
 ## Conclusion
 
