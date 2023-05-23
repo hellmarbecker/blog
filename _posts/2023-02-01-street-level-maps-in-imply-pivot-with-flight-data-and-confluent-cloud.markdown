@@ -6,7 +6,7 @@ categories: blog druid imply pivot confluent kafka tutorial
 
 ![Street Level Map: Pivot Screenshot](/assets/2023-02-01-00-map.jpg)
 
-[Imply Pivot](https://docs.imply.io/latest/pivot-overview/) has had map visualizations for a while. But the builtin map outline was limited to mostly by-country resolution (with ISO codes), or to the grid points defined by geohashes. Consequently, the map overlay was static and the maximum resoluton limited.
+[Imply Pivot](https://docs.imply.io/latest/pivot-overview/) has had map visualizations for a while. But the builtin map outline was limited to mostly by-country resolution (with ISO codes), or to the grid points defined by geohashes. Consequently, the map overlay was static and the maximum resolution limited.
 
 With Imply Private and Hybrid, you can use fine grained maps now the display data points by their exact longitude/latitude coordinates. The maps are provided by [MapBox](https://www.mapbox.com/) and are zoomable to the individual street level. Let's see how street level maps work with Imply Pivot in the quickstart version.
 
