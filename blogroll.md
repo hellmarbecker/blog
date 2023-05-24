@@ -24,3 +24,7 @@ an incomplete, poorly curated list, in no particular order
 - [Robin Moffatt](https://rmoff.net/)
 - [Elliot West](https://medium.com/@teabot)
 - [Hubert Dulay's Substack](https://hubertdulay.substack.com/)
+
+## Distributed Workloads
+
+- [Adheip Singh's blog about running everything on Kubernetes](https://www.datainfra.io/blog)
