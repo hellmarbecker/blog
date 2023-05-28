@@ -7,7 +7,7 @@ categories: blog apache druid imply iot sql tutorial
 One of the strong points of Druid has always been [built-in schema evolution](/2021/08/13/experiments-with-schema-evolution-in-apache-druid/). However, upon getting data of changing shape into Druid, you had two choices:
 
 - either, specify each field with its type in the ingestion spec, which requires to know all the fields ahead of time
-- or pick up whatever comes in using [schemaless ingestion](https://druid.apache.org/docs/latest/ingestion/schema-design.html#schema-less-dimensions), wich the downside that any dimension ingested that way would be interpreted as a string.
+- or pick up whatever comes in using [schemaless ingestion](https://druid.apache.org/docs/latest/ingestion/schema-design.html#schema-less-dimensions), with the downside that any dimension ingested that way would be interpreted as a string.
 
 The good news is that this is going to change. Druid 26 is going to come with the ability to infer its schema completely from the input data, and even ingest structured data automatically.
 
