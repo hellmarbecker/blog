@@ -28,3 +28,7 @@ an incomplete, poorly curated list, in no particular order
 ## Distributed Workloads
 
 - [Adheip Singh's blog about running everything on Kubernetes](https://www.datainfra.io/blog)
+
+## DevRel and related topics
+
+- [Dewan Ahmed's blog](https://www.dewanahmed.com/)
