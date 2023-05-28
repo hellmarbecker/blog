@@ -47,7 +47,7 @@ Let's look at the resulting data with a simple `SELECT *` query:
 
 ![Select all](/assets/2023-05-01-03-select-trueArray.jpg)
 
-Notice how Druid has automatically detected that `orders` is an array of primitives (strings, in this case.) In older versions, this would have been either a multi-value string. But now, Druid has true `ARRAY` columns!
+Notice how Druid has automatically detected that `orders` is an array of primitives (strings, in this case.) You recognize this by the symbol next to the columns name, which now looks like this:  \[&middot;&middot;\]. In older versions, this would have been either a multi-value string. But now, Druid has true `ARRAY` columns!
 
 (In the more general case of nested objects, Druid would have generated a nested JSON column.)
 
