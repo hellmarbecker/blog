@@ -106,7 +106,7 @@ I would like to  get a report like this: For each day, give me
 
 - the number of purchase transactions for that day
 - the cumulative number of transactions from all history up to and including that day
-- the total revenue of thet day
+- the total revenue of that day
 - the total revenue up to and including that day.
 
 ### Using a CTE to prepare the fields
