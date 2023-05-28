@@ -149,7 +149,7 @@ With the checkbox unchecked, we get the same result as in the beginning - all or
 
 - Because of the way implicit unnesting works with Apache Druid, you may be surprised by the result when you filter and group by the same multi-value column.
 - Strict filtering can be enabled using SQL multi-value functions.
-- `MV_FILTER_ONLY` and `MV_FILTER_NONE` are used in the projection clause to eliminate unwanted values.
-- `MV_CONTAINS` and `MV_OVERLAP` are used in the filter clause to eliminate rows that have none of the wanted values at all, and would not be caught in the projection clause.
+- `MV_FILTER_ONLY` and `MV_FILTER_NONE` are used in the _projection_ clause to eliminate unwanted values.
+- `MV_CONTAINS` and `MV_OVERLAP` are used in the _filter_ clause to eliminate rows that have none of the wanted values at all, and would not be caught in the projection clause.
 - The two sets of functions usually have to be used together to obtain correct results.
 - Imply Pivot is able to apply this logic transparently when querying one of its data cubes.
