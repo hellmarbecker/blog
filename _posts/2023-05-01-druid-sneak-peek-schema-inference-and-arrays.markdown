@@ -31,7 +31,7 @@ Confirm the warning dialog that pops up, and continue modeling the data. When yo
 
 ![Autodetect](/assets/2023-05-01-02-useSchemaDiscovery.jpg)
 
-The `dimensionsSpec` has an empty dimension list, but there is a new flag `useSchemaDiscovery`:
+The `dimensionsSpec` has no dimension list now, but there is a new flag `useSchemaDiscovery`:
 
 ```json
       "dimensionsSpec": {
