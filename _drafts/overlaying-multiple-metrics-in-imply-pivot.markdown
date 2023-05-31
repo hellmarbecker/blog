@@ -6,7 +6,7 @@ categories: blog druid imply pivot tutorial
 
 ![Screenshot with 3 metrics overlayed]()
 
-Today we are going to look at a new enhancement for line chart graphs in [Imply's Pivot](https://docs.imply.io/latest/pivot-overview/), such as timeseries curves. Up until now, one chart would only show a single measure[^1]. 
+Today we are going to look at a new enhancement for line chart graphs in [Imply's Pivot](https://docs.imply.io/latest/pivot-overview/), such as timeseries curves. Up until recently, one chart would only show a single measure[^1]. 
 If you pulled in multiple metrics, you would get each in its own chart, like this:
 
 [^1]: You would be able to display a second measure as a dotted line using the comparison feature, but options are limited.
