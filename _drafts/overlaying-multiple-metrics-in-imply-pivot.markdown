@@ -35,10 +35,6 @@ This looks quite good. But what if the measures are to a vastly different scale?
 
 Let's stick to the clickstream data and say we have a conversion goal and we want to look at both the total traffic and the conversion rate. We follow the same steps as before, but this time we use the number of clicks and the conversion rate as measures.
 
-pull number of clicks, conversion rate
-
-select measure in row again
-
 ![Screenshot with clicks and conversion rate, have a balloon on the curve to show the numbers at one point]()
 
 As you can see, the scales are so vastly different that the conversion rate all but disappears. But there is a solution: if you have only 2 measures you can show them on different axes so that both curves fill the canvas.
