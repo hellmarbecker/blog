@@ -4,14 +4,14 @@ title:  "Overlaying Multiple Metrics in Imply Pivot"
 categories: blog druid imply pivot tutorial
 ---
 
-![Screenshot with 3 metrics overlayed]()
+![Screenshot with 3 metrics overlayed](/assets/2023-05-31-01.jpg)
 
 Today we are going to look at a new enhancement for line chart graphs in [Imply's Pivot](https://docs.imply.io/latest/pivot-overview/), such as timeseries curves. Up until recently, one chart would only show a single measure[^1]. 
 If you pulled in multiple metrics, you would get each in its own chart, like this:
 
 [^1]: You would be able to display a second measure as a dotted line using the comparison feature, but options are limited.
 
-![Screenshot with 3 metrics in rows]()
+![Screenshot with 3 metrics in rows](/assets/2023-05-31-02.jpg)
 
 What analysts asked for was to have all curves overlaid in one chart, like in the screenshot at the beginnning of this article.
 
@@ -23,11 +23,11 @@ Here is how to show multiple measures in one chart. In this example, we are look
 
 Drag all the measures you want to show into the show bar:
 
-![Screenshots with 3 measures in rows, highlight the drag and drop from events, clicks, unique sessions]()
+![Screenshots with 3 measures in rows, highlight the drag and drop from events, clicks, unique sessions](/assets/2023-05-31-03.jpg)
 
 Select the paintbrush icon on the right sidebar and from the option menu, select `show measures in` "cell"
 
-![Screenshot with the menu options highlighted, and the curves overlaid]()
+![Screenshot with the menu options highlighted, and the curves overlaid](/assets/2023-05-31-04.jpg)
 
 This looks quite good. But what if the measures are to a vastly different scale?
 
@@ -35,15 +35,15 @@ This looks quite good. But what if the measures are to a vastly different scale?
 
 Let's stick to the clickstream data and say we have a conversion goal and we want to look at both the total traffic and the conversion rate. We follow the same steps as before, but this time we use the number of clicks and the conversion rate as measures.
 
-![Screenshot with clicks and conversion rate, have a balloon on the curve to show the numbers at one point]()
+![Screenshot with clicks and conversion rate, have a balloon on the curve to show the numbers at one point](/assets/2023-05-31-05.jpg)
 
 As you can see, the scales are so vastly different that the conversion rate all but disappears. But there is a solution: if you have only 2 measures you can show them on different axes so that both curves fill the canvas.
 
-![Screenshot with clicks and conversion rate, highlight dual axis menu]()
+![Screenshot with clicks and conversion rate, highlight dual axis menu](/assets/2023-05-31-06.jpg)
 
 You can choose whether you want to show horizontal grid line for both axes or only for the first
 
-![Highlight show horizontal grid menu and lines for both axes]()
+![Highlight show horizontal grid menu and lines for both axes](/assets/2023-05-31-07.jpg)
 
 ## Learnings
 
