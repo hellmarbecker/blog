@@ -41,7 +41,7 @@ As you can see, the scales are so vastly different that the conversion rate all 
 
 ![Screenshot with clicks and conversion rate, highlight dual axis menu](/assets/2023-05-31-06.jpg)
 
-You can choose whether you want to show horizontal grid line for both axes or only for the first
+In the formatting options, choose whether you want to show horizontal grid line for both axes or only for the first:
 
 ![Highlight show horizontal grid menu and lines for both axes](/assets/2023-05-31-07.jpg)
 
