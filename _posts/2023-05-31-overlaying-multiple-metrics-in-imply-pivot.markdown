@@ -37,7 +37,7 @@ Let's stick to the clickstream data and say we have a conversion goal and we wan
 
 ![Screenshot with clicks and conversion rate, have a balloon on the curve to show the numbers at one point](/assets/2023-05-31-05.jpg)
 
-As you can see, the scales are so vastly different that the conversion rate all but disappears. But there is a solution: if you have only 2 measures you can show them on different axes so that both curves fill the canvas.
+As you can see, the scales are so vastly different that the conversion rate all but disappears. But there is a solution: if you have only two measures you can show them on different axes so that both curves fill the canvas.
 
 ![Screenshot with clicks and conversion rate, highlight dual axis menu](/assets/2023-05-31-06.jpg)
 
