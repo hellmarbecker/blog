@@ -51,3 +51,6 @@ In the formatting options, choose whether you want to show horizontal grid line 
 - If you show more than two measures, they all share the same _y_ axis scaling.
 - If you show only two measures, you can scale the _y_ axis for each of them independently. 
 
+---
+
+
