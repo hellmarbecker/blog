@@ -25,7 +25,7 @@ Drag all the measures you want to show into the show bar:
 
 ![Screenshots with 3 measures in rows, highlight the drag and drop from events, clicks, unique sessions](/assets/2023-05-31-03.jpg)
 
-Select the paintbrush icon on the right sidebar and from the option menu, select `show measures in` "cell"
+Select the paintbrush icon on the right sidebar and from the option menu, select "Show measures in" "Cell":
 
 ![Screenshot with the menu options highlighted, and the curves overlaid](/assets/2023-05-31-04.jpg)
 
