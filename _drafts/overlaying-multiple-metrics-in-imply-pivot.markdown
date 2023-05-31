@@ -6,33 +6,34 @@ categories: blog druid imply pivot tutorial
 
 ![Screenshot with 3 metrics overlayed]()
 
-today we are going to look at a new enhancement for line chart graphs in pivot, such as timeseries curves
-up until now, you could only do one measure in a graph, asterisk workaround with comparison
-if you pulled in multiple metrics, you would get each in its own chart, like this
+Today we are going to look at a new enhancement for line chart graphs in [Imply's Pivot](https://docs.imply.io/latest/pivot-overview/), such as timeseries curves. Up until now, one chart would only show a single measure[^1]. 
+If you pulled in multiple metrics, you would get each in its own chart, like this:
+
+[^1]: You would be able to display a second measure as a dotted line using the comparison feature, but options are limited.
 
 ![Screenshot with 3 metrics in rows]()
 
-but people wanted to have all curves in one, like in the screenshot above
-this is possible now so how do you go about it?
+What analysts asked for was to have all curves overlaid in one chart, like in the screenshot at the beginnning of this article.
+
+This is possible now. But how do you go about it? Let's have a look!
 
 ## Two (or more) measures in one chart
 
-here is how to show measures in one chart. we are looking at clickstream data and we want to show the total number of events, the number of clicks, and the number of sessions
+Here is how to show multiple measures in one chart. In this example, we are looking at clickstream data and we want to show the total number of events, the number of clicks, and the number of sessions.
 
-pull all the measures you want to show into the show bar
+Drag all the measures you want to show into the show bar:
 
--> events, clicks, unique sessions
+![Screenshots with 3 measures in rows, highlight the drag and drop from events, clicks, unique sessions]()
 
-![Screenshots with 3 measures in rows, highlight the drag and drop]()
+Select the paintbrush icon on the right sidebar and from the option menu, select `show measures in` "cell"
 
-select the paintbrush icon on the right sidebar
-and "show measures in" "cell"
+![Screenshot with the menu options highlighted, and the curves overlaid]()
 
-but what if the measures are to a vastly different scale?
+This looks quite good. But what if the measures are to a vastly different scale?
 
 ## Two measures with separate axis scaling
 
-say we have a conversion goal and we want to look at both the total traffic and the conversion rate
+Let's stick to the clickstream data and say we have a conversion goal and we want to look at both the total traffic and the conversion rate. We follow the same steps as before, but this time we use the number of clicks and the conversion rate as measures.
 
 pull number of clicks, conversion rate
 
@@ -40,15 +41,17 @@ select measure in row again
 
 ![Screenshot with clicks and conversion rate, have a balloon on the curve to show the numbers at one point]()
 
-but as you can see, the scales are so vastly different that the conversion rate all but disappears
-well if you have only 2 measures you can show them on different axes so that both curves fill the canvas
+As you can see, the scales are so vastly different that the conversion rate all but disappears. But there is a solution: if you have only 2 measures you can show them on different axes so that both curves fill the canvas.
 
 ![Screenshot with clicks and conversion rate, highlight dual axis menu]()
 
-you can choose whether you want to show horizontal grid line for both axes or only for the first
+You can choose whether you want to show horizontal grid line for both axes or only for the first
 
 ![Highlight show horizontal grid menu and lines for both axes]()
 
 ## Learnings
 
-yada yada
+- Pivot can now display multiple line graphs in one chart.
+- If you show more than two measures, they all share the same _y_ axis scaling.
+- If you show only two measures, you can scale the _y_ axis for each of them independently. 
+
