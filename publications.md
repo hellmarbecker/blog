@@ -13,4 +13,4 @@ Articles, blog posts, videos, and podcasts, published outside this blog
 
 ## 2021
 
-- Peter Marshall interviewed me about a specific Druid feature: [Community Discoveries: multi-value dimensions in Apache Druid](https://imply.io/blog/community-discoveries-multi-value-dimensions-in-apache-druid/) 
+- Peter Marshall interviewed me: [Community Discoveries: multi-value dimensions in Apache Druid](https://imply.io/blog/community-discoveries-multi-value-dimensions-in-apache-druid/) 
