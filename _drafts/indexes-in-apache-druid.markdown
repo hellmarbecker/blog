@@ -1,0 +1,53 @@
+---
+layout: post
+title:  "Indexes in Apache Druid"
+categories: blog druid
+---
+
+If you come from a traditional database background, you are probably used to creating and maintaining indexes on most of your data. In a relational database, indexes can speed up queries but at a cost of slower data insertion.
+
+In Druid, on the other hand, you never see a `CREATE INDEX` statement. And while Druid does create indexes, there are a number of features that help speed up queries to an effect that you would normally use an index for. Let's look at some of these data organization features!
+
+## Druid Bitmap Indexes
+
+### Forward and inverted indexes
+
+### Bitmap indexes - why?
+
+### Sparse indexes
+
+### How we implement the best of forward and inverted index: Druid concise bitmaps
+
+
+## Colocating Data: Partitioning and Clustering
+
+### Time partitioning, granularities and sorting by time
+
+### Special case: Multiple time granularities
+
+### Secondary partitioning: Pruning and range queries
+
+### How we implement composite index functionality
+
+### How we implement range index functionality
+
+### Be extra space efficient: Front coding
+
+
+## Structured Data: Nested Columns
+
+### Indexes on nested data
+
+### How we implement JSON (document) index functionality
+
+
+## Conclusion
+
+- you might be asking: where are the indexes. a lot of index functionality is done in druid with features that are not technically indexes
+- bitmap index is cool
+- bitmap index allows merge and thus arbitrary column combi
+- concise bitmaps uses forward lookup for sparse columns so speeds up andd reduces storage
+- time partitioning aids pruning in time based queries
+- time sorting is great for time series and time range queries
+- secondary partitioning replaces composite and range indexes
+- each field inside a nested column (document column) has its own bitmap index so JSON index functionality is achieved
