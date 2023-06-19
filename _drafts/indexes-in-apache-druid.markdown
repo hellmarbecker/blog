@@ -10,9 +10,17 @@ In Druid, on the other hand, you never see a `CREATE INDEX` statement. And while
 
 ## Druid Bitmap Indexes
 
+these are created automatically on all string columns and on each subfield of a JSON column
+
 ### Forward and inverted indexes
 
 ### Bitmap indexes - why?
+
+- fast lookup of value
+- mergeable in any combination
+- always segment local, thus fast to maintain
+- for high cardinality and sparse data, a forward index may be faster bit see below
+- why no B-tree? unlike bitmap index, a B-tree index has to be global to be fast. insertion is expensive
 
 ### Sparse indexes
 
@@ -20,6 +28,8 @@ In Druid, on the other hand, you never see a `CREATE INDEX` statement. And while
 
 
 ## Colocating Data: Partitioning and Clustering
+
+the main abstraction in an RDBMS is that you look at the table as a whole. there is no implicit ordering in the way the data is laid out. it has long been known that this is not the best model for analytical queries. 
 
 ### Time partitioning, granularities and sorting by time
 
@@ -40,6 +50,10 @@ In Druid, on the other hand, you never see a `CREATE INDEX` statement. And while
 
 ### How we implement JSON (document) index functionality
 
+
+## Bonus: Bloom filters
+
+yada yada
 
 ## Conclusion
 
