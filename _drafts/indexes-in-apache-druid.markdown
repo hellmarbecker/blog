@@ -6,7 +6,7 @@ categories: blog druid
 
 If you come from a traditional database background, you are probably used to creating and maintaining indexes on most of your data. In a relational database, indexes can speed up queries but at a cost of slower data insertion.
 
-In Druid, on the other hand, you never see a `CREATE INDEX` statement. And while Druid does create indexes, there are a number of features that help speed up queries to an effect that you would normally use an index for. Let's look at some of these data organization features!
+In Druid, on the other hand, you never see a `CREATE INDEX` statement. Instead, Druid automatically indexes all data, creating optimized storage segments that provide high performance for all data types - and you never need to select or manage indexes. Let's look at some of these data organization features!
 
 ## Druid Bitmap Indexes
 
