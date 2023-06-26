@@ -4,6 +4,8 @@ title: "New in Druid 26: Data Provenance Tracking with Kafka Headers, Automatica
 categories: blog imply druid kafka json tutorial
 ---
 
+![Lufthansa Airbus A350 XWB D-AIXP arrives SFO L1060413, by wbaiv (Bill Abbott)](/assets/2023-06-26-00-airplane.jpg)
+
 ## Generating the data
 
 let's generate ourselves some data with kafka headers, this can be dome with `kcat`
@@ -71,3 +73,7 @@ MT,TT,SID,AID,Hex,FID,DMG,TMG,DML,TML,CS,Alt,GS,Trk,Lat,Lng,VR,Sq,Alrt,Emer,SPI,
 ## Conclusion
 
 - lorem ipsum
+
+----
+
+ <p class="attribution">"<a target="_blank" rel="noopener noreferrer" href="https://www.flickr.com/photos/wbaiv/52202356360/">Lufthansa Airbus A350 XWB D-AIXP arrives SFO L1060413</a>" by <a target="_blank" rel="noopener noreferrer" href="https://www.flickr.com/photos/wbaiv">wbaiv</a> is licensed under <a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-sa/2.0/">CC BY-SA 2.0 <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/></a>. </p> 
