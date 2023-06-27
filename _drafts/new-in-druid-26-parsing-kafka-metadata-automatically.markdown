@@ -6,6 +6,10 @@ categories: blog imply druid kafka json tutorial
 
 ![Lufthansa Airbus A350 XWB D-AIXP arrives SFO L1060413, by wbaiv (Bill Abbott)](/assets/2023-06-27-00-airplane.jpg)
 
+I have previously written about [processing](https://blog.hellmar-becker.de/2022/08/30/processing-flight-radar-ads-b-data-with-decodable-and-imply/) and [visualizing](https://blog.hellmar-becker.de/2023/02/01/street-level-maps-in-imply-pivot-with-flight-data-and-confluent-cloud/) ADS-B flight radar data with Kafka and Druid. This time, let's look at some new possibilities with ingesting those data in a bit more detail.
+
+The story starts with a discussion within our DevRel team at [Imply](https://imply.io/). Wouldn't it be nice to have multiple flight radar receivers in different locations, and have them all produce data into the same Kafka topic (which lives in Confluent Cloud.) But if we do this
+
 ## Generating the data
 
 let's generate ourselves some data with kafka headers, this can be dome with `kcat`
