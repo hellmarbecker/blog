@@ -10,17 +10,13 @@ I have previously written about [processing](https://blog.hellmar-becker.de/2022
 
 The story starts with a discussion within our DevRel team at [Imply](https://imply.io/). Wouldn't it be nice to have multiple flight radar receivers in different locations, and have them all produce data into the same Kafka topic (which lives in Confluent Cloud.) But then, one should also be able to add a unique client ID (and possibly other metadata) to each message. In short, we need data provenance tracking. This is indeed of practical use: in any serious enterprise use case, [data lineage](https://en.wikipedia.org/wiki/Data_lineage) tracking is indisposable!
 
-In Kafka, data lineage is tracked with [message headers](https://www.confluent.io/blog/5-things-every-kafka-developer-should-know/#tip-5-record-headers). These are basically key-value pairs that can be defined freely. 
+In Kafka, data lineage is tracked with [message headers](https://www.confluent.io/blog/5-things-every-kafka-developer-should-know/#tip-5-record-headers). These are basically key-value pairs that can be defined freely. Inside Kafka, the header values are coded as binary bytes - their meaning and encoding is governed by your data contract, something to keep in mind for later.
 
 ## Generating the data
 
-I've [described](https://blog.hellmar-becker.de/2022/08/30/processing-flight-radar-ads-b-data-with-decodable-and-imply/) how you can use a Raspberry Pi wiht a DVB-T stick to receive flight radar data. Let's modify the kafka connector script to generate ourselves some data with kafka headers. `kcat` comes with a `-H` option to inject arbitrary headers into a Kafka message. .
+In my [blog, I've previously described](https://blog.hellmar-becker.de/2022/08/30/processing-flight-radar-ads-b-data-with-decodable-and-imply/) how you can use a Raspberry Pi wiht a DVB-T stick to receive flight radar data. Let's modify the kafka connector script to generate ourselves some data with kafka headers. `kcat` comes with a `-H` option to inject arbitrary headers into a Kafka message.
 
-recur to <PREVIOUS BLOGs>
-
-but because we have multiple raspis now, we want to do some data provenance tracking. you can do that with kafka headers
-
-the script
+Edit the following script, entering a unique client ID of your choice and your geographical coordinates. Then follow the instructions in the blog above to install the script as a service on your Raspberry Pi.
 
 ```bash
 #!/bin/bash
@@ -46,7 +42,7 @@ nc localhost 30003 \
         ${CC_SECURE}
 ```
 
-so this adds a kafka key (the aircraft hex ID), and a unique ID for the radar receiver, and also the receiver coordinates
+This adds a kafka key (the aircraft hex ID), a unique ID for the radar receiver, and also the receiver coordinates, as Kafka headers.
 
 ## Ingesting the data
 
