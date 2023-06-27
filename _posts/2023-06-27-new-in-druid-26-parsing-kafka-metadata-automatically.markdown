@@ -12,6 +12,8 @@ The story starts with a discussion within our DevRel team at [Imply](https://imp
 
 In Kafka, data lineage is tracked with [message headers](https://www.confluent.io/blog/5-things-every-kafka-developer-should-know/#tip-5-record-headers). These are basically key-value pairs that can be defined freely. Inside Kafka, the header values are coded as binary bytes - their meaning and encoding is governed by your data contract, something to keep in mind for later.
 
+Druid has been able to ingest Kafka metadata for a while, [and I have written about it before](https://blog.hellmar-becker.de/2022/11/23/processing-nested-json-data-and-kafka-metadata-in-apache-druid/). But before version 26, you had to edit the ingestion spec manually to enable this feature. Now, it is supported by the Druid console, making things a lot easier. Let's see how this works for our flight radar data!
+
 In this tutorial, you will
 
 - generate Kafka messages with headers from flight radar data
@@ -76,27 +78,27 @@ MT,TT,SID,AID,Hex,FID,DMG,TMG,DML,TML,CS,Alt,GS,Trk,Lat,Lng,VR,Sq,Alrt,Emer,SPI,
 
 Also make sure to enable the switch for parsing Kafka metadata (it should be on by default):
 
-![Kafka topic preview with metadata](/assets/2023-06-27-02-parse-kafka.jpg)
+![Kafka Parser with metadata](/assets/2023-06-27-02-parse-kafka.jpg)
 
 If you scroll down the right window pane, you will find a number of new options about handling the metadata.
 
-![Kafka topic preview with metadata](/assets/2023-06-27-03-kafka-metadata.jpg)
+![Kafka metadata options](/assets/2023-06-27-03-kafka-metadata-options.jpg)
 
-Here you specify how the key is parsed. (You could in theory have a structured key, because the key is parse into an input format just like the payload. In practice, you will usually have a single string that can be parsed using a regular expression or a degenerate CSV parser.)
+Here you specify how the key is parsed. (You could in theory have a structured key, because the key is parse into an input format just like the payload. In practice, you will usually have a single string that can be parsed using a regular expression or [a degenerate CSV parser](https://blog.hellmar-becker.de/2022/11/23/processing-nested-json-data-and-kafka-metadata-in-apache-druid/).)
 
 Moreover, this is where you define the prefixes to be used for the metadata in your final data model. And last but no least, you define how to decode the header values. In most cases, UTF-8 is a good choice, but it really depends on what your producer puts in at the other end.
 
 The Kafka timestamp is automatically suggested as the primary Druid timestamp:
 
-![Kafka topic preview with metadata](/assets/2023-06-27-04-kafka-timestamp.jpg)
+![Model with timestampt](/assets/2023-06-27-04-kafka-timestamp.jpg)
 
 So, with a minimum configuration (as usual, you have to define your segment granularity and datasource name), you have your Kafka ingestion ready:
 
-![Kafka topic preview with metadata](/assets/2023-06-27-05-view-spec.jpg)
+![Ingestion spec](/assets/2023-06-27-05-view-spec.jpg)
 
 After submitting the spec, run a quick query to verify that indeed, the Kafka metadata has been parsed and ingested correctly:
 
-![Kafka topic preview with metadata](/assets/2023-06-27-06-query.jpg)
+![Example query](/assets/2023-06-27-06-query.jpg)
 
 And that is how easily Kafka metadata end up in Apache Druid!
 
