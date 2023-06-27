@@ -50,7 +50,7 @@ create a kafka connection, we are using confluent cloud so we have to encode the
 
 note how the preview looks different from previous druid versions:
 
-![Kafka topic preview with metadata](/assets/2023-06-26-01-preview.jpg)
+![Kafka topic preview with metadata](/assets/2023-06-27-01-preview.jpg)
 
 it now lists the kafka metadata
 
