@@ -24,7 +24,7 @@ For the tutorial, use at least Druid version 26.0. The Druid quickstart works fi
 
 ## Generating the data
 
-In my [blog, I've previously described](https://blog.hellmar-becker.de/2022/08/30/processing-flight-radar-ads-b-data-with-decodable-and-imply/) how you can use a Raspberry Pi with a DVB-T stick to receive flight radar data. Let's modify the kafka connector script to generate ourselves some data with kafka headers. `kcat` comes with a `-H` option to inject arbitrary headers into a Kafka message.
+In my [blog, I've previously described](https://blog.hellmar-becker.de/2022/08/30/processing-flight-radar-ads-b-data-with-decodable-and-imply/) how you can use a Raspberry Pi with a DVB-T stick to receive flight radar data. Let's modify the Kafka connector script to generate ourselves some data with Kafka headers. `kcat` comes with a `-H` option to inject arbitrary headers into a Kafka message.
 
 Edit the following script, entering a unique client ID of your choice and your geographical coordinates. Then follow the instructions in the blog above to install the script as a service on your Raspberry Pi.
 
@@ -100,7 +100,7 @@ After submitting the spec, run a quick query to verify that indeed, the Kafka me
 
 ![Example query](/assets/2023-06-27-06-query.jpg)
 
-And that is how easily Kafka metadata end up in Apache Druid!
+And that is how easily Kafka metadata goes into Apache Druid!
 
 ## Conclusion
 
