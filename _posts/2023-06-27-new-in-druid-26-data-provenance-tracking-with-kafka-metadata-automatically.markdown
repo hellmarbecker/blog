@@ -106,7 +106,7 @@ And that is how easily Kafka metadata goes into Apache Druid!
 
 - Data lineage can be tracked with Kafka headers.
 - Starting with Druid 26, Kafka metadata (timestamp, key, headers) are supported by the unified console wizard.
-- With this, we can easily build a deistributed flight data service using only one Kafka topic.
+- With this, we can easily build a distributed flight data service using only one Kafka topic.
 
 ----
 
