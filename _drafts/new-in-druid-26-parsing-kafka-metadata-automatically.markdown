@@ -12,9 +12,17 @@ The story starts with a discussion within our DevRel team at [Imply](https://imp
 
 In Kafka, data lineage is tracked with [message headers](https://www.confluent.io/blog/5-things-every-kafka-developer-should-know/#tip-5-record-headers). These are basically key-value pairs that can be defined freely. Inside Kafka, the header values are coded as binary bytes - their meaning and encoding is governed by your data contract, something to keep in mind for later.
 
+In this tutorial, you will
+
+- generate Kafka messages with headers from flight radar data
+- ingest and model these data inside Druid
+- and show how these data can be queried just like any other table column using Druid SQL.
+
+For the tutorial, use at least Druid version 26.0. The Druid quickstart works fine.
+
 ## Generating the data
 
-In my [blog, I've previously described](https://blog.hellmar-becker.de/2022/08/30/processing-flight-radar-ads-b-data-with-decodable-and-imply/) how you can use a Raspberry Pi wiht a DVB-T stick to receive flight radar data. Let's modify the kafka connector script to generate ourselves some data with kafka headers. `kcat` comes with a `-H` option to inject arbitrary headers into a Kafka message.
+In my [blog, I've previously described](https://blog.hellmar-becker.de/2022/08/30/processing-flight-radar-ads-b-data-with-decodable-and-imply/) how you can use a Raspberry Pi with a DVB-T stick to receive flight radar data. Let's modify the kafka connector script to generate ourselves some data with kafka headers. `kcat` comes with a `-H` option to inject arbitrary headers into a Kafka message.
 
 Edit the following script, entering a unique client ID of your choice and your geographical coordinates. Then follow the instructions in the blog above to install the script as a service on your Raspberry Pi.
 
@@ -42,40 +50,61 @@ nc localhost 30003 \
         ${CC_SECURE}
 ```
 
-This adds a kafka key (the aircraft hex ID), a unique ID for the radar receiver, and also the receiver coordinates, as Kafka headers.
+This adds a Kafka key (the aircraft hex ID), a unique ID for the radar receiver, and also the receiver coordinates, as Kafka headers.
 
 ## Ingesting the data
 
-use Druid 26 quickstart
+In Druid, create a Kafka connection. In my lab, I am using Confluent Cloud so I have to encode the credentials in the consumer properties as described [in another of my blog posts](https://blog.hellmar-becker.de/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/). (If you are using a local, unsecured Kafka service, it is sufficient to enter the bootstrap server and Kafka topic.)
 
-create a kafka connection, we are using confluent cloud so we have to encode the credentials in the consumer properties as described in <PREVIOUS BLOG>
-
-note how the preview looks different from previous druid versions:
+Note how the preview looks different from previous druid versions:
 
 ![Kafka topic preview with metadata](/assets/2023-06-27-01-preview.jpg)
 
-it now lists the kafka metadata
+It now lists the Kafka metadata:
 
 - timestamp
 - key
 - headers
 
-along with the payload
+along with the payload.
 
-
-
-
-
-the column headers
+In the `Parse data` wizard, enter the column headers for the flight data:
 
 ```csv
 MT,TT,SID,AID,Hex,FID,DMG,TMG,DML,TML,CS,Alt,GS,Trk,Lat,Lng,VR,Sq,Alrt,Emer,SPI,Gnd
 ```
 
+Also make sure to enable the switch for parsing Kafka metadata (it should be on by default):
+
+![Kafka topic preview with metadata](/assets/2023-06-27-02-parse-kafka.jpg)
+
+If you scroll down the right window pane, you will find a number of new options about handling the metadata.
+
+![Kafka topic preview with metadata](/assets/2023-06-27-03-kafka-metadata.jpg)
+
+Here you specify how the key is parsed. (You could in theory have a structured key, because the key is parse into an input format just like the payload. In practice, you will usually have a single string that can be parsed using a regular expression or a degenerate CSV parser.)
+
+Moreover, this is where you define the prefixes to be used for the metadata in your final data model. And last but no least, you define how to decode the header values. In most cases, UTF-8 is a good choice, but it really depends on what your producer puts in at the other end.
+
+The Kafka timestamp is automatically suggested as the primary Druid timestamp:
+
+![Kafka topic preview with metadata](/assets/2023-06-27-04-kafka-timestamp.jpg)
+
+So, with a minimum configuration (as usual, you have to define your segment granularity and datasource name), you have your Kafka ingestion ready:
+
+![Kafka topic preview with metadata](/assets/2023-06-27-05-view-spec.jpg)
+
+After submitting the spec, run a quick query to verify that indeed, the Kafka metadata has been parsed and ingested correctly:
+
+![Kafka topic preview with metadata](/assets/2023-06-27-06-query.jpg)
+
+And that is how easily Kafka metadata end up in Apache Druid!
 
 ## Conclusion
 
-- lorem ipsum
+- Data lineage can be tracked with Kafka headers.
+- Starting with Druid 26, Kafka metadata (timestamp, key, headers) are supported by the unified console wizard.
+- With this, we can easily build a deistributed flight data service using only one Kafka topic.
 
 ----
 
