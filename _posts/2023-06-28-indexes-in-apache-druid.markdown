@@ -19,7 +19,7 @@ Relational databases use a B-tree index as their primary index type. A relationa
 - enforcing uniqueness of a key during inserting
 - quickly looking up a single value for updates, inserts, and (sometimes) join queries.
 
-A B-tree index is not a good choice for analytical queries where you have, as a rule, many rows with the same value, and you want to  retrieve and aggregate data in bulk. It is also to be noted that due to the structure of a B-tree index, lookups are _O(n)_ complexity, which may be impractical for large tables.
+A B-tree index is not a good choice for analytical queries where you have, as a rule, many rows with the same value, and you want to  retrieve and aggregate data in bulk. It is also to be noted that due to the structure of a B-tree index, lookups are _O(log n)_ complexity, which may be impractical for large tables.
 
 ### Bitmap indexes - why?
 
