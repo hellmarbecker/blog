@@ -89,7 +89,7 @@ For nested (JSON) columns, Druid creates a bitmap index _for each nested field_.
 
 In this article, I gave a quick tour of data organization and indexing features in Apache Druid. What have we learned?
 
-- You might be asking: where are the indexes? A lot of index functionality is done in Druid with features that are not technically indexes, but achieve the same effect.
+- You might be asking: where are the indexes? In Druid, indexes are created and maintained automatically. And a lot of index functionality is done with features that are not technically indexes, but achieve the same effect.
 - For analytical queries, bitmap indexes are the best choice for many scenarios. Druid creates bitmap indexes on all (string) columns by default.
 - Bitmap indexes allow merging and logical operations, and thus support arbitrary column combinations, superseding composite indexes.
 - Our implementation of Roaring bitmaps uses forward lookup for sparse columns: this optimizes both query speed and storage.
