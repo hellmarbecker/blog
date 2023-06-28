@@ -10,21 +10,32 @@ In Druid, on the other hand, you never see a `CREATE INDEX` statement. Instead, 
 
 ## Druid Bitmap Indexes
 
-these are created automatically on all string columns and on each subfield of a JSON column
+Druid uses [bitmap indexes](https://en.wikipedia.org/wiki/Bitmap_index). These are created automatically on all string columns and on each subfield of a JSON column
 
-### Forward and inverted indexes
+### Types of indexes in a relational database
+
+Relational databases use a B-tree index as their primary index type. A relational table often has a primary key that can be used to uniquely identify a row in the table. A B-tree index maps individual keys to the rows that contain them. Its use cases are:
+
+- enforcing uniqueness of a key during inserting
+- quickly looking up a single value for updates, inserts, and (sometimes) join queries.
+
+A B-tree index is not a good choice for analytical queries where you have, as a rule, many rows with the same value, and you want to  retrieve and aggregate data in bulk. It is also to be noted that due to the structure of a B-tree index, lookups are _O(n)_ complexity, which may be impractical for large tables.
 
 ### Bitmap indexes - why?
 
-- fast lookup of value
-- mergeable in any combination
-- always segment local, thus fast to maintain
-- for high cardinality and sparse data, a forward index may be faster bit see below
-- why no B-tree? unlike bitmap index, a B-tree index has to be global to be fast. insertion is expensive
+Bitmap indexes came up as relational databases were enhanced with analytical features. A bitmap index stores, for each value, a bit array where the position of each row that has a _1_ bit and all the other positions are _0_. This has a number of advantages:
+
+- Fast lookup of all rows for a value. Because the bitmap index is an array, such lookups are _O(1)_. 
+- Even better, bitmap indexes are mergeable in any combination. To model logical conditions such as the union or intersection of filters, just apply bitwise logical _OR_ and _AND_ operations to the bitmap.
+- Bitmaps are always segment local and thus fast to maintain. If your data is partitioned or sharded, the bitmap index is partitioned in the same way.
+
+For high cardinality and sparse data, a forward index such as a B-tree may be faster but there are ways to get the best of both worlds. I'll get to that in a moment.
+
+Why doesn't Druid use B-tree indexes as a general option? Unlike a bitmap index, a B-tree index has to be global to be fast. (A global index spans the whole table, disregarding any partitioning.) This makes insertion and index maintenance quite expensive.
 
 ### Sparse indexes
 
-### How we implement the best of forward and inverted index: Druid concise bitmaps
+### How we implement the best of forward and inverted index: Druid roaring bitmaps
 
 
 ## Colocating Data: Partitioning and Clustering
