@@ -23,7 +23,9 @@ A B-tree index is not a good choice for analytical queries where you have, as a 
 
 ### Bitmap indexes - why?
 
-Bitmap indexes came up as relational databases were enhanced with analytical features. A bitmap index stores, for each value, a bit array where the position of each row that has a _1_ bit and all the other positions are _0_. This has a number of advantages:
+***Bitmap indexes*** came up as relational databases were enhanced with analytical features. A bitmap index stores, for each value, a bit array where the position of each row that has a _1_ bit and all the other positions are _0_. It can be thought of as an ***inverted index*** that maps not a row number to a value, but a value to a collection of rows where the value occurs.
+
+This has a number of advantages:
 
 - Fast lookup of all rows for a value. Because the bitmap index is an array, such lookups are _O(1)_. 
 - Even better, bitmap indexes are mergeable in any combination. To model logical conditions such as the union or intersection of filters, just apply bitwise logical _OR_ and _AND_ operations to the bitmap.
@@ -33,11 +35,11 @@ For high cardinality and sparse data, a forward index such as a B-tree may be fa
 
 Why doesn't Druid use B-tree indexes as a general option? Unlike a bitmap index, a B-tree index has to be global to be fast. (A global index spans the whole table, disregarding any partitioning.) This makes insertion and index maintenance quite expensive.
 
-### How we implement the best of forward and inverted index: Druid roaring bitmaps
+### How Druid implements the best of forward and inverted index: Druid roaring bitmaps
 
 Let's talk about _sparse indexes_ for a moment. Contrary to a widespread belief, regular bitmaps are best for columns with medium cardinality. If the cardinality of a column is very low, the index is not very selective and you need to read a lot of data anyway. If the cardinality is very high, you have a different problem: Each value is only present in a small fraction of rows, so you would waste a lot of space storing zeroes for each value.
 
-This is why Druid does not just implement bitmap indexes. Instead, bitmap indexes are by default compressed using [Roaring bitmap indexes](https://www.roaringbitmap.org/). The roaring bitmap algorithm cuts up the bitmap into pages of 2^16^ rows. If the page has very few _1_ bits, it stores a list of row IDs instead.
+This is why Druid does not just implement bitmap indexes. Instead, bitmap indexes are by default compressed using [Roaring bitmap indexes](https://www.roaringbitmap.org/). The roaring bitmap algorithm cuts up the bitmap into pages of 2<sup>16</sup> rows. If the page has very few _1_ bits, it stores a list of row IDs instead.
 
 Roaring bitmaps also support run-length encoding of pages, which is particularly effective when indexing a dimension that is also used to pre-sort the data - more about this later.
 
@@ -65,13 +67,13 @@ If you want to achieve primary sorting by another column than time, you should s
 
 Below the timestamp level, there is _secondary partitioning_, which is usually implemented as [range partitioning](https://blog.hellmar-becker.de/2022/01/25/partitioning-in-druid-part-3-multi-dimension-range-partitioning/). This defines a list of dimension fields to partition by. In SQL based ingestion, this correspinds to the `CLUSTERED BY` clause. You want to order your partitioning columns first in the ingestoin query, too. Then your data will be sorted according to the partitioning columns, and like values will be grouped together physically. If you filter by the partitioning key in a query, Druid uses this information to determine which data segments to look at, even before scanning any data. This is called ***partition pruning*** and is a great way to speed up queries.
 
-### How we implement composite index functionality
+### How Druid implements composite index functionality
 
 With multi-dimension range partitioning, Druid achieves the same functionality as a ***composite index***. In an RDBMS, you would use a composite index whenever you have a combination of columns that you use to filter or group by in most of the queries that you typically run.
 
 That being said, because we use bitmap indexes on all columns, we also achieve composite index functionality by margin bitmap indexes across columns.
 
-### How we implement range index functionality
+### How Druid implements range index functionality
 
 Another advantage of multi-dimension range partitioning is where you query for a range of values. Because the partitioning key also determines sort order, values within a range are grouped together. This achieves the functionality of a ***range index***.
 
@@ -85,7 +87,7 @@ For nested (JSON) columns, Druid creates a bitmap index _for each nested field_.
 
 ## Conclusion
 
-In this article, I gave a quick tour of data organization and indexing features in Apach Druid. What have we learned?
+In this article, I gave a quick tour of data organization and indexing features in Apache Druid. What have we learned?
 
 - You might be asking: where are the indexes? A lot of index functionality is done in Druid with features that are not technically indexes, but achieve the same effect.
 - For analytical queries, bitmap indexes are the best choice for many scenarios. Druid creates bitmap indexes on all (string) columns by default.
