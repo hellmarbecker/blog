@@ -32,3 +32,4 @@ an incomplete, poorly curated list, in no particular order
 ## DevRel and related topics
 
 - [Dewan Ahmed's blog](https://www.dewanahmed.com/)
+- [Shawn Wang (@swyx)](https://www.swyx.io/)
