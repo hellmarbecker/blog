@@ -43,7 +43,7 @@ show a data sample
 
 this shows only the new stars for every point in time
 
-![Visualization: New Star Events over Time]()
+![Visualization: New Star Events over Time](/assets/2023-07-12-02-eventdata.jpg)
 
 but what we really want: the growth of stars over time. let's do this with monthly resolution
 
@@ -53,7 +53,7 @@ recur to the earlier blog about emulating window functions
 
 show the query
 
-![Visualization: Cumulative Sums with Self Join]()
+![Visualization: Cumulative Sums with Self Join](/assets/2023-07-12-03-selfjoin.jpg)
 
 highlight how the superset line drops to zero. why is that?
 remember the 40k limit? so we don't get new entries after a certain date and the join has nothing to join against
@@ -90,7 +90,7 @@ then do a join on repo and tuck the unbound preceding condition away into a [fil
 
 use this query to define a cube in pivot and see the result
 
-![Visualization: Cumulative Sums]()
+![Visualization: Cumulative Sums](/assets/2023-07-12-04-calendar-canvas.jpg)
 
 now the superset stars max out at 40k but they don't drop to zero!
 
