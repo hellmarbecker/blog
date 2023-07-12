@@ -35,7 +35,7 @@ this warrants another blog but for now just hint at the limitations
 
 you will not get more than 40k stars which will soon become important
 
-## loading the data into polaris
+### loading the data into polaris
 
 show a data sample
 
