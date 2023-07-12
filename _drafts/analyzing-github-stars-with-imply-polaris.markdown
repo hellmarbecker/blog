@@ -1,7 +1,7 @@
 ---
 layout: post
 title: "Analyzing GitHub Stars with Imply Polaris"
-categories: blog druid imply polaris sql tutorial
+categories: blog druid imply polaris sql datamodeling tutorial
 ---
 
 ![Sterntaler drawing](/assets/2023-07-12-01-Ludwig_Richter-The_Star_Money-2-1862.jpg)
@@ -47,7 +47,7 @@ While the basic SQL analysis works just as well with open source Druid, I am usi
 
 Here are some sample records from my script:
 
-```
+```json
 {"starred_at": "2012-10-23T19:08:07Z", "user": {"login": "bennettandrews", "id": 1143, "node_id": "MDQ6VXNlcjExNDM=", "avatar_url": "https://avatars.githubusercontent.com/u/1143?v=4", "gravatar_id": "", "url": "https://api.github.com/users/bennettandrews", "html_url": "https://github.com/bennettandrews", "followers_url": "https://api.github.com/users/bennettandrews/followers", "following_url": "https://api.github.com/users/bennettandrews/following{/other_user}", "gists_url": "https://api.github.com/users/bennettandrews/gists{/gist_id}", "starred_url": "https://api.github.com/users/bennettandrews/starred{/owner}{/repo}", "subscriptions_url": "https://api.github.com/users/bennettandrews/subscriptions", "organizations_url": "https://api.github.com/users/bennettandrews/orgs", "repos_url": "https://api.github.com/users/bennettandrews/repos", "events_url": "https://api.github.com/users/bennettandrews/events{/privacy}", "received_events_url": "https://api.github.com/users/bennettandrews/received_events", "type": "User", "site_admin": false}, "starred_repo": "apache/druid"}
 {"starred_at": "2012-10-23T19:08:07Z", "user": {"login": "xwmx", "id": 1246, "node_id": "MDQ6VXNlcjEyNDY=", "avatar_url": "https://avatars.githubusercontent.com/u/1246?v=4", "gravatar_id": "", "url": "https://api.github.com/users/xwmx", "html_url": "https://github.com/xwmx", "followers_url": "https://api.github.com/users/xwmx/followers", "following_url": "https://api.github.com/users/xwmx/following{/other_user}", "gists_url": "https://api.github.com/users/xwmx/gists{/gist_id}", "starred_url": "https://api.github.com/users/xwmx/starred{/owner}{/repo}", "subscriptions_url": "https://api.github.com/users/xwmx/subscriptions", "organizations_url": "https://api.github.com/users/xwmx/orgs", "repos_url": "https://api.github.com/users/xwmx/repos", "events_url": "https://api.github.com/users/xwmx/events{/privacy}", "received_events_url": "https://api.github.com/users/xwmx/received_events", "type": "User", "site_admin": false}, "starred_repo": "apache/druid"}
 ```
@@ -56,7 +56,7 @@ Upload the output file to Polaris and ingest only the `starred_at`, `user["login
 
 Create a [data cube](https://docs.imply.io/polaris/managing-data-cubes/) with default settings. By default, you will get an event count measure, but you can add your own filtered or computed measures if you want.
 
-## first visualization
+## Naïve visualization
 
 This first data model shows only the new stars for every point in time. This looks a bit confusing, but there is one interesting fact to be gleaned already:
 
@@ -70,26 +70,67 @@ This is a startin point but what Will really wanted to see is the growth of star
 
 Let's do this with monthly resolution so we can track the month over month growth curve for each repository.
 
-## trying a self join
+## First attempt at cumulative sums: self join
 
-recur to the earlier blog about emulating window functions
+Last year, I wrote about [emulating window functions in Druid SQL](/2022/11/05/druid-data-cookbook-cumulative-sums-in-druid-sql/), and one of the techniques I used was to join a table with itself. Conveniently, we roll up by month before joining the data, so as to keep the intermediate result sets small. Since we are repeating the same query, let's formulate it as a common table expression.
 
-show the query
+```sql
+WITH cte AS (
+  SELECT DATE_TRUNC('MONTH', "__time") AS date_month, starred_repo, COUNT(*) AS count_monthly
+  FROM "stargazers-ecosystem"
+  GROUP BY 1, 2
+)
+SELECT
+  cte.date_month,
+  cte.starred_repo,
+  SUM(t2.count_monthly) AS sum_cume
+FROM cte INNER JOIN cte t2 ON cte.starred_repo = t2.starred_repo
+WHERE t2.date_month <= cte.date_month
+GROUP BY 1, 2
+ORDER BY 1, 2
+```
+
+The interesting measure in this data model is `sum_cume`: the sum of stars from all past up to the reference date, per repository. Let's visualize this in Polaris over a time period of 10 years!
 
 ![Visualization: Cumulative Sums with Self Join](/assets/2023-07-12-03-selfjoin.jpg)
 
-highlight how the superset line drops to zero. why is that?
-remember the 40k limit? so we don't get new entries after a certain date and the join has nothing to join against
+This is _almost_ good, but did you notice how the superset line drops to zero? Why is that?
 
-## so let's build up a calendar dimension instead, shall we
+Well, you remember the 40k stars limit? Because we don't get new entries after a certain date, the join has nothing to join against.
 
-this is a case for using the date_expand function with unnest. we want a list of all months from the min to max date in our data, let's try this:
+We have been hit by a well known problem in data modeling, [_factless facts_](https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/factless-fact-table/). Generally, this problem of "holes" in the data is addressed by creating a canvas table that manages to get us a data point for each _possible_ combination of dimension values, not only those that we have fact data for.
 
- -> canvas-monthly-FAIL.sql
+## So let's build up a calendar dimension instead, shall we
 
-but this gives an error
+The straightforward approach to this task is to create a [_calendar dimension_](https://www.kimballgroup.com/data-warehouse-business-intelligence-resources/kimball-techniques/dimensional-modeling-techniques/calendar-date-dimension/). Fortunately, since Druid 26, we have the ability [to generate an array of equally spaced points in time (with `DATE_EXPAND`), and to transform such an array into a set of single value rows (with `UNNEST`)](https://blog.hellmar-becker.de/2023/04/08/druid-sneak-peek-timeseries-interpolation/). This is not quite a fully featured sequence generator, but it should work for our case. 
 
- -> error message
+Note that for all the sample queries you will need to set a query context flag to enable `UNNEST`:
+
+```json
+{
+  "enableUnnest": true
+}
+```
+
+Let's try to fill out the time dimension with one record per month, from the minimum to maximum timestamp that is in the data:
+
+```sql
+SELECT t.dateByWeek 
+FROM (
+  SELECT
+    TIMESTAMP_TO_MILLIS(TIME_FLOOR(MIN(__time), 'P1M')) AS minDate, 
+    TIMESTAMP_TO_MILLIS(TIME_CEIL(MAX(__time), 'P1M')) AS maxDate
+  FROM
+    "stargazers-ecosystem"
+  ),
+  UNNEST(DATE_EXPAND(minDate, maxDate, 'P1M')) AS t(dateByWeek)
+```
+
+```
+Error: Unsupported operation
+Cannot convert to Duration as this period contains months and months vary in length
+```
+
 
 so instead, let's use the next largest interval that works with date_expand, which is week, and dedup afterwards
 
