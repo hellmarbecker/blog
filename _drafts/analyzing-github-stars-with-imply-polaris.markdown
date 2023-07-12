@@ -34,7 +34,7 @@ The data we are going to analyze comes from the [GitHub stargazers API](https://
 This probably warrants another blog about the quirks of the GitHub API, so for now let a few remarks suffice.
 
 - Surprise: [Elon Musk](https://twitter.com/elonmusk) did not invent [API rate limiting](https://docs.github.com/en/rest/rate-limit/rate-limit?apiVersion=2022-11-28)! Our first idea was to get _all the repositories_ that Druid stargazers also starred. This approach is not viable.
-- There are primary (hard) and secondary rate limits. Either way, if you hit a limit, GitHub throws a 403 error at you. The required action depends on the type of rate limit that you hit.
+- There are primary (hard) and secondary rate limits. Either way, if you hit a limit, GitHub throws a 403 error at you. The required action depends on the type of rate limit that was applied, and this needs to be parsed from response headers.
 - The API imposes [pagination](https://docs.github.com/en/rest/guides/using-pagination-in-the-rest-api?apiVersion=2022-11-28) with a maximum page size of 100 records.
 - The maximum page index you can retrieve is 399.
 - As a consequence, _you will not get more than 40,000 stars for any one repository_, which will soon become important.
