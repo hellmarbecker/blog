@@ -66,7 +66,7 @@ The new star data for the `superset` repository is gone after a certain date! Wh
 
 Remember, we can only retrieve 40,000 stargazer records per repository. But Superset has more than 52,000 stars, so we cannot get them all.
 
-This is a startin point but what Will really wanted to see is the growth of stars over time. Something you would address using a window function and a `BETWEEN CURRENT AND UNBOUND PRECEDING` clause. But since [window functions in Druid](/2023/03/26/druid-26-sneak-peek-window-functions/) are not quite production ready yet, we have to use a different syntax to model these queries.
+This is a starting point, but what Will really wanted to see is the growth of stars over time. Something you would address using a window function and a `BETWEEN CURRENT AND UNBOUND PRECEDING` clause. But since [window functions in Druid](/2023/03/26/druid-26-sneak-peek-window-functions/) are not quite production ready yet, we have to use a different syntax to model these queries.
 
 Let's do this with monthly resolution so we can track the month over month growth curve for each repository.
 
