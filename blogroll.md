@@ -33,3 +33,5 @@ an incomplete, poorly curated list, in no particular order
 
 - [Dewan Ahmed's blog](https://www.dewanahmed.com/)
 - [Shawn Wang (@swyx)](https://www.swyx.io/)
+- [Mark Needham's blog about DevRel and database topics](https://www.markhneedham.com/)
+  
