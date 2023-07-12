@@ -41,17 +41,34 @@ This probably warrants another blog about the quirks of the GitHub API, so for n
 
 You can find the code that I used, as well as all the SQL samples from this post, in [my GitHub repository](https://github.com/hellmarbecker/druid-stargazers).
 
-### loading the data into polaris
+### Loading the data into Polaris
 
-show a data sample
+While the basic SQL analysis works just as well with open source Druid, I am using [Imply Polaris](https://imply.io/imply-fully-managed-dbaas-polaris/) because of its ease of use and built in visualization. Ingesting file data into Polaris is a streamlined process that is well described in [the quickstart guide](https://docs.imply.io/polaris/quickstart/#upload-a-file-and-view-sample-data) - follow the instructions there.
+
+Here are some sample records from my script:
+
+```
+{"starred_at": "2012-10-23T19:08:07Z", "user": {"login": "bennettandrews", "id": 1143, "node_id": "MDQ6VXNlcjExNDM=", "avatar_url": "https://avatars.githubusercontent.com/u/1143?v=4", "gravatar_id": "", "url": "https://api.github.com/users/bennettandrews", "html_url": "https://github.com/bennettandrews", "followers_url": "https://api.github.com/users/bennettandrews/followers", "following_url": "https://api.github.com/users/bennettandrews/following{/other_user}", "gists_url": "https://api.github.com/users/bennettandrews/gists{/gist_id}", "starred_url": "https://api.github.com/users/bennettandrews/starred{/owner}{/repo}", "subscriptions_url": "https://api.github.com/users/bennettandrews/subscriptions", "organizations_url": "https://api.github.com/users/bennettandrews/orgs", "repos_url": "https://api.github.com/users/bennettandrews/repos", "events_url": "https://api.github.com/users/bennettandrews/events{/privacy}", "received_events_url": "https://api.github.com/users/bennettandrews/received_events", "type": "User", "site_admin": false}, "starred_repo": "apache/druid"}
+{"starred_at": "2012-10-23T19:08:07Z", "user": {"login": "xwmx", "id": 1246, "node_id": "MDQ6VXNlcjEyNDY=", "avatar_url": "https://avatars.githubusercontent.com/u/1246?v=4", "gravatar_id": "", "url": "https://api.github.com/users/xwmx", "html_url": "https://github.com/xwmx", "followers_url": "https://api.github.com/users/xwmx/followers", "following_url": "https://api.github.com/users/xwmx/following{/other_user}", "gists_url": "https://api.github.com/users/xwmx/gists{/gist_id}", "starred_url": "https://api.github.com/users/xwmx/starred{/owner}{/repo}", "subscriptions_url": "https://api.github.com/users/xwmx/subscriptions", "organizations_url": "https://api.github.com/users/xwmx/orgs", "repos_url": "https://api.github.com/users/xwmx/repos", "events_url": "https://api.github.com/users/xwmx/events{/privacy}", "received_events_url": "https://api.github.com/users/xwmx/received_events", "type": "User", "site_admin": false}, "starred_repo": "apache/druid"}
+```
+
+Upload the output file to Polaris and ingest only the `starred_at`, `user["login"]`, `user["id"]`, and `starred_repo` columns. (You will need to use `JSON_VALUE` to extract the nested fields.)
+
+Create a [data cube](https://docs.imply.io/polaris/managing-data-cubes/) with default settings. By default, you will get an event count measure, but you can add your own filtered or computed measures if you want.
 
 ## first visualization
 
-this shows only the new stars for every point in time
+This first data model shows only the new stars for every point in time. This looks a bit confusing, but there is one interesting fact to be gleaned already:
 
 ![Visualization: New Star Events over Time](/assets/2023-07-12-02-eventdata.jpg)
 
-but what we really want: the growth of stars over time. let's do this with monthly resolution
+The new star data for the `superset` repository is gone after a certain date! Why is that?
+
+Remember, we can only retrieve 40,000 stargazer records per repository. But Superset has more than 52,000 stars, so we cannot get them all.
+
+This is a startin point but what Will really wanted to see is the growth of stars over time. Something you would address using a window function and a `BETWEEN CURRENT AND UNBOUND PRECEDING` clause. But since [window functions in Druid](/2023/03/26/druid-26-sneak-peek-window-functions/) are not quite production ready yet, we have to use a different syntax to model these queries.
+
+Let's do this with monthly resolution so we can track the month over month growth curve for each repository.
 
 ## trying a self join
 
