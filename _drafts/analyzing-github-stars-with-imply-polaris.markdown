@@ -47,7 +47,7 @@ While the basic SQL analysis works just as well with open source Druid, I am usi
 
 Here are some sample records from my script:
 
-```json
+```
 {"starred_at": "2012-10-23T19:08:07Z", "user": {"login": "bennettandrews", "id": 1143, "node_id": "MDQ6VXNlcjExNDM=", "avatar_url": "https://avatars.githubusercontent.com/u/1143?v=4", "gravatar_id": "", "url": "https://api.github.com/users/bennettandrews", "html_url": "https://github.com/bennettandrews", "followers_url": "https://api.github.com/users/bennettandrews/followers", "following_url": "https://api.github.com/users/bennettandrews/following{/other_user}", "gists_url": "https://api.github.com/users/bennettandrews/gists{/gist_id}", "starred_url": "https://api.github.com/users/bennettandrews/starred{/owner}{/repo}", "subscriptions_url": "https://api.github.com/users/bennettandrews/subscriptions", "organizations_url": "https://api.github.com/users/bennettandrews/orgs", "repos_url": "https://api.github.com/users/bennettandrews/repos", "events_url": "https://api.github.com/users/bennettandrews/events{/privacy}", "received_events_url": "https://api.github.com/users/bennettandrews/received_events", "type": "User", "site_admin": false}, "starred_repo": "apache/druid"}
 {"starred_at": "2012-10-23T19:08:07Z", "user": {"login": "xwmx", "id": 1246, "node_id": "MDQ6VXNlcjEyNDY=", "avatar_url": "https://avatars.githubusercontent.com/u/1246?v=4", "gravatar_id": "", "url": "https://api.github.com/users/xwmx", "html_url": "https://github.com/xwmx", "followers_url": "https://api.github.com/users/xwmx/followers", "following_url": "https://api.github.com/users/xwmx/following{/other_user}", "gists_url": "https://api.github.com/users/xwmx/gists{/gist_id}", "starred_url": "https://api.github.com/users/xwmx/starred{/owner}{/repo}", "subscriptions_url": "https://api.github.com/users/xwmx/subscriptions", "organizations_url": "https://api.github.com/users/xwmx/orgs", "repos_url": "https://api.github.com/users/xwmx/repos", "events_url": "https://api.github.com/users/xwmx/events{/privacy}", "received_events_url": "https://api.github.com/users/xwmx/received_events", "type": "User", "site_admin": false}, "starred_repo": "apache/druid"}
 ```
@@ -126,44 +126,138 @@ FROM (
   UNNEST(DATE_EXPAND(minDate, maxDate, 'P1M')) AS t(dateByWeek)
 ```
 
+Unfortunately, the query fails. But it indicates clearly why:
+
 ```
 Error: Unsupported operation
 Cannot convert to Duration as this period contains months and months vary in length
 ```
 
+So instead, let's use the next largest interval that works with `DATE_EXPAND`, which is week - a week is always the same length -, then truncate to months, and deduplicate the values:
 
-so instead, let's use the next largest interval that works with date_expand, which is week, and dedup afterwards
+```sql
+SELECT DISTINCT TIME_FLOOR(t.dateByWeek, 'P1M') 
+FROM (
+  SELECT
+    TIMESTAMP_TO_MILLIS(TIME_FLOOR(MIN(__time), 'P1M')) AS minDate, 
+    TIMESTAMP_TO_MILLIS(TIME_CEIL(MAX(__time), 'P1M')) AS maxDate
+  FROM
+    "stargazers-ecosystem"
+  ),
+  UNNEST(DATE_EXPAND(minDate, maxDate, 'P1W')) AS t(dateByWeek)
+```
 
- -> canvas-monthly.sql
+This works!
 
-## join up against the fact data
+## Join up against the fact data
 
- -> cumulative-monthly-FAIL.sql
+Let's try to join this clandar dimension against the fact data. We know already that we can't have a "less than or equal" condition in the `JOIN` clause. So let's try and write a Cartesian join with a `WHERE` clause that does the time windowing:
 
-this fails
+```sql
+WITH 
+  cte_calendar AS (
+  SELECT DISTINCT TIME_FLOOR(t.dateByWeek, 'P1M') AS date_month
+  FROM (
+    SELECT
+      TIMESTAMP_TO_MILLIS(TIME_FLOOR(MIN(__time), 'P1M')) AS minDate, 
+      TIMESTAMP_TO_MILLIS(TIME_CEIL(MAX(__time), 'P1M')) AS maxDate
+    FROM
+      "stargazers-ecosystem"
+    ),
+    UNNEST(DATE_EXPAND(minDate, maxDate, 'P1W')) AS t(dateByWeek)
+  ),
+  cte_stars AS (
+  SELECT 
+    DATE_TRUNC('MONTH', "__time") AS date_month, 
+    starred_repo, 
+    COUNT(*) AS count_monthly
+  FROM "stargazers-ecosystem"
+  GROUP BY 1, 2
+)
+SELECT
+  cte_calendar.date_month,
+  cte_stars.starred_repo,
+  SUM(cte_stars.count_monthly) AS sum_cume
+FROM cte_calendar, cte_stars
+WHERE cte_stars.date_month <= cte_calendar.date_month
+GROUP BY 1, 2
+ORDER BY 1, 2
+```
 
- -> error message
+Alas, this fails too - Druid's query planner views this still as a `JOIN` with a non-equals condition, and refuses to plan it:
 
-the message is clear, we need an equals join. let's do a workaround by adding the repo to the calendar canvas to use it as a join key. so this becomes a cross join:
+```
+SQL requires a join with 'LESS_THAN_OR_EQUAL' condition that is not supported.
+```
 
- -> canvas-monthly-with-repo.sql
+The message is clear, we need an equals join. Let's do a workaround by adding `starred_repo` to the calendar canvas as well, so as to use it as a join key. So the canvas definition becomes a cross join between the monthly calendar we created above, and the list of all unique repositories:
 
-then do a join on repo and tuck the unbound preceding condition away into a [filtered metric](link to druid doc)
+```sql
+  SELECT 
+    TIME_FLOOR(t.dateByWeek, 'P1M') AS date_month,
+    starred_repo
+  FROM (
+    SELECT
+      TIMESTAMP_TO_MILLIS(TIME_FLOOR(MIN(__time), 'P1M')) AS minDate, 
+      TIMESTAMP_TO_MILLIS(TIME_CEIL(MAX(__time), 'P1M')) AS maxDate
+    FROM
+      "stargazers-ecosystem"
+    ),
+    UNNEST(DATE_EXPAND(minDate, maxDate, 'P1W')) AS t(dateByWeek),
+    ( SELECT DISTINCT starred_repo FROM "stargazers-ecosystem" )
+  GROUP BY 1, 2
+```
 
- -> cumulative-monthly-canvas-final.sql
+Then define this as a CTE, join the facts on `starred_repo`, and tuck the unbound preceding condition away into a [filtered metric]([link to druid doc](https://druid.apache.org/docs/latest/tutorials/tutorial-sketches-theta.html#filtered-metrics)):
 
-use this query to define a cube in pivot and see the result
+```sql
+WITH 
+  cte_calendar AS (
+  SELECT 
+    TIME_FLOOR(t.dateByWeek, 'P1M') AS date_month,
+    starred_repo
+  FROM (
+    SELECT
+      TIMESTAMP_TO_MILLIS(TIME_FLOOR(MIN(__time), 'P1M')) AS minDate, 
+      TIMESTAMP_TO_MILLIS(TIME_CEIL(MAX(__time), 'P1M')) AS maxDate
+    FROM
+      "stargazers-ecosystem"
+    ),
+    UNNEST(DATE_EXPAND(minDate, maxDate, 'P1W')) AS t(dateByWeek),
+    ( SELECT DISTINCT starred_repo FROM "stargazers-ecosystem" )
+  GROUP BY 1, 2
+  ),
+  cte_stars AS (
+  SELECT 
+    DATE_TRUNC('MONTH', "__time") AS date_month, 
+    starred_repo, 
+    COUNT(*) AS count_monthly
+  FROM "stargazers-ecosystem"
+  GROUP BY 1, 2
+)
+SELECT
+  cte_calendar.date_month,
+  cte_stars.starred_repo,
+  SUM(cte_stars.count_monthly) FILTER(WHERE cte_stars.date_month <= cte_calendar.date_month) AS sum_cume
+FROM cte_calendar INNER JOIN cte_stars ON cte_calendar.starred_repo = cte_stars.starred_repo
+GROUP BY 1, 2
+ORDER BY 1, 2
+```
+
+Use this query to define a cube in pivot and see the result
 
 ![Visualization: Cumulative Sums](/assets/2023-07-12-04-calendar-canvas.jpg)
 
-now the superset stars max out at 40k but they don't drop to zero!
+And, ceteris paribus, now the superset stars max out at 40k but they don't drop to zero!
 
 ## Conclusion
 
-- the [self join approach to cumulative sums](link to earlier blog) fails when there are "holes" in the data (aka factless facts)
-- the best approach to counter this is building an explicit calendar dimension
-- date_expand can be used to build a calendar canvas but has some limitations, we showed how to work around those
-- also we learned how we can work around the join limitation in druid sql by adding a synthetic join key to the calendar dimension and using a filtered metric
+- The [self join approach to cumulative sums](link to earlier blog) fails when there are "holes" in the data (aka factless facts).
+- The best approach to counter this is building an explicit calendar dimension.
+- `DATE_EXPAND` can be used to build a calendar canvas but has some limitations. We showed how to work around those.
+- Also we learned how we can work around the `join` limitation in Druid SQL by adding a synthetic join key to the calendar dimension and using a filtered metric.
+
+----
 
 "Ludwig_Richter-The_Star_Money-2-1862" (via [Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Ludwig_Richter-The_Star_Money-2-1862.jpg)) is in the <b><a href="https://en.wikipedia.org/wiki/public_domain" class="extiw" title="en:public domain">public domain</a></b> in its country of origin and other countries and areas where the <a href="https://en.wikipedia.org/wiki/List_of_countries%27_copyright_lengths" class="extiw" title="w:List of countries&#39; copyright lengths">copyright term</a> is the author's <b>life plus 100 years or fewer</b>.
 
