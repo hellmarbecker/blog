@@ -6,9 +6,13 @@ categories: blog druid imply polaris sql tutorial
 
 ![Sterntaler drawing](/assets/2023-07-12-01-Ludwig_Richter-The_Star_Money-2-1862.jpg)
 
-## why this all
+## Why all this?
 
-## the dataset
+A while ago, one of our product managers asked if we could measure [community engagement](https://www.swyx.io/measuring-devrel) in the [Apache Druid](https://druid.apache.org/) community by analyzing the number of [stars](https://docs.github.com/en/rest/activity/starring) that the [Druid source repository](https://github.com/apache/druid) got over time. He wanted to compare that development with other repositories related to the realtime analytics ecosystem, and possibly identify segments of GitHub users that had starred multiple repositories out of the list we are looking at.
+
+This blog is _not_ about the results of that endeavor. Instead, I am going to look at an interesting data/query modeling problem I encountered on the way.
+
+## The Dataset
 
 ### dataset definition
 
