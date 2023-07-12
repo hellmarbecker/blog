@@ -250,12 +250,12 @@ Use this query to define a cube in the Polaris GUI, and see the result:
 
 And, ceteris paribus, now the number of Superset stars maxes out at 40k but they don't drop to zero!
 
-## Conclusion
+## Learnings
 
-- The [self join approach to cumulative sums](link to earlier blog) fails when there are "holes" in the data (aka factless facts).
+- The [self join approach to cumulative sums](https://blog.hellmar-becker.de/2022/11/05/druid-data-cookbook-cumulative-sums-in-druid-sql/) fails when there are "holes" in the data (aka factless facts).
 - The best approach to counter this is building an explicit calendar dimension.
 - `DATE_EXPAND` can be used to build a calendar canvas but has some limitations. We showed how to work around those.
-- Also we learned how we can work around the `JOIN` limitation in Druid SQL by adding a synthetic join key to the calendar dimension and using a filtered metric.
+- Also, we learned how we can work around the `JOIN` limitation in Druid SQL by adding a synthetic join key to the calendar dimension and using a filtered metric.
 
 ----
 
