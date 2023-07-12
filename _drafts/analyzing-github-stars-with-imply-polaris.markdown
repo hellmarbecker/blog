@@ -8,36 +8,38 @@ categories: blog druid imply polaris sql tutorial
 
 ## Why all this?
 
-A while ago, one of our product managers asked if we could measure [community engagement](https://www.swyx.io/measuring-devrel) in the [Apache Druid](https://druid.apache.org/) community by analyzing the number of [GitHub stars](https://docs.github.com/en/rest/activity/starring) that the [Druid source repository](https://github.com/apache/druid) got over time. He wanted to compare that development with other repositories within the realtime analytics ecosystem, and possibly identify segments of GitHub users that had starred multiple repositories out of the list we are looking at.
+A while ago, [Will](https://twitter.com/whycaniuse) asked if we could measure [community engagement](https://www.swyx.io/measuring-devrel) in the [Apache Druid](https://druid.apache.org/) community by analyzing the number of [GitHub stars](https://docs.github.com/en/rest/activity/starring) that the [Druid source repository](https://github.com/apache/druid) got over time. He wanted to compare that development with other repositories within the realtime analytics ecosystem, and possibly identify segments of GitHub users that had starred multiple repositories out of the list we are looking at.
 
 This blog is _not_ about the results of that endeavor. Instead, I am going to look at an interesting data/query modeling problem I encountered on the way.
 
-## The Dataset
+## The dataset
 
-### dataset definition
+Let's get the stargazers for various repos that are either competitive or complementary with druid. This includes
 
-for various repos that are either competitive or complementary with druid
-
-such as
-
-- other rtolap
+- other realtime analytics datastores
 - streaming platforms
 - stream processors
-- frontend (bi tools)
+- frontend (bi) tools.
 
-then get
+For each stargazer record, we store
 
 - the user
-- the repo
-- when it was starred
+- the repository
+- date and time when it was starred; this will be the primary timestamp for the Druid data model.
 
-### how to get the data
+### How to get the data
 
-github api
+The data we are going to analyze comes from the [GitHub stargazers API](https://docs.github.com/en/rest/activity/starring?apiVersion=2022-11-28#list-stargazers). [Vijay has written a great blog about this](https://dev.to/vnarayaj/analysing-github-stars-extracting-and-analyzing-data-from-github-using-apache-nifir-apache-kafkar-and-apache-druidr-280); I am using a simpler approach with a Python script that runs once and tries to retrieve all the data.
 
-this warrants another blog but for now just hint at the limitations
+This probably warrants another blog about the quirks of the GitHub API, so for now let a few remarks suffice.
 
-you will not get more than 40k stars which will soon become important
+- Surprise: [Elon Musk](https://twitter.com/elonmusk) did not invent [API rate limiting](https://docs.github.com/en/rest/rate-limit/rate-limit?apiVersion=2022-11-28)! Our first idea was to get _all the repositories_ that Druid stargazers also starred. This approach is not viable.
+- There are primary (hard) and secondary rate limits. Either way, if you hit a limit, GitHub throws a 403 error at you. The required action depends on the type of rate limit that you hit.
+- The API imposes [pagination](https://docs.github.com/en/rest/guides/using-pagination-in-the-rest-api?apiVersion=2022-11-28) with a maximum page size of 100 records.
+- The maximum page index you can retrieve is 399.
+- As a consequence, _you will not get more than 40,000 stars for any one repository_, which will soon become important.
+
+You can find the code that I used, as well as all the SQL samples from this post, in [my GitHub repository](https://github.com/hellmarbecker/druid-stargazers).
 
 ### loading the data into polaris
 
