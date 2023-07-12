@@ -19,7 +19,7 @@ Let's get the stargazers for various repos that are either competitive or comple
 - other realtime analytics datastores
 - streaming platforms
 - stream processors
-- frontend (bi) tools.
+- frontend (business intelligence) tools.
 
 For each stargazer record, we store
 
