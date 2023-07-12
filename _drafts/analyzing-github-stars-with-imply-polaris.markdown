@@ -244,18 +244,18 @@ GROUP BY 1, 2
 ORDER BY 1, 2
 ```
 
-Use this query to define a cube in pivot and see the result
+Use this query to define a cube in pivot and see the result:
 
 ![Visualization: Cumulative Sums](/assets/2023-07-12-04-calendar-canvas.jpg)
 
-And, ceteris paribus, now the superset stars max out at 40k but they don't drop to zero!
+And, ceteris paribus, now the number of Superset stars maxes out at 40k but they don't drop to zero!
 
 ## Conclusion
 
 - The [self join approach to cumulative sums](link to earlier blog) fails when there are "holes" in the data (aka factless facts).
 - The best approach to counter this is building an explicit calendar dimension.
 - `DATE_EXPAND` can be used to build a calendar canvas but has some limitations. We showed how to work around those.
-- Also we learned how we can work around the `join` limitation in Druid SQL by adding a synthetic join key to the calendar dimension and using a filtered metric.
+- Also we learned how we can work around the `JOIN` limitation in Druid SQL by adding a synthetic join key to the calendar dimension and using a filtered metric.
 
 ----
 
