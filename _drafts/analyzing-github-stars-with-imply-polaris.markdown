@@ -244,7 +244,7 @@ GROUP BY 1, 2
 ORDER BY 1, 2
 ```
 
-Use this query to define a cube in pivot and see the result:
+Use this query to define a cube in the Polaris GUI, and see the result:
 
 ![Visualization: Cumulative Sums](/assets/2023-07-12-04-calendar-canvas.jpg)
 
