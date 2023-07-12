@@ -151,7 +151,7 @@ This works!
 
 ## Join up against the fact data
 
-Let's try to join this clandar dimension against the fact data. We know already that we can't have a "less than or equal" condition in the `JOIN` clause. So let's try and write a Cartesian join with a `WHERE` clause that does the time windowing:
+Let's try to join the calendar dimension against the fact data. We know already that we can't have a "less than or equal" condition in the `JOIN` clause. So let's try and write a Cartesian join with a `WHERE` clause that does the time windowing:
 
 ```sql
 WITH 
