@@ -208,7 +208,7 @@ The message is clear, we need an equals join. Let's do a workaround by adding `s
   GROUP BY 1, 2
 ```
 
-Then define this as a CTE, join the facts on `starred_repo`, and tuck the unbound preceding condition away into a [filtered metric](https://druid.apache.org/docs/latest/tutorials/tutorial-sketches-theta.html#filtered-metrics):
+Then define this as a CTE, join the facts on `starred_repo`, and tuck the unbound preceding condition away into a [filtered metric](https://druid.apache.org/docs/latest/querying/sql-aggregations.html):
 
 ```sql
 WITH 
