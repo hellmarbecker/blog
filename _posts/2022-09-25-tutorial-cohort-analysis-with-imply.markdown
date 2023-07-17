@@ -135,7 +135,7 @@ We are going to add some enhancements to the logical data model.
 
 - Change the data type of the signup date column to `Time` so we can have a date selector on it. (Pivot will automatically parse and convert the datetime string.) I am also renaming the dimensions to `Player ID` and `Player Signup Date` to make the reports look nicer.
 - In order to group the players into cohorts by their signup date, parse out the month and calendar week from the signup date. Note that in order to match with the calendar week, you need to use the week year (`'xxxx'`) date mask rather that `'yyyy'`.
-- Add the `Player age` as the time between event time and signup time as a set of calculated dimensions in days, weeks, and months. These are numbers but make sure to disable default bucketing.
+- Add `Player Age` as the time between event time and signup time as a set of calculated dimensions in days, weeks, and months. These are numbers but make sure to disable default bucketing.
 
 Add the following dimensions:
 
