@@ -9,7 +9,7 @@ This is part 2 of the miniseries about data partitioning in [Apache Druid](https
 
 ## Recap
 
-In the previous installment we discussed dynamic partitioning and hash partitioning in Druid. We foud out that hash partitioning is great to ensure uniform partition size, but it would not usually help query performance a lot. This is why single dimension (or for short "single dim") partitioning is available in Druid.
+In the previous installment we discussed dynamic partitioning and hash partitioning in Druid. We found out that hash partitioning is great to ensure uniform partition size, but it would not usually help query performance a lot. This is why single dimension (or for short "single dim") partitioning is available in Druid.
 
 ## Single Dim Partitioning
 
