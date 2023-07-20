@@ -73,6 +73,10 @@ this can be configured using the wizard or [API](link to API doc)
 
 ![Screenshot of autocompaction wizard]()
 
+## Outlook
+
+in 28 - concurrent ingestion and autocompaction
+
 ## Conclusion
 
 - yada yada
