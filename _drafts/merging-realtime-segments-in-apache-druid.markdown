@@ -73,5 +73,9 @@ this can be configured using the wizard or [API](link to API doc)
 
 ![Screenshot of autocompaction wizard]()
 
-## 
+## Conclusion
+
+- yada yada
+- ...
+- 
 
