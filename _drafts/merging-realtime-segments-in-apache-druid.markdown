@@ -6,7 +6,7 @@ categories: blog apache druid imply realtime
 
 ## Data Layout and Druid Performance
 
-druid wants to be fast
+So, you want your ruid wants to be fast
 
 but druid's performance can be influenced by multiple factors in the data layout
 
