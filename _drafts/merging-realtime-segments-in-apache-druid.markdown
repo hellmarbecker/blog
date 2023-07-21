@@ -18,7 +18,7 @@ Druid's query performance can be influenced by multiple factors in the data layo
 
 All the above factors can be addressed eaily in batch processing. Streaming data, however, usually does not come in neatly ordered. The point in streaming ingestion is to have these data available for analytics within a split second after an event occurs: and so, segments are built up in memory and persisted frequently. As a result, after a _hand-off_ (the process of persisting a segment to deep storage) by streaming ingestion, segments are not optimal:
 
-- Segments will usually be _smaller than optimum_ because we cannot wait long to initiate a handoff. in addition, we may have to juggle multiple time chunks simultaneously because of late arriving data
+- Segments will usually be fragmented and _smaller than optimum_ because we cannot wait long to initiate a handoff. in addition, we may have to juggle multiple time chunks simultaneously because of late arriving data
 - Range partitioning requires multiple steps of mapping and shuffling and merging. This is not possible to do during streaming ingestion so _the only allowed partitioning scheme is Dynamic_.
 - Because data can always be added incrementally, rollup is _best effort_.
 
