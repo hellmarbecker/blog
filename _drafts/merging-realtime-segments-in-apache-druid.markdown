@@ -34,10 +34,11 @@ I discussed autocompaction briefly in [my blog about data lifecycle management i
 
 Autocompaction can:
 
-- set/modify the partitioning scheme
-- modify rollup settings
-- modify segment granularity
-- modify query granularity
+- make sure segments have a **size close to the target value**;
+- set/modify the **partitioning scheme**;
+- modify **rollup** settings;
+- modify **segment granularity**;
+- modify **query granularity**.
 
 It also has a setting to leave the newest data alone so as not to interfere with the ongoing ingestion.
 
