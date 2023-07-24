@@ -44,39 +44,41 @@ It also has a setting to leave the newest data alone so as not to interfere with
 
 ### Set partitioning scheme
 
-if you would like to achieve perfect rollup, use either hash or range
-
-if you know typical query patterns in advance, range is recommended
+Because streaming ingestion always produces dynamic partitions, you have to use autocompaction to organize your data in a better scheme. While either hash or range partitioning both achieve perfect rollup, range partitioning is recommended for most cases - particularly if you know typical query patterns in advance.
 
 ### Modify rollup settings
 
-you can go from a detail to a rollup table yada yada but mostly leave this alone
+You can go from a detail to a rollup table using autocompaction. There are some caveats though: this approach makes sense mostly if you are using the same aggregation functions in your queries and in rollup.
 
 ### Modify segment granularity
 
-use with caution, this can make sense if your data volume is too low to have even one big enough segment per time chunk, or if you want to force secondary partitioning into effect. (if there is only one segment per time chunk, secondary partitioning will do essentially nothing.) make sure segment granularities roll up into each other neatly (so no week to month), or else you are in for some surprises. (link to data lifecycle blog)
+Segment granularity defines the time period for each time chunk. If your data volume is low enough to have only segment per time chunk, you might consider increasing segment granularity: if there is only one segment per time chunk, secondary partitioning will do essentially nothing, so you need to make the time chunks bigger in order to to force secondary partitioning into effect.
+
+Make sure segment granularities roll up into each other neatly (for instance, don't do week to month), or else you are in [for some surprises](https://blog.hellmar-becker.de/2023/01/22/apache-druid-data-lifecycle-management/).
 
 ### Modify query granularity
 
-this is a data lifecycle operation, which actually aggregates data further. this is not normally what you do when configuring a segment merge autocompaction, leave it alone
+Query granularity defines the aggregation level inside a segment. The primary timestamp will be truncated to the precision defined by the query granularity, and data is aggregated at that level. 
+
+You can define additional aggregation during autocompaction by making the query granularity coarser. This is a data lifecycle operation and some organizations use it to retain detail data up to a certain period, and aggregates for older data. When configuring a segment merge autocompaction, you would not usually do this.
 
 ### Configure grace period for recent data
 
-skipOffsetFromLatest
+Druid will soon have the ability to run ingestion and autocompaction over the same time chunk simultaneously. For now, there's a setting `skipOffsetFromLatest`, which is by default set to `P1D` (one day). Its effect is that data younger than that period are left alone by autocompaction, because we anticipate more data to be ingested for that period. Increase this setting if you expect a lot of late arriving data.
 
-default P1D (one day)
-
-this is an ISO 8601 time period
+This is an [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) time period.
 
 ## Configuring it in the wizard
 
-this can be configured using the wizard or [API](link to API doc)
+Autocompaction can be configured using the wizard or [API](https://druid.apache.org/docs/latest/data-management/automatic-compaction.html#compaction-configuration-api)
 
 ![Screenshot of autocompaction wizard]()
 
 ## Outlook
 
-in 28 - concurrent ingestion and autocompaction
+Autocompaction has been with Druid for a long time, but it has seen a lot of improvement recently. The algorithm that selects segments for compaction is being tuned to grab segments faster and to use free system resources more efficiently, resulting in a considerable speedup.
+
+Druid 28 will bring fully concurrent ingestion and autocompaction - so data layout will be optimized on the fly!
 
 ## Conclusion
 
