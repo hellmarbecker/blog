@@ -4,9 +4,9 @@ title:  "Merging Realtime Segments in Apache Druid"
 categories: blog apache druid imply realtime
 ---
 
-## Data Layout and Druid Performance
-
 So, you want your realtime analytical queries to be really fast, and that's why you selected [Apache Druid](https://druid.apache.org/)! Today, let's have a look at another aspect of how Druid achieves its amazing performance.
+
+## Data Layout and Druid Performance
 
 Druid's query performance can be influenced by multiple factors in the data layout:
 
