@@ -72,19 +72,26 @@ This is an [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) time period.
 
 ## Configuring it in the wizard
 
-Autocompaction can be configured using the wizard or [API](https://druid.apache.org/docs/latest/data-management/automatic-compaction.html#compaction-configuration-api)
+Autocompaction can be configured using the unified console wizard or the [API](https://druid.apache.org/docs/latest/data-management/automatic-compaction.html#compaction-configuration-api).
 
-![Screenshot of autocompaction wizard]()
+In the console, autocompaction settings can be accessed from the `Datasources` tab. Clicking the compaction settings for a datasource opens a dialog for the basic settings like partitioning and recent data grace period:
+
+![Screenshot of autocompaction wizard](/assets/2023-07-25-01.jpg)
+
+For configuring rollup and granularity settings, you have to enter JSON mode and follow the reference in [the documentation](https://druid.apache.org/docs/latest/data-management/automatic-compaction.html#configure-automatic-compaction).
 
 ## Outlook
 
-Autocompaction has been with Druid for a long time, but it has seen a lot of improvement recently. The algorithm that selects segments for compaction is being tuned to grab segments faster and to use free system resources more efficiently, resulting in a considerable speedup.
+Autocompaction has been with Druid [since version 0.13](https://druid.apache.org/docs/0.13.0-incubating/design/coordinator.html#compacting-segments), but it has seen a lot of improvement recently. Some notable changes that will (likely) be released in the near future:
 
-Druid 28 will bring fully concurrent ingestion and autocompaction - so data layout will be optimized on the fly!
+- The algorithm that selects segments for compaction is being tuned to grab segments faster and to use free system resources more efficiently, resulting in a considerable speedup.
+- Fully concurrent ingestion and autocompaction - so data layout will be optimized on the fly!
+- A lot more options are available to fine tune autocompaction: refer to [the documentation](https://druid.apache.org/docs/latest/data-management/automatic-compaction.html) for more detail!
 
 ## Conclusion
 
-- yada yada
-- ...
-- 
+This article gave only a glimpse into the capabilities of Druid autocompaction. What we learned:
 
+- Autocompaction is a process that merges and optimizes (among others) realtime ingested segments.
+- Autocompaction runs automatically in the background. It requires no extra program invocation or scheduler setup.
+- In addition to merging segments, autocompaction can also perform more advanced data lifecycle management tasks with minimal configuration.
