@@ -15,6 +15,7 @@ an incomplete, poorly curated list, in no particular order
 - [Peter Marshall's blog](https://pmio.hashnode.dev/) and [Substack](https://pmio.substack.com/)
 - [Sergio Ferragut's Substack](https://sergioferragut.substack.com/)
 - [Tijo Thomas on Medium](https://tijothomas21.medium.com/)
+- [Gautam Goswami](https://gautambangalore.medium.com/)
 
 ## Stream Processing in General
 
