@@ -23,7 +23,7 @@ explain the GUI elements
 left:
 
 - datasource - table
-- list of fields as they occur in the table, this does not care whether the fields are dimensions or measures
+- list of fields as they occur in the table, this does not care whether the fields are dimensions or metrics
 
 middle:
 
@@ -34,7 +34,15 @@ right: select visualization, the options available depend on the visualization t
 
 ## Time chart
 
+this is an area chart, optionally stacked area
+
+one metric, it is possible to limit the stacked 
+
+![Screenshot]()
+
 ## Bar chart
+
+one bar column (dimension), one metric, possible another metric to sort
 
 ## Table
 
