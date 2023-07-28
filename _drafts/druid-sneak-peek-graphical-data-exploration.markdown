@@ -46,9 +46,23 @@ one bar column (dimension), one metric, possible another metric to sort
 
 ## Table
 
+group by => aggregates. __time has builtin intelligence with bucketing
+
+show, can show a column without aggregating
+
+pivot (across instead of down). this uses filtered metrics
+
+aggregates. these would be the derived metrics
+
+compares. compare by time interval. compare and pivot are for now mutually exclusive
+
 ## Pie chart
 
+one dimension, one metric. you can specify the # of slices, the rest goes into Other
+
 ## Multi-axis chart
+
+time chart, many metrics - overlayed and each to its own scale
 
 ## Conclusion
 
