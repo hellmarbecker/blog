@@ -57,7 +57,7 @@ This visualization allows selecting as metrics:
 
 ## Bar chart
 
-The bar chart displays one bar column (dimension) and one metric, It is possible to sort by another metric than the one displayed.
+The bar chart displays one bar column (dimension) and one metric, It is possible to sort by a metric other than the one displayed.
 
 ![Screenshort of bar chart]()
 
