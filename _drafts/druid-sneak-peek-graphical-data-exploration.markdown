@@ -30,7 +30,7 @@ For this post, I ingested the wikipedia sample data, as described in [the quicks
 
 To access the data explorer, go to the three dots `...` right next to the Services tab, open the menu and click `Explore`:
 
-![Screenshot of console with Explore menu selected]()
+![Screenshot of console with Explore menu selected](/assets/2023-07-29-01-select-explore.jpg)
 
 You will be greeted with a canvas in the middle, and surrounding GUI controls:
 
@@ -45,41 +45,55 @@ Let's go through the list of visualization types.
 
 The Time chart visualizes the development of a metric over time. This is an area chart, or optionally (if you select a dimension to stack by) a stacked area chart. 
  
-It is possible to limit the number of items to be displayed in the tacked dimension.
+It is possible to limit the number of items to be displayed in the stacked dimension.
+
+![Screenshot of time chart](/assets/2023-07-29-02-timechart.jpg)
 
 This visualization allows selecting as metrics:
 
 - total count
 - unique count of any column
+- minimum and maximum of timestamp
 - for numeric columns, moreover, the standard aggregators _sum_, _min_, _max_, and _98 percentile_.
 
-![Screenshot of time chart]()
+<img src="/assets/2023-07-29-03-timechart-metrics.jpg" width="50%" />
+
+This mechanism of selecting metrics is the same for all other visualizations, too.
 
 ## Bar chart
 
 The bar chart displays one bar column (dimension) and one metric, It is possible to sort by a metric other than the one displayed.
 
-![Screenshort of bar chart]()
+![Screenshort of bar chart](/assets/2023-07-29-04-barchart.jpg)
 
 ## Table
 
-group by => aggregates. __time has builtin intelligence with bucketing
+The table chart has the most flexibility in selecting and arranging table fields. These are the options:
 
-show, can show a column without aggregating
+- _Group by_: These are your regular BI dimensions, things to aggregate by. While all discrete dimensions just create one row by per value, `__time` has builtin intelligence when you select this, you can select the bucketing (granularity). You can select multiple dimension columns.
+- _Show_: can show a column without aggregating by that column. You could view this as interpreting a dimension as a metric where you pick either the latest value or the number of values. You can add multiple columnshere, too.
+- _Pivot_: This displays a dimension across instead of down. The query mechanism is a bit different: it currently uses filtered metrics with one expression per dimension value.
+- _Aggregates_: These are the metrics, the selection is the same as for the time chart. But you can have multiple metrics.
 
-pivot (across instead of down). this uses filtered metrics
+![Screenshot of pivot table view](/assets/2023-07-29-05-table-pivot.jpg)
 
-aggregates. these would be the derived metrics
+- _Compares_: compare by time interval. You can include multiple comparisons. But Compare and Pivot are for now mutually exclusive.
 
-compares. compare by time interval. compare and pivot are for now mutually exclusive
+You can sort by any column if you click on the column header.
+
+![Screenshot of time comparison table view](/assets/2023-07-29-06-table-compare.jpg)
 
 ## Pie chart
 
-one dimension, one metric. you can specify the # of slices, the rest goes into Other
+This displays one metric, borken down by one dimension. You can specify the number of named slices, the rest goes into Other.
+
+![Screenshot of Pie chart](/assets/2023-07-29-07-piechart.jpg)
 
 ## Multi-axis chart
 
-time chart, many metrics - overlayed and each to its own scale
+This is a variety of the time chart, but with many metrics. They are drawn as line charts, overlayed and each to its own scale. The first metric's axis is displayed to the left, all others are displayed to the right of the chart.
+
+![Screenshot of multi axis chart](/assets/2023-07-29-08-multi-axis.jpg)
 
 ## Conclusion
 
