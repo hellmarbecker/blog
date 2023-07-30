@@ -1,16 +1,16 @@
 ---
 layout: post
 title:  "Druid Sneak Peek: Graphical Data Exploration"
-categories: blog apache druid imply iot sql tutorial
+categories: blog apache druid imply visualization tutorial
 ---
 
-Druid's unified console is a user interface mostly directed at data management. Among other things, you can control your ingestion tasks, manage segments and their compaction settings, monitor services, and there is also a query manager GUI that understands both SQL and Druid native queries.
+![Screenshot of time chart](/assets/2023-07-30-01-timechart.jpg)
 
-For data visualization, up until now you had to use external tools such as Superset or Tableau, or Imply's own Pivot that comes bundled with the commercial distribution of the software.
+Druid's unified console is mostly directed at data management. Among other things, you can control your ingestion tasks, manage segments and their compaction settings, monitor services, and there is also a query manager GUI that understands both SQL and Druid native queries.
+
+For data visualization, up until now you had to use external tools such as Superset or Tableau, or Imply's own [Pivot](https://docs.imply.io/latest/pivot-overview/) that comes bundled with the commercial distribution of the software.
 
 But this is going to change. Druid 28 is going to add an exploration GUI that allows visual analysis of data!
-
-![Screenshot of Data Explorer]()
 
 This is a sneak peek into Druid 28 functionality. In order to use the new functions, you can (as of the time of writing) [build Druid](https://druid.apache.org/docs/latest/development/build.html) from the HEAD of the master branch:
 
@@ -30,7 +30,7 @@ For this post, I ingested the wikipedia sample data, as described in [the quicks
 
 To access the data explorer, go to the three dots `...` right next to the Services tab, open the menu and click `Explore`:
 
-![Screenshot of console with Explore menu selected](/assets/2023-07-29-01-select-explore.jpg)
+![Screenshot of console with Explore menu selected](/assets/2023-07-30-02-select-explore.jpg)
 
 You will be greeted with a canvas in the middle, and surrounding GUI controls:
 
@@ -47,7 +47,7 @@ The Time chart visualizes the development of a metric over time. This is an area
  
 It is possible to limit the number of items to be displayed in the stacked dimension.
 
-![Screenshot of time chart](/assets/2023-07-29-02-timechart.jpg)
+![Screenshot of time chart](/assets/2023-07-30-01-timechart.jpg)
 
 This visualization allows selecting as metrics:
 
@@ -56,7 +56,7 @@ This visualization allows selecting as metrics:
 - minimum and maximum of timestamp
 - for numeric columns, moreover, the standard aggregators _sum_, _min_, _max_, and _98 percentile_.
 
-<img src="/assets/2023-07-29-03-timechart-metrics.jpg" width="50%" />
+<img src="/assets/2023-07-30-03-timechart-metrics.jpg" width="40%" />
 
 This mechanism of selecting metrics is the same for all other visualizations, too.
 
@@ -64,7 +64,7 @@ This mechanism of selecting metrics is the same for all other visualizations, to
 
 The bar chart displays one bar column (dimension) and one metric, It is possible to sort by a metric other than the one displayed.
 
-![Screenshort of bar chart](/assets/2023-07-29-04-barchart.jpg)
+![Screenshort of bar chart](/assets/2023-07-30-04-barchart.jpg)
 
 ## Table
 
@@ -75,26 +75,28 @@ The table chart has the most flexibility in selecting and arranging table fields
 - _Pivot_: This displays a dimension across instead of down. The query mechanism is a bit different: it currently uses filtered metrics with one expression per dimension value.
 - _Aggregates_: These are the metrics, the selection is the same as for the time chart. But you can have multiple metrics.
 
-![Screenshot of pivot table view](/assets/2023-07-29-05-table-pivot.jpg)
+![Screenshot of pivot table view](/assets/2023-07-30-05-table-pivot.jpg)
 
 - _Compares_: compare by time interval. You can include multiple comparisons. But Compare and Pivot are for now mutually exclusive.
 
 You can sort by any column if you click on the column header.
 
-![Screenshot of time comparison table view](/assets/2023-07-29-06-table-compare.jpg)
+![Screenshot of time comparison table view](/assets/2023-07-30-06-table-compare.jpg)
 
 ## Pie chart
 
-This displays one metric, borken down by one dimension. You can specify the number of named slices, the rest goes into Other.
+This displays one metric, broken down by one dimension. You can specify the number of named slices, the rest goes into Other.
 
-![Screenshot of Pie chart](/assets/2023-07-29-07-piechart.jpg)
+![Screenshot of Pie chart](/assets/2023-07-30-07-piechart.jpg)
 
 ## Multi-axis chart
 
 This is a variety of the time chart, but with many metrics. They are drawn as line charts, overlayed and each to its own scale. The first metric's axis is displayed to the left, all others are displayed to the right of the chart.
 
-![Screenshot of multi axis chart](/assets/2023-07-29-08-multi-axis.jpg)
+![Screenshot of multi axis chart](/assets/2023-07-30-08-multi-axis.jpg)
 
 ## Conclusion
 
-- yada yada
+In this post, I have shown a glimpse of the upcoming data exploration GUI that is built right into Druid. While this is currently not a replacement for a full BI suite, it is a valuable tool for the data engineer to get a better idea of how the data looks like. This can assist in understanding the distribution of the data and optimizing the data model inside Druid. It's also valuable when an analysts asks the data team why a particular chart looks the way it does.
+
+Note that the data explorer is not part of any official release (yet), and that it is likely going to change and evolve a lot. But feel free to experiment!
