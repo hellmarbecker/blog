@@ -24,7 +24,7 @@ Then follow the instructions to locate and install the tarball.
 
 _**Disclaimer:** This tutorial uses undocumented functionality and unreleased code. This blog is neither endorsed by Imply nor by the Apache Druid PMC. It merely collects the results of personal experiments. The features described here might, in the final release, work differently, or not at all. In addition, the entire build, or execution, may fail. Your mileage may vary._
 
-For this post, I ingested the wikipedia sample data, as described in [the quickstart tutorial](https://druid.apache.org/docs/latest/tutorials/tutorial-msq-extern.html). You are of course encouraged to try out different data sets with the new explorer.
+For this post, I ingested the Wikipedia sample data, as described in [the quickstart tutorial](https://druid.apache.org/docs/latest/tutorials/tutorial-msq-extern.html). You are of course encouraged to try out different data sets with the new explorer.
 
 ## How to access the Explorer view
 
