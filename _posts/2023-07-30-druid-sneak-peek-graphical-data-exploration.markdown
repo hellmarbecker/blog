@@ -71,7 +71,7 @@ The bar chart displays one bar column (dimension) and one metric, It is possible
 The table chart has the most flexibility in selecting and arranging table fields. These are the options:
 
 - _Group by_: These are your regular BI dimensions, things to aggregate by. While all discrete dimensions just create one row by per value, `__time` has builtin intelligence when you select this, you can select the bucketing (granularity). You can select multiple dimension columns.
-- _Show_: can show a column without aggregating by that column. You could view this as interpreting a dimension as a metric where you pick either the latest value or the number of values. You can add multiple columnshere, too.
+- _Show_: can show a column without aggregating by that column. You could view this as interpreting a dimension as a metric where you pick either the latest value or the number of values. You can add multiple columns here, too.
 - _Pivot_: This displays a dimension across instead of down. The query mechanism is a bit different: it currently uses filtered metrics with one expression per dimension value.
 - _Aggregates_: These are the metrics, the selection is the same as for the time chart. But you can have multiple metrics.
 
@@ -99,4 +99,4 @@ This is a variety of the time chart, but with many metrics. They are drawn as li
 
 In this post, I have shown a glimpse of the upcoming data exploration GUI that is built right into Druid. While this is currently not a replacement for a full BI suite, it is a valuable tool for the data engineer to get a better idea of how the data looks like. This can assist in understanding the distribution of the data and optimizing the data model inside Druid. It's also valuable when an analysts asks the data team why a particular chart looks the way it does.
 
-Note that the data explorer is not part of any official release (yet), and that it is likely going to change and evolve a lot. But feel free to experiment!
+Note that the data explorer is not part of any official release (yet), and that it is likely going to change and evolve a lot. Feel free to experiment!
