@@ -22,6 +22,36 @@ hence we need to establish those settings right in the ingestion spec
 
 yada yada
 
+```json
+      "inputSource": {
+        "type": "s3",
+        "prefixes": [
+          "s3://indata/"
+        ],
+        "properties": {
+          "accessKeyId": {
+            "type": "default",
+            "password": "admin"
+          },
+          "secretAccessKey": {
+            "type": "default",
+            "password": "password"
+          }
+        },
+        "endpointConfig": {
+          "url": "http://localhost:9000",
+          "signingRegion": "us-east-1"
+        },
+        "clientConfig": {
+          "disableChunkedEncoding": true,
+          "enablePathStyleAccess": true,
+          "forceGlobalBucketAccessEnabled": false
+        }
+      }
+```
+
+note: you need to include the `http://` in the endpoint URL, if you put it in the `clientConfig.protocol`, it is not recognized
+
 ### SQL version
 
 in the SQL version, we copy the same settings into the EXTERN statement, like so ...
