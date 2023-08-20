@@ -21,7 +21,7 @@ Let's generate ourselves some fake timeseries data. The data format is simple:
 
 - a timestamp
 - a quantity and value, where the quantity is a single random letter
-- various boolean flags that may or may not conform to the naming convention "f" plis any number of digits.
+- various boolean flags that may or may not conform to the naming convention "f" plus any number of digits.
 
 Here's a small python script for generating the data, you will need the [Faker](https://pypi.org/project/Faker/) module installed:
 
