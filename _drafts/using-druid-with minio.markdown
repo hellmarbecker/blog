@@ -139,25 +139,87 @@ Here is my example JSON ingestion spec:
       }
     },
     "dataSchema": {
-      "dataSource": "wikipedia_s3_1",
+      "dataSource": "wikipedia_s3_2",
       "timestampSpec": {
         "column": "time",
         "format": "iso"
-      },
-      "dimensionsSpec": {
-        "useSchemaDiscovery": true,
-        "dimensionExclusions": []
       },
       "granularitySpec": {
         "queryGranularity": "none",
         "rollup": false,
         "segmentGranularity": "day"
+      },
+      "dimensionsSpec": {
+        "dimensions": [
+          "channel",
+          "cityName",
+          "comment",
+          "countryIsoCode",
+          "countryName",
+          "isAnonymous",
+          "isMinor",
+          "isNew",
+          "isRobot",
+          "isUnpatrolled",
+          "metroCode",
+          "namespace",
+          "page",
+          "regionIsoCode",
+          "regionName",
+          "user",
+          {
+            "type": "long",
+            "name": "delta"
+          },
+          {
+            "type": "long",
+            "name": "added"
+          },
+          {
+            "type": "long",
+            "name": "deleted"
+          }
+        ]
       }
     }
   }
 }
 ```
 
+Or in SQL:
+
+```sql
+REPLACE INTO "wikipedia_s3_2" OVERWRITE ALL
+WITH "source" AS (SELECT * FROM TABLE(
+  EXTERN(
+    '{"type":"s3","prefixes":["s3://indata/"]}',
+    '{"type":"json"}'
+  )
+) EXTEND ("time" VARCHAR, "channel" VARCHAR, "cityName" VARCHAR, "comment" VARCHAR, "countryIsoCode" VARCHAR, "countryName" VARCHAR, "isAnonymous" VARCHAR, "isMinor" VARCHAR, "isNew" VARCHAR, "isRobot" VARCHAR, "isUnpatrolled" VARCHAR, "metroCode" VARCHAR, "namespace" VARCHAR, "page" VARCHAR, "regionIsoCode" VARCHAR, "regionName" VARCHAR, "user" VARCHAR, "delta" BIGINT, "added" BIGINT, "deleted" BIGINT))
+SELECT
+  TIME_PARSE("time") AS "__time",
+  "channel",
+  "cityName",
+  "comment",
+  "countryIsoCode",
+  "countryName",
+  "isAnonymous",
+  "isMinor",
+  "isNew",
+  "isRobot",
+  "isUnpatrolled",
+  "metroCode",
+  "namespace",
+  "page",
+  "regionIsoCode",
+  "regionName",
+  "user",
+  "delta",
+  "added",
+  "deleted"
+FROM "source"
+PARTITIONED BY DAY
+```
 
 ## Changing the endpoint settings in the ingestion command
 
