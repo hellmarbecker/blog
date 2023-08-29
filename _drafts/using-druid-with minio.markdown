@@ -63,7 +63,7 @@ docker compose up -d
 
 This gives you a MinIO instance and the `mc` client. It will also automatically create two buckets in MinIO, named `indata` and `deepstorage`, that we will need for this tutorial. If you point your browser to localhost:9000, you can verify that the buckets have been created:
 
-![MinIO Bucket Explorer screenshot]()
+![MinIO Bucket Explorer screenshot](/assets/2023-08-29-01-minio-buckets.jpg)
 
 (Kudos to [Tabular](https://github.com/tabular-io/docker-spark-iceberg) from whose GitHub repository I adapted the docker compose file.)
 
@@ -186,7 +186,7 @@ Here is my example JSON ingestion spec:
 }
 ```
 
-Or in SQL:
+Or in SQL (using the automatic conversion function):
 
 ```sql
 REPLACE INTO "wikipedia_s3_2" OVERWRITE ALL
@@ -299,6 +299,8 @@ SELECT
 FROM "source"
 PARTITIONED BY DAY
 ```
+
+![SQL ingestion from the Query tab](/assets/2023-08-29-02-druid-msq.jpg)
 
 ## Conclusion
 
