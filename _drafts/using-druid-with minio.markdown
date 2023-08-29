@@ -61,7 +61,9 @@ Save this file as `docker-compose.yaml` to your work directory and run the comma
 docker compose up -d
 ```
 
-This gives you a MinIO instance and the `mc` client. It will also automatically create two buckets in MinIO, named `indata` and `deepstorage`, that we will need for this tutorial.
+This gives you a MinIO instance and the `mc` client. It will also automatically create two buckets in MinIO, named `indata` and `deepstorage`, that we will need for this tutorial. If you point your browser to localhost:9000, you can verify that the buckets have been created:
+
+![MinIO Bucket Explorer screenshot]()
 
 (Kudos to [Tabular](https://github.com/tabular-io/docker-spark-iceberg) from whose GitHub repository I adapted the docker compose file.)
 
