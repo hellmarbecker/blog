@@ -221,9 +221,13 @@ FROM "source"
 PARTITIONED BY DAY
 ```
 
+In either case, you can easily verify that both the segment files and the indexer logs end up in MinIO.
+
 ## Changing the endpoint settings in the ingestion command
 
 Now let's go back to local deep storage, so that we cannot take advantage of endpoint settings that are baked into the service properties file. Hence we need to establish those settings right in the ingestion spec. 
+
+Restore the common properties to their default values and restart Druid. (You still need the S3 extension loaded.)
 
 ### JSON version
 
@@ -261,8 +265,43 @@ Note: In this case, because we are using plain HTTP, we need to include the `htt
 
 ### SQL version
 
-in the SQL version, we copy the same settings into the EXTERN statement, like so ...
+In the SQL version, we copy the same settings into the EXTERN statement, like so:
+
+```sql
+REPLACE INTO "wikipedia_s3_2" OVERWRITE ALL
+WITH "source" AS (SELECT * FROM TABLE(
+  EXTERN(
+    '{ "type": "s3", "prefixes": [ "s3://indata/" ], "properties": { "accessKeyId": { "type": "default", "password": "admin" }, "secretAccessKey": { "type": "default", "password": "password" } }, "endpointConfig": { "url": "http://localhost:9000", "signingRegion": "us-east-1" }, "clientConfig": { "disableChunkedEncoding": true, "enablePathStyleAccess": true, "forceGlobalBucketAccessEnabled": false } }',
+    '{"type":"json"}'
+  )
+) EXTEND ("time" VARCHAR, "channel" VARCHAR, "cityName" VARCHAR, "comment" VARCHAR, "countryIsoCode" VARCHAR, "countryName" VARCHAR, "isAnonymous" VARCHAR, "isMinor" VARCHAR, "isNew" VARCHAR, "isRobot" VARCHAR, "isUnpatrolled" VARCHAR, "metroCode" VARCHAR, "namespace" VARCHAR, "page" VARCHAR, "regionIsoCode" VARCHAR, "regionName" VARCHAR, "user" VARCHAR, "delta" BIGINT, "added" BIGINT, "deleted" BIGINT))
+SELECT
+  TIME_PARSE("time") AS "__time",
+  "channel",
+  "cityName",
+  "comment",
+  "countryIsoCode",
+  "countryName",
+  "isAnonymous",
+  "isMinor",
+  "isNew",
+  "isRobot",
+  "isUnpatrolled",
+  "metroCode",
+  "namespace",
+  "page",
+  "regionIsoCode",
+  "regionName",
+  "user",
+  "delta",
+  "added",
+  "deleted"
+FROM "source"
+PARTITIONED BY DAY
+```
 
 ## Conclusion
 
-yada yada
+- You can use MinIO or another S3 compatible storage with Druid. You configure the endpoint, protocol, and authentication settings in the common properties file.
+- If you need to ingest from a different MinIO instance, or you want to use MinIO for ingestion only, you can set or override the S3 settings in the ingestion spec. This works both in JSON and SQL mode.
+- Either way, make sure you have the S3 extension loaded.
