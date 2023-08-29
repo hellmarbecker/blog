@@ -114,6 +114,51 @@ bin/start-druid -m5g
 
 By default, Druid uses the same settings in `common.runtime.properties` for ingestion from S3, too. So for instance, you can upload the `wikipedia` data sample to the `indata` bucket in your MinIO instance and we take advantage of the same settings as for deep storage. Just use `s3://indata/` as the S3 prefix in the ingestion wizard, and it should work out of the box.
 
+Here is my example JSON ingestion spec:
+
+```json
+{
+  "type": "index_parallel",
+  "spec": {
+    "ioConfig": {
+      "type": "index_parallel",
+      "inputSource": {
+        "type": "s3",
+        "prefixes": [
+          "s3://indata/"
+        ]
+      },
+      "inputFormat": {
+        "type": "json"
+      }
+    },
+    "tuningConfig": {
+      "type": "index_parallel",
+      "partitionsSpec": {
+        "type": "dynamic"
+      }
+    },
+    "dataSchema": {
+      "dataSource": "wikipedia_s3_1",
+      "timestampSpec": {
+        "column": "time",
+        "format": "iso"
+      },
+      "dimensionsSpec": {
+        "useSchemaDiscovery": true,
+        "dimensionExclusions": []
+      },
+      "granularitySpec": {
+        "queryGranularity": "none",
+        "rollup": false,
+        "segmentGranularity": "day"
+      }
+    }
+  }
+}
+```
+
+
 ## Changing the endpoint settings in the ingestion command
 
 Now let's go back to local deep storage, so that we cannot take advantage of endpoint settings that are baked into the service properties file. Hence we need to establish those settings right in the ingestion spec. 
