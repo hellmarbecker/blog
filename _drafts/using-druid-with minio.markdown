@@ -69,7 +69,46 @@ This gives you a MinIO instance and the `mc` client. It will also automatically 
 
 ## Configuring MinIO as deep storage and log target
 
-lorem ipsum
+I am using the standard Druid 27.0 quickstart. If you want to start Druid using the new `start-druid` script, you find the relevant configuration settings in `conf/druid/auto/_common/common.runtime.properties` under your Druid installation directory.
+
+First of all, you need to load the S3 extension by adding it to the load list - it should look similar to this:
+
+```
+druid.extensions.loadList=["druid-s3-extensions", "druid-hdfs-storage", "druid-kafka-indexing-service", "druid-datasketches", "druid-multi-stage-query"]
+```
+
+Also configure the S3 default settings (endpoint, authentication):
+
+```
+druid.s3.accessKey=admin
+druid.s3.secretKey=password
+druid.s3.protocol=http
+druid.s3.enablePathStyleAccess=true
+druid.s3.endpoint.signingRegion=us-east-1
+druid.s3.endpoint.url=http://localhost:9000/
+```
+
+For using MinIO as deep storage, comment out the default settings for `druid.storage.*`, and insert this section instead:
+
+```
+druid.storage.type=s3
+druid.storage.bucket=deepstorage
+druid.storage.baseKey=segments
+```
+
+Likewise, change the default configuration for the indexer logs to:
+
+```
+druid.indexer.logs.type=s3
+druid.indexer.logs.s3Bucket=deepstorage
+druid.indexer.logs.s3Prefix=indexing-logs
+```
+
+Then start Druid like this:
+
+```bash
+bin/start-druid -m5g
+```
 
 ## Ingesting data from MinIO
 
