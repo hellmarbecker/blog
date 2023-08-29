@@ -61,7 +61,7 @@ Save this file as `docker-compose.yaml` to your work directory and run the comma
 docker compose up -d
 ```
 
-This gives you a MinIO instance and the `mc` client. It will also automatically create two buckets in MinIO, named `indata` and `deepstorage`, that we will need for this tutorial. If you point your browser to localhost:9000, you can verify that the buckets have been created:
+This gives us a MinIO instance and the `mc` client. It will also automatically create two buckets in MinIO, named `indata` and `deepstorage`, that we will need for this tutorial. If you point your browser to localhost:9000, you can verify that the buckets have been created:
 
 ![MinIO Bucket Explorer screenshot](/assets/2023-08-29-01-minio-buckets.jpg)
 
@@ -71,7 +71,7 @@ This gives you a MinIO instance and the `mc` client. It will also automatically 
 
 I am using the standard Druid 27.0 quickstart. If you want to start Druid using the new `start-druid` script, you find the relevant configuration settings in `conf/druid/auto/_common/common.runtime.properties` under your Druid installation directory.
 
-First of all, you need to load the S3 extension by adding it to the load list - it should look similar to this:
+First of all, we need to load the S3 extension by adding it to the load list - it should look similar to this:
 
 ```
 druid.extensions.loadList=["druid-s3-extensions", "druid-hdfs-storage", "druid-kafka-indexing-service", "druid-datasketches", "druid-multi-stage-query"]
