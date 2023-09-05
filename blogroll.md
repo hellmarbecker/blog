@@ -16,6 +16,7 @@ an incomplete, poorly curated list, in no particular order
 - [Sergio Ferragut's Substack](https://sergioferragut.substack.com/)
 - [Tijo Thomas on Medium](https://tijothomas21.medium.com/)
 - [Gautam Goswami](https://gautambangalore.medium.com/)
+- [Adam Whitter](https://awhitter.hashnode.dev/)
 
 ## Stream Processing in General
 
