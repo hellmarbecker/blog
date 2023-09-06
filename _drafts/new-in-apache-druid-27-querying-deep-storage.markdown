@@ -4,7 +4,15 @@ title:  "New in Apache Druid 27: Querying Deep Storage"
 categories: blog druid imply query storage
 ---
 
-yada yada
+In realtime analytics, a common scenario is that you want to retain a lot of (years of) historical data in order to run analytics over a longer period of time. But these analytical queries occur infrequently and their performance is usually not critical. The bulk of everyday queries, however, accesses only a limited set of relatively fresh data, typically 1 or 2 weeks worth.
+
+In the standard configuration of Druid, until recently you would have to preload all data that you wanted to be queryable to your data servers. That would mean a lot of local storage would be required, most of which would be accessed very rarely. You could mitigate this problem to a certain extent using [data tiering](https://druid.apache.org/docs/latest/operations/mixed-workloads#historical-tiering), but the cost associated with just having that storage around would still be considerable.
+
+Druid 27 comes with the ability to [query deep storage](https://druid.apache.org/docs/latest/querying/query-deep-storage) directly, meaning in the above scenario you can actually keep only your 1-2 weeks of fresh data on local SSDs and retain all your historical data in deep storage only. Because of the higher latency of cloud storage, deep storage queries are generally executed asynchronously, and there is a new API endpoint just for deep storage queries.
+
+Let's run a small example to learn how deep storage is configured and used!
+
+## Building the test data set
 
 Ingest the _wikipedia_ example data set. We want to have a bunch of segments so let's partition by hour:
 
@@ -103,6 +111,7 @@ so instead of dropping the segments, load them with a replication factor of 0:
   }
 ]
 ```
+
 
 query again:
 
