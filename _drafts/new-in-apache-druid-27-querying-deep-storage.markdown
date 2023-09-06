@@ -83,3 +83,44 @@ curl -L -H 'Content-Type: application/json' localhost:8888/druid/v2/sql/statemen
 {"queryId":"query-db8b79ae-f28b-466e-b876-3f987d0e87fc","state":"SUCCESS","createdAt":"2023-09-06T11:33:39.839Z","schema":[{"name":"EXPR$0","type":"TIMESTAMP","nativeType":"LONG"},{"name":"EXPR$1","type":"BIGINT","nativeType":"LONG"}],"durationMs":13944,"result":{"numTotalRows":10,"totalSizeInBytes":374,"dataSource":"__query_select","sampleRecords":[[1467028800000,1219],[1467032400000,1211],[1467036000000,1353],[1467039600000,1422],[1467043200000,1442],[1467046800000,1339],[1467050400000,1321],[1467054000000,1175],[1467057600000,1213],[1467061200000,603]],"pages":[{"id":0,"numRows":10,"sizeInBytes":374}]}}
 ```
 
+so instead of dropping the segments, load them with a replication factor of 0:
+
+```json
+[
+  {
+    "interval": "2016-06-27T12:00:00.000Z/2020-01-01T00:00:00.000Z",
+    "tieredReplicants": {
+      "_default_tier": 2
+    },
+    "useDefaultTierForNull": true,
+    "type": "loadByInterval"
+  },
+  {
+    "interval": "2010-01-01T00:00:00.000Z/2016-06-27T12:00:00.000Z",
+    "tieredReplicants": {},
+    "useDefaultTierForNull": false,
+    "type": "loadByInterval"
+  }
+]
+```
+
+query again:
+
+```
+curl -L -H 'Content-Type: application/json' localhost:8888/druid/v2/sql/statements -d'{                                      
+ "query": "SELECT DATE_TRUNC('\''hour'\'', __time), COUNT(*) FROM \"wikipedia\" GROUP BY 1 ORDER BY 1",
+ "context":{
+        "executionMode":"ASYNC"
+    }
+}'
+{"queryId":"query-7f972571-b26e-4206-a7a8-61503d386d4b","state":"ACCEPTED","createdAt":"2023-09-06T11:38:57.369Z","schema":[{"name":"EXPR$0","type":"TIMESTAMP","nativeType":"LONG"},{"name":"EXPR$1","type":"BIGINT","nativeType":"LONG"}],"durationMs":-1}
+```
+
+get the result:
+
+```
+curl -L -H 'Content-Type: application/json' localhost:8888/druid/v2/sql/statements/query-7f972571-b26e-4206-a7a8-61503d386d4b
+{"queryId":"query-7f972571-b26e-4206-a7a8-61503d386d4b","state":"SUCCESS","createdAt":"2023-09-06T11:38:57.369Z","schema":[{"name":"EXPR$0","type":"TIMESTAMP","nativeType":"LONG"},{"name":"EXPR$1","type":"BIGINT","nativeType":"LONG"}],"durationMs":14294,"result":{"numTotalRows":22,"totalSizeInBytes":782,"dataSource":"__query_select","sampleRecords":[[1466985600000,876],[1466989200000,870],[1466992800000,960],[1466996400000,1025],[1467000000000,936],[1467003600000,836],[1467007200000,969],[1467010800000,1135],[1467014400000,1141],[1467018000000,1137],[1467021600000,1135],[1467025200000,1115],[1467028800000,1219],[1467032400000,1211],[1467036000000,1353],[1467039600000,1422],[1467043200000,1442],[1467046800000,1339],[1467050400000,1321],[1467054000000,1175],[1467057600000,1213],[1467061200000,603]],"pages":[{"id":0,"numRows":22,"sizeInBytes":782}]}}
+```
+
+
