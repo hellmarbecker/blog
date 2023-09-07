@@ -90,7 +90,7 @@ Here is the first set of retention rules:
 
 If you run a standard query in the console, you see that the rules have been applied:
 
-![Query using standard engine, showing 10 segments](/assets/2023-09-06-01-query-historical.jpg)
+![Query using standard engine, showing 10 segments](/assets/2023-09-07-01-query-historical.jpg)
 
 Using `curl`, I am sending the same query to [the endpoint for deep storage query](https://druid.apache.org/docs/latest/api-reference/sql-api#query-from-deep-storage):
 
@@ -146,11 +146,11 @@ This is how the rules look like in the console view:
 
 Use the _Mark as used all segments_ function to force the Coordinator to reapply the retention rules:
 
-<img src="/assets/2023-09-06-02-reapply-coordinator-rules.jpg" width="60%" />
+<img src="/assets/2023-09-07-02-reapply-coordinator-rules.jpg" width="60%" />
 
 This forces the morning segments to be available for asynchronous query only. You will see this reflected in the `Datasources` view like this:
 
-<img src="/assets/2023-09-06-03-segments-preloaded.jpg" width="52%" />
+<img src="/assets/2023-09-07-03-segments-preloaded.jpg" width="52%" />
 
 Then run the same query again:
 
