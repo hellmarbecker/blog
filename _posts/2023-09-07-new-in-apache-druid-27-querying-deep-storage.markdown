@@ -142,7 +142,7 @@ So instead of dropping the segments, let's load them with a replication factor o
 
 This is how the rules look like in the console view:
 
-<img src="/assets/2023-09-06-04-final-load-rules.jpg" width="75%" />
+<img src="/assets/2023-09-0-04-final-load-rules.jpg" width="75%" />
 
 Use the _Mark as used all segments_ function to force the Coordinator to reapply the retention rules:
 
