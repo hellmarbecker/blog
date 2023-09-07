@@ -175,4 +175,7 @@ We have successfully queried data that partially exists in deep storage only!
 
 ## Learnings
 
-lorem ipsum
+- Deep storage query is a great new feature that helps organizations to run Druid in a cost effective way, retaining the ability to query large amounts of historical data.
+- There is a new API endpoint for queries that include segments from deep storage. These queries run asynchronously.
+- You have to configure a _load_ rule with a replication factor of 0 in order to make segments available for deep storage queries.
+- At least one segment of a datasource needs to be preloaded on the historical servers in order to run deep storage queries.
