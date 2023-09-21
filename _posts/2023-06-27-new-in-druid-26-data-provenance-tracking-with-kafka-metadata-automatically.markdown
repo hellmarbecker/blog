@@ -84,7 +84,7 @@ If you scroll down the right window pane, you will find a number of new options 
 
 ![Kafka metadata options](/assets/2023-06-27-03-kafka-metadata-options.jpg)
 
-Here you specify how the key is parsed. (You could in theory have a structured key, because the key is parse into an input format just like the payload. In practice, you will usually have a single string that can be parsed using a regular expression or [a degenerate CSV parser](https://blog.hellmar-becker.de/2022/11/23/processing-nested-json-data-and-kafka-metadata-in-apache-druid/).)
+Here you specify how the key is parsed. (You could in theory have a structured key, because the key is parsed into an input format just like the payload. In practice, you will usually have a single string that can be parsed using a regular expression or [a degenerate CSV parser](https://blog.hellmar-becker.de/2022/11/23/processing-nested-json-data-and-kafka-metadata-in-apache-druid/).)
 
 Moreover, this is where you define the prefixes to be used for the metadata in your final data model. And last but no least, you define how to decode the header values. In most cases, UTF-8 is a good choice, but it really depends on what your producer puts in at the other end.
 
