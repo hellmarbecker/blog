@@ -58,7 +58,7 @@ This adds a Kafka key (the aircraft hex ID), a unique ID for the radar receiver,
 
 In Druid, create a Kafka connection. In my lab, I am using Confluent Cloud so I have to encode the credentials in the consumer properties as described [in another of my blog posts](https://blog.hellmar-becker.de/2021/10/19/reading-avro-streams-from-confluent-cloud-into-druid/). (If you are using a local, unsecured Kafka service, it is sufficient to enter the bootstrap server and Kafka topic.)
 
-Note how the preview looks different from previous druid versions:
+Note how the preview looks different from previous Druid versions:
 
 ![Kafka topic preview with metadata](/assets/2023-06-27-01-preview.jpg)
 
