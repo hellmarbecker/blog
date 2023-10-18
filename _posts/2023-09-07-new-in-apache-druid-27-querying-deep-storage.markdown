@@ -16,7 +16,7 @@ This tutorial works with the Druid 27 quickstart.
 
 ## Building the test data set
 
-Ingest the _wikipedia_ example data set. We want to have a bunch of segments so let's partition by hour. You can configure the ingestion job using the wizard, or just use this SWL statement:
+Ingest the _wikipedia_ example data set. We want to have a bunch of segments so let's partition by hour. You can configure the ingestion job using the wizard, or just use this SQL statement:
 
 ```sql
 REPLACE INTO "wikipedia" OVERWRITE ALL
@@ -62,7 +62,7 @@ You should end up with 22 segments, each spanning an hour.
 
 By default, Druid retains all data in deep storage that it has ever ingested. You have to run an explicit [kill task](https://druid.apache.org/docs/latest/tutorials/tutorial-delete-data#run-a-kill-task) to delete data permanently.
 
-However, standard Druid queries can only work with data segments that have been preloaded to the data servers. Preolading of data is configured using [retention rules](https://druid.apache.org/docs/latest/operations/rule-configuration), which you can configure on a per-datasource basis. Retention rules are evaluated for each segment, from top to bottom, until a rule is found that matches the segment in question. Each rule is either a Load rule (which tells the Coordinator to make that segment available for queries), or a Drop rule (which removes the segment from the list of available segments.) Rules specify either a time period (relative to the current time), or an absolute time interval.
+However, standard Druid queries can only work with data segments that have been preloaded to the data servers. Preloading of data is configured using [retention rules](https://druid.apache.org/docs/latest/operations/rule-configuration), which you can configure on a per-datasource basis. Retention rules are evaluated for each segment, from top to bottom, until a rule is found that matches the segment in question. Each rule is either a _Load_ rule (which tells the Coordinator to make that segment available for queries), or a _Drop_ rule (which removes the segment from the list of available segments.) Rules specify either a time period (relative to the current time), or an absolute time interval.
 
 In production setups you would usually find period rules ("retain only data for the last 2 weeks"), but for the tutorial we are going to use interval rules because we are working with a fixed dataset.
 
