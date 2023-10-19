@@ -61,7 +61,7 @@ _Query granularity_ is defined by truncating the primary timestamp in the ingest
 
 ### Special case: Multiple time granularities
 
-If you want to achieve primary sorting by another column than time, you should set segment and query granularity to the same value. If you still need detailed timestamps, you can define the detailed time as a [secondary timestamp](https://druid.apache.org/docs/latest/ingestion/schema-design.html#secondary-timestamps). The main criteria for this design decision is if you expect to be running predominantly analytical queries that do not have timeseries characteristics, but you want to retain the ability to run some timeseries queries. The number of timestamp fileds is in principle not limited.
+If you want to achieve primary sorting by another column than time, you should set segment and query granularity to the same value. If you still need detailed timestamps, you can define the detailed time as a [secondary timestamp](https://druid.apache.org/docs/latest/ingestion/schema-design.html#secondary-timestamps). The main criteria for this design decision is if you expect to be running predominantly analytical queries that do not have timeseries characteristics, but you want to retain the ability to run some timeseries queries. The number of timestamp fields is in principle not limited.
 
 ### Secondary partitioning: Pruning and range queries
 
