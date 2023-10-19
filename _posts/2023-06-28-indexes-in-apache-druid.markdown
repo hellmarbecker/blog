@@ -45,7 +45,7 @@ Roaring bitmaps also support run-length encoding of pages, which is particularly
 
 ### Bitmap indexes and multi-value dimensions
 
-[Multi-value dimensions](https://blog.hellmar-becker.de/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/) go nicely with bitmap indexes. A multi-value field would just have a bit set for every value that occurs in the cell. That is another reason to prefer bitmap indexes.
+[Multi-value dimensions](/2021/08/07/multivalue-dimensions-in-apache-druid-part-1/) go nicely with bitmap indexes. A multi-value field would just have a bit set for every value that occurs in the cell. That is another reason to prefer bitmap indexes.
 
 ## Colocating Data: Partitioning and Clustering
 
@@ -65,7 +65,7 @@ If you want to achieve primary sorting by another column than time, you should s
 
 ### Secondary partitioning: Pruning and range queries
 
-Below the timestamp level, there is _secondary partitioning_, which is usually implemented as [range partitioning](https://blog.hellmar-becker.de/2022/01/25/partitioning-in-druid-part-3-multi-dimension-range-partitioning/). This defines a list of dimension fields to partition by. In SQL based ingestion, this correspinds to the `CLUSTERED BY` clause. You want to order your partitioning columns first in the ingestoin query, too. Then your data will be sorted according to the partitioning columns, and like values will be grouped together physically. If you filter by the partitioning key in a query, Druid uses this information to determine which data segments to look at, even before scanning any data. This is called ***partition pruning*** and is a great way to speed up queries.
+Below the timestamp level, there is _secondary partitioning_, which is usually implemented as [range partitioning](/partitioning-in-druid-part-3-multi-dimension-range-partitioning/). This defines a list of dimension fields to partition by. In SQL based ingestion, this correspinds to the `CLUSTERED BY` clause. You want to order your partitioning columns first in the ingestoin query, too. Then your data will be sorted according to the partitioning columns, and like values will be grouped together physically. If you filter by the partitioning key in a query, Druid uses this information to determine which data segments to look at, even before scanning any data. This is called ***partition pruning*** and is a great way to speed up queries.
 
 ### How Druid implements composite index functionality
 
