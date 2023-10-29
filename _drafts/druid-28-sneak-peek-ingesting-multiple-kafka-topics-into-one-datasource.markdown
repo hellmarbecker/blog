@@ -3,7 +3,7 @@ layout: post
 title:  "Druid 28 Sneak Peek: Ingesting Multiple Kafka Topics- into One Datasource"
 categories: blog apache druid imply streaming kafka tutorial
 ---
-![Druid Cookbook](/assets/2021-12-21-elf.jpg)
+![Pizza](/assets/2022-11-23-00-pizza.jpg)
 
 [Apache Druid](https://druid.apache.org/) has the concept of [supervisors](https://druid.apache.org/docs/latest/development/extensions-core/kafka-ingestion) that orchestrate ingestion jobs and handle data handoff and failure recovery. Per datasource, you can have exactly one supervisor.
 
@@ -28,7 +28,7 @@ git checkout 28.0.0
 mvn clean install -Pdist -DskipTests
 ```
 
-Then follow the [instructions](https://druid.apache.org/docs/latest/development/build.html) to locate and install the tarball.
+Then follow the [instructions](https://druid.apache.org/docs/latest/development/build.html) to locate and install the tarball, and start Druid. Make sure you are [loading the Kafka indexing extension](https://druid.apache.org/docs/latest/development/extensions-core/kafka-ingestion#load-the-kafka-indexing-service). (It is included in the quickstart but not by default in the Docker image.)
 
 ## Generating test data
 
@@ -42,3 +42,32 @@ python3 main.py --host localhost --port 9092 --topic-name pizza-luigi --max-wait
 python3 main.py --host localhost --port 9092 --topic-name my-pizza --max-waiting-time 5 --security-protocol PLAINTEXT --nr-messages 0 >/dev/null &
 ```
 
+If you have set up Kafka differently, you may have to modify these instructions.
+
+## Connecting Druid
+
+Navigate your browser to the Druid GUI (in the quickstart, this is http://localhost:8888), and start configuring a streaming ingestion:
+
+<img src="/assets/2023-10-29-01-streaming.jpg" width="50%" />
+
+Choose Kafka as the input source. Note how there is a new option `topicPattern` in the connection settings:
+
+<img src="/assets/2023-10-29-02-pattern-setting" width="50%" />
+
+This is a [regular expression](https://en.wikipedia.org/wiki/Regular_expression) that you can specify in place of the topic name. Let's try to gobble up all our pizza related topics
+
+## Getting the expression right
+
+## Picking up all 3
+
+## Task management
+
+## Conclusion
+
+- you can do topicPattern instead of topic
+- topicPattern is a regex
+- the regex has to match the whole topic name
+- you can have as many tasks as the total partitions are
+
+----
+ <p class="attribution">"<a target="_blank" rel="noopener noreferrer" href="https://www.flickr.com/photos/26242865@N04/5919366429">Pizza</a>" by <a target="_blank" rel="noopener noreferrer" href="https://www.flickr.com/photos/26242865@N04">Katrin Gilger</a> is licensed under <a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-sa/2.0/?ref=openverse">CC BY-SA 2.0 <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/></a>. </p> 
