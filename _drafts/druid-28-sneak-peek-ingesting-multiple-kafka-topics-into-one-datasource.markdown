@@ -50,7 +50,7 @@ If you have set up Kafka differently, you may have to modify these instructions.
 
 Navigate your browser to the Druid GUI (in the quickstart, this is http://localhost:8888), and start configuring a streaming ingestion:
 
-<img src="/assets/2023-10-29-01-streaming.jpg" width="50%" />
+<img src="/assets/2023-10-29-01-streaming.jpg" width="35%" />
 
 Choose Kafka as the input source. Note how there is a new option `topicPattern` in the connection settings:
 
