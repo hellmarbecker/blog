@@ -52,7 +52,7 @@ Navigate your browser to the Druid GUI (in the quickstart, this is http://localh
 
 Choose Kafka as the input source. Note how there is a new option `topicPattern` in the connection settings:
 
-<img src="/assets/2023-10-29-02-pattern-setting" width="50%" />
+![Connection screen](/assets/2023-10-29-02-pattern-setting)
 
 This is a [regular expression](https://en.wikipedia.org/wiki/Regular_expression) that you can specify in place of the topic name. Let's try to gobble up all our pizza related topics
 
