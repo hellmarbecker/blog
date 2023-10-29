@@ -60,7 +60,7 @@ This is a [regular expression](https://en.wikipedia.org/wiki/Regular_expression)
 
 ![Naive attempt](/assets/2023-10-29-03-naive-pattern.jpg)
 
-Oh, this didn't work as expected. But the documentation and bubble help show us the solution: The topic pattern as to match _the entire topic name_. So, the above expression actually matches like the regular expression `^pizza$`.
+Oh, this didn't work as expected. But the documentation and bubble help show us the solution: The topic pattern has to match _the entire topic name_. So, the above expression actually matches like the regular expression `^pizza$`.
 
 Armed with this knowledge, let's correct the pattern:
 
