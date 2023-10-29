@@ -100,7 +100,7 @@ Druid will pick up any topics that match the `topicPattern`, even if new topics 
 
 How are partitions assigned to tasks?
 
-The Supervisor will fetch the list of all partitions from all topics and assign the list of these partitions in same way as it assigns the partitions for one topic. In detail this means (quote from the documentation:)
+The Supervisor will fetch the list of all partitions from all topics and assign the list of these partitions in same way as it assigns the partitions for one topic. In detail this means (quote from the [documentation](https://docs.imply.io/latest/druid/development/extensions-core/kafka-supervisor-reference/#ingesting-from-multiple-topics)):
 
 > When ingesting data from multiple topics, partitions are assigned based on the hashcode of the topic name and the id of the partition within that topic. The partition assignment might not be uniform across all the tasks.
 
