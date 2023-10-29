@@ -11,7 +11,7 @@ Until recently, that meant that one datasource could only ingest data from one s
 
 In this quick tutorial, you will learn how to utilize the new options in Kafka ingestion so as to stream multiple topics into one Druid datasource. You will need:
 
-- a Druid 28 preview build
+- a Druid 28 preview build (see below)
 - any Kafka installation
 - I am using [Francesco's pizza simulator](https://github.com/Aiven-Labs/python-fake-data-producer-for-apache-kafka) for generating test data.
 
