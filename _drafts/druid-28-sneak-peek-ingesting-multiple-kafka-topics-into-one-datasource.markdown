@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Druid 28 Sneak Peek: Ingesting Multiple Kafka Topics- into One Datasource"
+title:  "Druid 28 Sneak Peek: Ingesting Multiple Kafka Topics into One Datasource"
 categories: blog apache druid imply streaming kafka tutorial
 ---
 ![Pizza](/assets/2022-11-23-00-pizza.jpg)
