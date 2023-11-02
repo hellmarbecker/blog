@@ -2,7 +2,9 @@
 layout: post
 title:  "Druid 28 Sneak Peek: Ingesting Multiple Kafka Topics into One Datasource"
 categories: blog apache druid imply streaming kafka tutorial
+image: /assets/2022-11-23-00-pizza.jpg
 ---
+
 ![Pizza](/assets/2022-11-23-00-pizza.jpg)
 
 [Apache Druid](https://druid.apache.org/) has the concept of [supervisors](https://druid.apache.org/docs/latest/development/extensions-core/kafka-ingestion) that orchestrate ingestion jobs and handle data handoff and failure recovery. Per datasource, you can have exactly one supervisor.
