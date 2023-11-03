@@ -3,10 +3,10 @@ layout: post
 title:  "Druid SQL: BETWEEN considered harmful"
 categories: blog apache druid sql
 twitter:
-  image: /assets/6408417/650adbdd-4711-48e1-bf22-8834095e7d68
+  image: /assets/2023-11-03-903932_platinumfusi0n_grug.png
 ---
 
-<img src="/assets/6408417/650adbdd-4711-48e1-bf22-8834095e7d68" width="50%">
+<img src="/assets/2023-11-03-903932_platinumfusi0n_grug.png" width="50%">
 
 When querying data in Druid (or another analytical database), your query will in almost all cases include a filter on the primary timestamp. And this timestamp filter will usually take the form of an interval.
 
