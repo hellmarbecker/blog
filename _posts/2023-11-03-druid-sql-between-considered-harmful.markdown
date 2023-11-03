@@ -8,7 +8,7 @@ When querying data in Druid (or another analytical database), your query will in
 
 The easiest way to describe such an interval seems to be the SQL `BETWEEN` operator.
 
-Advice from the [grug brained developer](https://grugbrain.dev/): **Don't do that.**
+Advice from a [grug brained developer](https://grugbrain.dev/): **Don't do that.**
 
 Here's why.
 
