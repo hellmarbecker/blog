@@ -31,6 +31,10 @@ an incomplete, poorly curated list, in no particular order
 
 - [Adheip Singh's blog about running everything on Kubernetes](https://www.datainfra.io/blog)
 
+## Data Engineering
+
+- [Zach Wilson's blog](https://blog.dataengineer.io/)
+
 ## DevRel and related topics
 
 - [Dewan Ahmed's blog](https://www.dewanahmed.com/)
