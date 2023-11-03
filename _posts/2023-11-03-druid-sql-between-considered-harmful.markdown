@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Druid SQL: `BETWEEN` considered harmful"
+title:  "Druid SQL: BETWEEN considered harmful"
 categories: blog apache druid sql
 ---
 
