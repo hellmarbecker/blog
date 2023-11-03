@@ -2,7 +2,11 @@
 layout: post
 title:  "Druid SQL: BETWEEN considered harmful"
 categories: blog apache druid sql
+twitter:
+  image: /assets/6408417/650adbdd-4711-48e1-bf22-8834095e7d68
 ---
+
+<img src="/assets/6408417/650adbdd-4711-48e1-bf22-8834095e7d68" width="50%">
 
 When querying data in Druid (or another analytical database), your query will in almost all cases include a filter on the primary timestamp. And this timestamp filter will usually take the form of an interval.
 
@@ -96,3 +100,6 @@ This way of filtering is also in line with the treatment of time intervals almos
 
 - Don't use the `BETWEEN` operator in SQL. Especially not for time intervals. Because the operator creates an inclusive (closed) interval, the result may not be what you expect.
 - Use a `WHERE` clause with simple comparison operators instead, to create a right open interval.
+
+----
+ <p class="attribution">"<a target="_blank" rel="noopener noreferrer" href="https://www.newgrounds.com/art/view/platinumfusi0n/grug">Pizza</a>" by <a target="_blank" rel="noopener noreferrer" href="https://platinumfusi0n.newgrounds.com/">PlatinumFusi0n</a> is licensed under <a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by/3.0/">CC BY 3.0 <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/></a>. </p> 
