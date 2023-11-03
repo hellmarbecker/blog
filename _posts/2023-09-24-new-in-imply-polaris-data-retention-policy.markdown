@@ -2,6 +2,8 @@
 layout: post
 title:  "New in Imply Polaris: Data Retention Policy"
 categories: blog imply polaris druid data_lifecycle
+twitter:
+  image: /assets/2023-09-24-02.jpg
 ---
 
 [Apache Druid](https://druid.apache.org/) has always had built-in data lifecycle management by way of [retention rules](https://druid.apache.org/docs/latest/operations/rule-configuration/). Specifying fixed time intervals or relative periods, you would tell Druid to retain only data segments that are not older than _x_ days.

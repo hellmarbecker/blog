@@ -2,6 +2,8 @@
 layout: post
 title:  "Using Druid with MinIO"
 categories: druid minio tutorial blog
+twitter:
+  image: /assets/2023-08-29-01-minio-buckets.jpg
 ---
 
 With on premise setups, compute/storage separation is often implemented using a NAS or similar storage unit that exposes an S3 API endpoint.

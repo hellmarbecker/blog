@@ -2,6 +2,8 @@
 layout: post
 title: "New in Druid 26: Data Provenance Tracking with Kafka Headers, Automatically"
 categories: blog imply druid kafka json tutorial
+twitter:
+  image: /assets/2023-06-27-00-airplane.jpg
 ---
 
 ![Lufthansa Airbus A350 XWB D-AIXP arrives SFO L1060413, by wbaiv (Bill Abbott)](/assets/2023-06-27-00-airplane.jpg)

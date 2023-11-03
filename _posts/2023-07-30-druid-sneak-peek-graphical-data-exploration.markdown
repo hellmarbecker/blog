@@ -2,6 +2,8 @@
 layout: post
 title:  "Druid Sneak Peek: Graphical Data Exploration"
 categories: blog apache druid imply visualization tutorial
+twitter:
+  image: /assets/2023-07-30-01-timechart.jpg
 ---
 
 ![Screenshot of time chart](/assets/2023-07-30-01-timechart.jpg)

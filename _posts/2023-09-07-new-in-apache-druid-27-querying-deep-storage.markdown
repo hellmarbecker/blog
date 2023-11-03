@@ -2,6 +2,8 @@
 layout: post
 title:  "New in Apache Druid 27: Querying Deep Storage"
 categories: blog druid imply query storage
+twitter:
+  image: /assets/2023-09-07-03-segments-preloaded.jpg
 ---
 
 In realtime analytics, a common scenario is that you want to retain a lot of (years of) historical data in order to run analytics over a longer period of time. But these analytical queries occur infrequently and their performance is usually not critical. The bulk of everyday queries, however, accesses only a limited set of relatively fresh data, typically 1 or 2 weeks worth.
