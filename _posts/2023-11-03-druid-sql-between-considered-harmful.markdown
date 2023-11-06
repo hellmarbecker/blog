@@ -96,6 +96,13 @@ This query returns the correct result:
 
 This way of filtering is also in line with the treatment of time intervals almost everywhere in Druid. Segment time chunks, for instance, are defined in terms of right open intervals, too.
 
+Edit 2023-11-06: [Peter](https://pmio.hashnode.dev/) pointed out that you can instead use the [`TIME_IN_INTERVAL`](https://druid.apache.org/docs/latest/querying/sql-scalar/#date-and-time-functions) function. This uses ISO interval notation and creates exactly the right exclusive intervals we want. So a more elegant way of rewriting the query is:
+
+```sql
+SELECT * FROM "sample"
+WHERE TIME_IN_INTERVAL(__time, '2023-01-02/2023-01-04')
+```
+
 ## Learnings
 
 - Don't use the `BETWEEN` operator in SQL. Especially not for time intervals. Because the operator creates an inclusive (closed) interval, the result may not be what you expect.
