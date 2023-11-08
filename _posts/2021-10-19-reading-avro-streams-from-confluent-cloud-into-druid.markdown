@@ -12,7 +12,9 @@ Today I am going to show how to get [AVRO](https://avro.apache.org/) data from a
 
 [Apache Druid](https://druid.apache.org/) can natively consume data out of a Kafka topic. It is also flexible in picking up new dimensions as they show up in the stream, [and can even do so automatically](https://druid.apache.org/docs/latest/ingestion/schema-design.html#schema-less-dimensions) to a certain extent.
 
-Likewise, on the lowest level, [Apache Kafka](https://kafka.apache.org/) just transmits the message content as a blob of data and does not care what's in it. However, in a microservices architecture sometimes a stricter control of the data format is desirable. For this, Confluent developed Schema Registry as an extension to Kafka. It is now possible to encode messages in the binary [AVRO](https://avro.apache.org/) format. (You can also use JSON or [Protobuf](https://developers.google.com/protocol-buffers/) with Schema Registry, but that's a story for another time.)
+Likewise, on the lowest level, [Apache Kafka](https://kafka.apache.org/) just transmits the message content as a blob of data and does not care what's in it. However, in a microservices architecture sometimes a stricter control of the data format is desirable. For this, Confluent developed Schema Registry as an extension to Kafka. It is now possible to encode messages in the binary [AVRO](https://avro.apache.org/) format. (You can also use ~~JSON or~~ [Protobuf](https://developers.google.com/protocol-buffers/) with Schema Registry, but that's a story for another time.)
+
+_(Edit 2023-11-08: As of this date, Druid does not yet support JSON with Schema Registry.)_
 
 An AVRO object is always accompanied by a schema definition which is itself written in JSON. In the simplest case, the schema definition is sent along with the binary data in each message, which mostly negates the advantages of having a highly compressed binary format.
 
