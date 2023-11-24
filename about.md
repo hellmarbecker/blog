@@ -36,3 +36,4 @@ permalink: /about/
 - Hadoop Summit 2015 ([slides](https://www.slideshare.net/Hadoop_Summit/destroying-data-silos)) and 2016 ([video](https://www.youtube.com/watch?v=qBsGWhuVyuU))
 - Continuous Lifecycle London 2016 ([slides](https://www.slideshare.net/hellmar/automate-hadoop-cluster-deployment-in-a-banking-ecosystem))
 - OSAD 2019, Munich ([video](https://www.youtube.com/watch?v=bhyGBg70IK4))
+- Big Data Europe 2024, Vilnius
