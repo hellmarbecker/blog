@@ -29,7 +29,7 @@ permalink: /about/
 - Security and Governance, particulary with open source products
 - Digital Analytics, OmniChannel, Customer 360
 
-## Presentation experience
+## Speaker experience
 
 - Apache Big Data 2015 ([slides](https://events17.linuxfoundation.org/sites/events/files/slides/Securing%20Hadoop%20in%20an%20enterprise%20context.pdf))
 - Strata EU 2016 and 2017
