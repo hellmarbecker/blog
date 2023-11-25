@@ -47,11 +47,15 @@ run the ingestion
 
 --> quote sql
 
+note we are doing monthly segments here
+
 ## the technique
 
 we do have UNION in msq but it is too brain damaged - we cannot filter 
 
 so instead, use the 80s technique of doing a full outer join
+
+give credit to john sergio 
 
 ## the merge query
 
@@ -62,3 +66,26 @@ note: this needs `{ "sqlJoinAlgorithm": "sortMerge" }` in the context
 then you can run this query
 
 --> quote merge sql
+
+## putting it all together
+
+--> replace overwrite all query
+
+## can we be more selective?
+
+--> replace overwrite week
+
+--> show error
+
+it has to be segment aligned! if not druid will not let you
+
+this one works:
+
+--> replace overwrite month
+
+and so we get the update data:
+
+--> paste table
+
+--> screenshot explore, timeline stacked by network
+
