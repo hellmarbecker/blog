@@ -194,7 +194,7 @@ the ingestion query works fine and we get the desired result:
 
 ![Query](/assets/2023-11-25-05-query.jpg)
 
-Use the new graphical exploration mode of Druid to get an idea of the data:
+Use the new [graphical exploration mode](/2023/07/30/druid-sneak-peek-graphical-data-exploration/) of Druid to get an idea of the data:
 
 ![Explore](/assets/2023-11-25-06-explore.jpg)
 
