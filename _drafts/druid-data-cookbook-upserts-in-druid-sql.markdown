@@ -115,7 +115,7 @@ Add `{ "sqlJoinAlgorithm": "sortMerge" }` to the query context.
 
 <img src="/assets/2023-11-25-03-context.jpg" width="30%" />
 
-The run the ingestion query:
+Then run the ingestion query:
 
 ```sql
 REPLACE INTO "ad_data" OVERWRITE ALL
