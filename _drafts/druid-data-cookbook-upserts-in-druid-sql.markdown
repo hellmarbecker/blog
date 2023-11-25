@@ -6,11 +6,11 @@ categories: blog druid sql imply adtech tutorial update crud
 
 ![Druid Cookbook](/assets/2021-12-21-elf.jpg)
 
-In [an earlier blog](/2023/03/07/selective-bulk-upserts-in-apache-druid/), I demonstrated a technique to combine existing and new data in Druid batch ingestion in a way that more or less emulates what is usually expressed in SQL as a `MERGE` or `UPSERT` statement. This technique involves a `combine` datasource and works only in JSON-based ingestion.
+In [an earlier blog](/2023/03/07/selective-bulk-upserts-in-apache-druid/), I demonstrated a technique to combine existing and new data in Druid batch ingestion in a way that more or less emulates what is usually expressed in SQL as a `MERGE` or `UPSERT` statement. This technique involves a `combine` datasource and works only in JSON-based ingestion. Also, it works on bulk data where you replace an entire range of data based on a time interval and key range.
 
-Today I am going to look at a similar construction, but using the more modern SQL based ingestion mechanism that is available in newer versions of Druid.
+Today I am going to look at a similar, albeit more surgical construction, implementing what is usually expressed in SQL as a `MERGE` or `UPSERT` statement. I will be using [SQL based ingestion](https://druid.apache.org/docs/latest/multi-stage-query/) that is available in newer versions of Druid.
 
-The `MERGE` statement, in a simplified way, would work like this:
+The `MERGE` statement, in a simplified way, works like this:
 
 ```sql
 MERGE INTO druid_table
@@ -26,42 +26,78 @@ So, you compare old _(druid_table)_ and new data _(external_table)_ with respect
 2. If _keys_ exists in both tables, replace the row(s) in _druid_table_ with those in _external_table_.
 3. If _keys_ exists only in _external_table_, insert that data into _druid_table_.
 
+But Druid SQL does not offer a `MERGE` statement, at least not at the time of this writing. Can we do this in SQL anyway? Stay tuned if you want to know!
 
-
-first down would work like this
-
-```sql
-REPLACE INTO druid_table
-SELECT * FROM druid_table
-WHERE NOT filter_condition
-UNION ALL
-SELECT * FROM external_table
-WHERE filter_condition
-```
-
-the technique demonstrated is cool, but can we do this in SQL?
-
-while druid 28 has a union all construct in MSQ (the engine used for SQL ingestion), this is not quite powerful enough yet. but we can achieve the same effect easily. let's see how!
-
-... prerequisites ...
+This tutorial works with [the Druid 28 quickstart](https://druid.apache.org/docs/latest/tutorials/).
 
 ## Recap: the data
 
-yada yada prepare data to a local file
+Let's use the same data as in [the bulk upsert blog](/2023/03/07/selective-bulk-upserts-in-apache-druid/):
 
-## Loading the data
+```json
+{"date": "2023-01-01T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 2770, "ads_revenue": 330.69}
+{"date": "2023-01-01T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 9646, "ads_revenue": 137.85}
+{"date": "2023-01-01T00:00:00Z", "ad_network": "twottr", "ads_impressions": 1139, "ads_revenue": 493.73}
+{"date": "2023-01-02T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 9066, "ads_revenue": 368.66}
+{"date": "2023-01-02T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 4426, "ads_revenue": 170.96}
+{"date": "2023-01-02T00:00:00Z", "ad_network": "twottr", "ads_impressions": 9110, "ads_revenue": 452.2}
+{"date": "2023-01-03T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 3275, "ads_revenue": 363.53}
+{"date": "2023-01-03T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 9494, "ads_revenue": 426.37}
+{"date": "2023-01-03T00:00:00Z", "ad_network": "twottr", "ads_impressions": 4325, "ads_revenue": 107.44}
+{"date": "2023-01-04T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 8816, "ads_revenue": 311.53}
+{"date": "2023-01-04T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 8955, "ads_revenue": 254.5}
+{"date": "2023-01-04T00:00:00Z", "ad_network": "twottr", "ads_impressions": 6905, "ads_revenue": 211.74}
+{"date": "2023-01-05T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 3075, "ads_revenue": 382.41}
+{"date": "2023-01-05T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 4870, "ads_revenue": 205.84}
+{"date": "2023-01-05T00:00:00Z", "ad_network": "twottr", "ads_impressions": 1418, "ads_revenue": 282.21}
+{"date": "2023-01-06T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 7413, "ads_revenue": 322.43}
+{"date": "2023-01-06T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 1251, "ads_revenue": 265.52}
+{"date": "2023-01-06T00:00:00Z", "ad_network": "twottr", "ads_impressions": 8055, "ads_revenue": 394.56}
+{"date": "2023-01-07T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 4279, "ads_revenue": 317.84}
+{"date": "2023-01-07T00:00:00Z", "ad_network": "fakebook", "ads_impressions": 5848, "ads_revenue": 162.96}
+{"date": "2023-01-07T00:00:00Z", "ad_network": "twottr", "ads_impressions": 9449, "ads_revenue": 379.21}
+```
 
-first bunch of data goes into data1
+Save this file as `data1.json`. Also, save the "new data" bit:
 
-we want to set up range partitioning so let's make sure to include a `CLUSTERED BY` clause
+```json
+{"date": "2023-01-03T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 4521, "ads_revenue": 378.65}
+{"date": "2023-01-04T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 4330, "ads_revenue": 464.02}
+{"date": "2023-01-05T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 6088, "ads_revenue": 320.57}
+{"date": "2023-01-06T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 3417, "ads_revenue": 162.77}
+{"date": "2023-01-07T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 9762, "ads_revenue": 76.27}
+{"date": "2023-01-08T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 1484, "ads_revenue": 188.17}
+{"date": "2023-01-09T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 1845, "ads_revenue": 287.5}
+```
 
-run the ingestion
+as `data2.json`.
 
---> quote sql
+## Initial data ingestion
 
-note we are doing monthly segments here
+Let's ingest the first data set. We want to set the segment granularity to `month`, so the ingestion statement uses a `PARTITIONED BY MONTH` clause. Moreover, we enforce secondary partitioning by choosing `REPLACE` mode and by including a `CLUSTERED BY` clause. Here's the complete statement (replace the path in `baseDir` with the path you saved the sample file to):
 
-## the technique
+```sql
+REPLACE INTO "ad_data" OVERWRITE ALL
+WITH "ext" AS (
+  SELECT *
+  FROM TABLE(
+    EXTERN(
+      '{"type":"local","baseDir":"/<my base path>","filter":"data1.json"}',
+      '{"type":"json"}'
+    )
+  ) EXTEND ("date" VARCHAR, "ad_network" VARCHAR, "ads_impressions" BIGINT, "ads_revenue" DOUBLE)
+)
+SELECT
+  TIME_PARSE("date") AS "__time",
+  "ad_network",
+  "ads_impressions",
+  "ads_revenue"
+FROM "ext"
+PARTITIONED BY MONTH
+CLUSTERED BY "ad_network"
+```
+
+## The technique
 
 we do have UNION in msq but it is too brain damaged - we cannot filter 
 
