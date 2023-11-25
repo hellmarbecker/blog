@@ -113,7 +113,7 @@ Important note: the new join algorithm needs to be explicitly requested by [sett
 
 Add `{ "sqlJoinAlgorithm": "sortMerge" }` to the query context. 
 
-![Context editing](/assets/2023-11-25-03-context.jpg)
+<img src="/assets/2023-11-25-03-context.jpg" width="30%" />
 
 The run the ingestion query:
 
@@ -166,28 +166,44 @@ In order to identify the correct data to be inserted, we look at the join key:
 - Data rows that refer to _key fields_ are modeled with a `COALESCE` statement: `COALESCE("new_data"."ad_network", "ad_data"."ad_network") AS "ad_network"` selects the key field from the right hand side, and if that one is _null_ (right hand side doesn't exist), then the left hand side instead.
 - For _non-key fields_ the statement is a bit more complex because we still have to select based on the _key field_. Otherwise some real _null_ values in the data might create inconsistencies, where we would overwrite rows only partially. Hence an expression like `CASE WHEN "new_data"."ad_network" IS NOT NULL THEN "new_data"."ads_impressions" ELSE "ad_data"."ads_impressions" END AS "ads_impressions"`.
 
-## can we be more selective?
+## Can we be more selective?
 
---> replace overwrite week
+You might be thinking that this approach entails rewriting all the data in the existing table, even if the range of new data is much more limited. And you would be right. Fortunately, it is possible to [limit the date range to be overwritten](https://druid.apache.org/docs/latest/multi-stage-query/reference#replace-specific-time-ranges).
 
---> show error
+Let's try this. Apparently we can specify the date range like so:
 
-it has to be segment aligned! if not druid will not let you
+```sql
+REPLACE INTO "ad_data" OVERWRITE WHERE __time >= TIMESTAMP'2023-01-03' AND __time < TIMESTAMP'2023-01-10'
+...
+```
 
-this one works:
+Alas, this doesn't work:
 
---> replace overwrite month
+![Granularity error](/assets/2023-11-25-04-granularity-error.jpg)
 
-and so we get the update data:
+**The date filter has to be aligned with the segments**, otherwise Druid will refuse to run the query. This is actually a Good Thing: in JSON ingestion mode you would be able to overwrite a whole segment with data covering a lesser date range, potentially deleting data that you actually wanted to keep!
 
---> paste table
+If we adjust the date range clause to match the segment boundaries:
 
---> screenshot explore, timeline stacked by network
+```sql
+REPLACE INTO "ad_data" OVERWRITE WHERE __time >= TIMESTAMP'2023-01-01' AND __time < TIMESTAMP'2023-02-01'
+...
+```
+
+the ingestion query works fine and we get the desired result:
+
+![Query](/assets/2023-11-25-05-query.jpg)
+
+Use the new graphical exploration mode of Druid to get an idea of the data:
+
+![Explore](/assets/2023-11-25-06-explore.jpg)
 
 ## Learnings
 
-- yada yada
-- 
+- You can emulate the effect of a `MERGE` statement in Druid with a full outer join.
+- Make sure to enable the sort/merge join algorithm in the query context.
+- Some consideration must be taken around _null_ values in the outer join result.
+- You can limit the range of data for reprocessing using `OVERWRITE WHERE ...`, but take care to align the time filter with your segment granularity.
 
 ---
 
