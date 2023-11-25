@@ -32,7 +32,7 @@ This tutorial works with [the Druid 28 quickstart](https://druid.apache.org/docs
 
 ## Recap: the data
 
-Let's use the same data as in [the bulk upsert blog](/2023/03/07/selective-bulk-upserts-in-apache-druid/):
+Let's use the same data as in [the bulk upsert blog](/2023/03/07/selective-bulk-upserts-in-apache-druid/): daily aggregated viewership data from various ad networks.
 
 ```json
 {"date": "2023-01-01T00:00:00Z", "ad_network": "gaagle", "ads_impressions": 2770, "ads_revenue": 330.69}
@@ -97,27 +97,74 @@ PARTITIONED BY MONTH
 CLUSTERED BY "ad_network"
 ```
 
-## The technique
+You can run this SQL from the `Query` tab in the Druid console:
 
-we do have UNION in msq but it is too brain damaged - we cannot filter 
+![Console running initial ingestion](/assets/2023-11-25-01-ingest1.jpg)
 
-so instead, use the 80s technique of doing a full outer join
+Or you can use the Ingest wizard to enter the same code.
 
-give credit to john sergio 
+## The merge query
 
-## the merge query
+Many thanks to [John Kowtko](https://www.linkedin.com/in/jkowtko/) for pointing out this approach. Since we don't have a `MERGE` statement, let's emulate it using a `FULL OUTER JOIN`. Druid's [MSQ engine](https://druid.apache.org/docs/latest/multi-stage-query/concepts#multi-stage-query-task-engine) supports sort/merge joins of arbitrary size tables, so we can actually pull this off!
 
-note: this needs `{ "sqlJoinAlgorithm": "sortMerge" }` in the context
+Important note: the new join algorithm needs to be explicitly requested by [setting a query context parameter](https://druid.apache.org/docs/latest/multi-stage-query/reference#joins). Open up the query engine menu next to the `Preview` button, and select `Edit context`:  
 
---> context screenshot
+![Second ingestion with context](/assets/2023-11-25-02-ingest2.jpg)
 
-then you can run this query
+Add `{ "sqlJoinAlgorithm": "sortMerge" }` to the query context. 
 
---> quote merge sql
+![Context editing](/assets/2023-11-25-03-context.jpg)
 
-## putting it all together
+The run the ingestion query:
 
---> replace overwrite all query
+```sql
+REPLACE INTO "ad_data" OVERWRITE ALL
+WITH "ext" AS (
+  SELECT *
+  FROM TABLE(
+    EXTERN(
+      '{"type":"local","baseDir":"/<my base path>","filter":"data2.json"}',
+      '{"type":"json"}'
+    )
+  ) EXTEND ("date" VARCHAR, "ad_network" VARCHAR, "ads_impressions" BIGINT, "ads_revenue" DOUBLE)
+)
+SELECT
+  COALESCE("new_data"."__time", "ad_data"."__time") AS "__time",
+  COALESCE("new_data"."ad_network", "ad_data"."ad_network") AS "ad_network",
+  CASE WHEN "new_data"."ad_network" IS NOT NULL THEN "new_data"."ads_impressions" ELSE "ad_data"."ads_impressions" END AS "ads_impressions",
+  CASE WHEN "new_data"."ad_network" IS NOT NULL THEN "new_data"."ads_revenue" ELSE "ad_data"."ads_revenue" END AS "ads_revenue"
+FROM
+  "ad_data"
+FULL OUTER JOIN
+  ( SELECT
+    TIME_PARSE("date") AS "__time",
+    "ad_network",
+    "ads_impressions",
+    "ads_revenue"
+  FROM "ext" ) "new_data"
+ON "ad_data"."__time" = "new_data"."__time" AND "ad_data"."ad_network" = "new_data"."ad_network"
+PARTITIONED BY MONTH
+CLUSTERED BY "ad_network"
+```
+
+## Analysis of the query
+
+What have we done here?
+
+We are emulating the `MERGE` statement with a full outer join. The left side table is the data we already have in Druid; the right side is the new data. Our merge key is a combination of timestamp (daily granularity) and ad network.
+
+For each key combination there are three possible outcomes:
+
+1. If the right hand side is _null_, leave the left hand side data as the result (leave old data untouched).
+2. If neither side is _null_, replace the row(s) in the existing table with new data from the right hand side (update rows).
+3. If the left hand side is _null_, insert the right hand side data into Druid.
+
+This is exactly what we wanted to happen.
+
+In order to identify the correct data to be inserted, we look at the join key:
+
+- Data rows that refer to _key fields_ are modeled with a `COALESCE` statement: `COALESCE("new_data"."ad_network", "ad_data"."ad_network") AS "ad_network"` selects the key field from the right hand side, and if that one is _null_ (right hand side doesn't exist), then the left hand side instead.
+- For _non-key fields_ the statement is a bit more complex because we still have to select based on the _key field_. Otherwise some real _null_ values in the data might create inconsistencies, where we would overwrite rows only partially. Hence an expression like `CASE WHEN "new_data"."ad_network" IS NOT NULL THEN "new_data"."ads_impressions" ELSE "ad_data"."ads_impressions" END AS "ads_impressions"`.
 
 ## can we be more selective?
 
