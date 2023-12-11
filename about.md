@@ -36,4 +36,5 @@ permalink: /about/
 - Hadoop Summit 2015 ([slides](https://www.slideshare.net/Hadoop_Summit/destroying-data-silos)) and 2016 ([video](https://www.youtube.com/watch?v=qBsGWhuVyuU))
 - Continuous Lifecycle London 2016 ([slides](https://www.slideshare.net/hellmar/automate-hadoop-cluster-deployment-in-a-banking-ecosystem))
 - OSAD 2019, Munich ([video](https://www.youtube.com/watch?v=bhyGBg70IK4))
+- TDWI 2023, Munich ([link to conference agenda](https://www.tdwi-konferenz.de/tdwi-2023/programm/konferenzprogramm#item-6549))
 - Big Data Europe 2023, Vilnius ([slides](https://www.slideshare.net/hellmar/building-a-streaming-analytics-pipeline-with-kafka-and-druid-big-data-europe-2023))
