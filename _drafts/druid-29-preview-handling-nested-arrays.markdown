@@ -47,6 +47,24 @@ _**Disclaimer:** This tutorial uses undocumented functionality and unreleased co
 
 ## The data
 
+just run a local kafka and then
+
+check out the pizza simulator
+
+run it like so:
+
+```bash
+python3 main.py --security-protocol PLAINTEXT --host localhost --port 9092 --topic-name pizza-orders --nr-messages 0 --max-waiting-time 5
+```
+
+capture the output using `kcat` and redirect to a file:
+
+```bash
+kcat -b localhost:9092 -t pizza-orders >>./pizza-orders.json
+```
+
+right now this technique is limited to batch ingestion
+
 ## Basic ingestion: the `pizza-orders` table
 
 this is done using the wizard. note how in the SQL view, the type of the `pizzas` field is somewhat correctly recognized as a `COMPLEX<json>` but it does not know about the array structure
