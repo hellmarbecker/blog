@@ -36,42 +36,42 @@ cd druid
 mvn clean install -Pdist -DskipTests
 ```
 
-Then follow the instructions to locate and install the tarball.
+Then follow the instructions to locate and install the tarball. Make sure you have [the `druid-multi-stage-query` extension enabled](https://druid.apache.org/docs/latest/multi-stage-query/#load-the-extension).
 
 In this tutorial, you will 
 
-- break down a nested JSON array in 
-- do a quick cumulative report using window functions.
+- examine how to model deeply nested JSON data with arrays in Druid and
+- break down a nested JSON array into individual rows using new functionality that is currently being built.
 
 _**Disclaimer:** This tutorial uses undocumented functionality and unreleased code. This blog is neither endorsed by Imply nor by the Apache Druid PMC. It merely collects the results of personal experiments. The features described here might, in the final release, work differently, or not at all. In addition, the entire build, or execution, may fail. Your mileage may vary._
 
 ## The data
 
-just run a local kafka and then
+Right now, the technique we are looking at is limited to batch ingestion. So, we need to capture the simulator data in a file.
 
-check out the pizza simulator
+I assume you have a local Kafka service at _localhost:9092_.
 
-run it like so:
+Check out the [pizza simulator](https://github.com/Aiven-Labs/python-fake-data-producer-for-apache-kafka) and run it like so:
 
 ```bash
 python3 main.py --security-protocol PLAINTEXT --host localhost --port 9092 --topic-name pizza-orders --nr-messages 0 --max-waiting-time 5
 ```
 
-capture the output using `kcat` and redirect to a file:
+Capture the output using `kcat` and redirect to a file:
 
 ```bash
 kcat -b localhost:9092 -t pizza-orders >>./pizza-orders.json
 ```
 
-right now this technique is limited to batch ingestion
+You can stop the simulator after a while and use the `pizza-orders.json` file as input for the next steps.
 
 ## Basic ingestion: the `pizza-orders` table
 
-this is done using the wizard. note how in the SQL view, the type of the `pizzas` field is somewhat correctly recognized as a `COMPLEX<json>` but it does not know about the array structure
+Let's start by setting up a naïve data model using the [web console wizard](https://druid.apache.org/docs/latest/operations/web-console#data-loader). Note how in the SQL view, the type of the `pizzas` field is somewhat correctly recognized as a `COMPLEX<json>` but it does not know about the array structure:
 
 ![Ingestion view for pizza-orders](/assets/2023-12-17-01-ingest-orders.jpg)
 
-here is the ingestion query using MSQ:
+Here is the ingestion query using MSQ:
 
 ```sql
 REPLACE INTO "pizza-orders" OVERWRITE ALL
@@ -96,17 +96,109 @@ FROM "ext"
 PARTITIONED BY DAY
 ```
 
-when we query this table, we see that indeed we have a general nested column here
+When we query this table, we see that indeed we have a general nested column here - it is not marked as an array
 
 ![Sample of a query over orders](/assets/2023-12-17-02-select-orders.jpg)
 
-we can look at the detailed values in the column
+We can look at the detailed values in the column
 
 ![Detail view of a pizzas object](/assets/2023-12-17-03-orders-detail.jpg)
 
+Again, what we would _like_ is a table model where each row represents a _line item_, i. e. an individual pizza! 
+
 ## First attempt at breaking down the line items
 
+Let's try to craft a new ingestion query that breaks down the line items using `UNNEST`. We want to unnest the line items using something like `UNNEST(JSON_QUERY(pizzas, '$')`, and then extract the individual fields into separate columns: `JSON_VALUE(p, '$.pizzaName') AS pizzaName` and so forth.
 
+Here's the first attempt at such a query:
+
+```sql
+REPLACE INTO "pizza-lineitems" OVERWRITE ALL
+WITH "ext" AS (
+  SELECT *
+  FROM TABLE(
+    EXTERN(
+      '{"type":"local","baseDir":"/Users/hellmarbecker/meetup-talks/jsonarray","filter":"*json"}',
+      '{"type":"json"}'
+    )
+  ) EXTEND ("id" BIGINT, "shop" VARCHAR, "name" VARCHAR, "phoneNumber" VARCHAR, "address" VARCHAR, "pizzas" TYPE('COMPLEX<json>'), "timestamp" BIGINT)
+)
+SELECT
+  MILLIS_TO_TIMESTAMP("timestamp") AS "__time",
+  "id",
+  "shop",
+  "name",
+  "phoneNumber",
+  "address",
+  JSON_VALUE(p, '$.pizzaName') AS pizzaName,
+  JSON_QUERY(p, '$.additionalToppings') AS additionalToppings
+FROM "ext" CROSS JOIN UNNEST(JSON_QUERY(pizzas, '$')) AS lineitems(p)
+PARTITIONED BY DAY
+```
+
+This, unfortunately, fails with a screaming error message:
+
+<img src="/assets/2023-12-17-04-error.jpg" width="30%" />
+
+We cannot unnest arrays of objects just like arrays of primitives! But why is that? Look at the error message more closely: Druid thinks this is a call to `UNNEST(COMPLEX<JSON>)`. So, `JSON_QUERY` doesn't know about the array nature of its output. What now?
+
+## A new function: `JSON_QUERY_ARRAY`
+
+The Druid team has added a new function that does just the right thing for our case:
+
+> `JSON_QUERY_ARRAY(expr, path)`
+>
+> Extracts an `ARRAY<COMPLEX<json>>` value from `expr` at the specified `path`. If value is not an `ARRAY`, it gets translated into a single element `ARRAY` containing the value at `path`. The primary use of this function is to extract arrays of objects to use as inputs to other array functions.
+
+Let's rewrite the above query, substituting `JSON_QUERY_ARRAY` for `JSON_QUERY` in both cases:
+
+![Ingestion using JSON_QUERY_ARRAY](/assets/2023-12-17-05-ingest-lineitems.jpg)
+
+```sql
+REPLACE INTO "pizza-lineitems" OVERWRITE ALL
+WITH "ext" AS (
+  SELECT *
+  FROM TABLE(
+    EXTERN(
+      '{"type":"local","baseDir":"/Users/hellmarbecker/meetup-talks/jsonarray","filter":"*json"}',
+      '{"type":"json"}'
+    )
+  ) EXTEND ("id" BIGINT, "shop" VARCHAR, "name" VARCHAR, "phoneNumber" VARCHAR, "address" VARCHAR, "pizzas" TYPE('COMPLEX<json>'), "timestamp" BIGINT)
+)
+SELECT
+  MILLIS_TO_TIMESTAMP("timestamp") AS "__time",
+  "id",
+  "shop",
+  "name",
+  "phoneNumber",
+  "address",
+  JSON_VALUE(p, '$.pizzaName') AS pizzaName,
+  JSON_QUERY_ARRAY(p, '$.additionalToppings') AS additionalToppings
+FROM "ext" CROSS JOIN UNNEST(JSON_QUERY_ARRAY(pizzas, '$')) AS lineitems(p)
+PARTITIONED BY DAY
+```
+
+That way, we can also be sure that the `additionalToppings` column will be represented as an array.
+
+After the ingestion has finished, query the table and note how
+
+- there is now one row per line item
+- the `pizzas` subcolumn is represented as an array, as you can see by the `[⋯]` instead of the tree symbol:
+
+![Query on line items](/assets/2023-12-17-06-select-lineitems.jpg)
+
+You can actually run a query over the new table that shows how `JSON_QUERY` foregets the "array-ness" of the array column, while `JSON_QUERY_ARRAY` enforces it:
+
+![Comparison query](/assets/2023-12-17-07-compare.jpg)
+
+It is, however, preferred to use `JSON_QUERY_ARRAY` at ingestion time and represent the result in your data model. This is part of optimizing the data model to achieve those fast queries that Druid is known for! 
+
+## Conclusion
+
+- We have seen how it is now possible to unnest even columns that contain arrays of objects. With this capability, Druid takes another big step handling nested objects.
+- Using `JSON_QUERY_ARRAY` on an array retains the "array-ness" and passes it on to functions that require an array input.
+- Using `JSON_QUERY_ARRAY` on a single object wraps it into an array.
+- You should use `JSON_QUERY_ARRAY` at ingestion rather than query time.
 
 ----
  <p class="attribution">"<a target="_blank" rel="noopener noreferrer" href="https://www.flickr.com/photos/26242865@N04/5919366429">Pizza</a>" by <a target="_blank" rel="noopener noreferrer" href="https://www.flickr.com/photos/26242865@N04">Katrin Gilger</a> is licensed under <a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-sa/2.0/?ref=openverse">CC BY-SA 2.0 <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/></a>. </p> 
