@@ -187,7 +187,7 @@ After the ingestion has finished, query the table and note how
 
 ![Query on line items](/assets/2023-12-17-06-select-lineitems.jpg)
 
-You can actually run a query over the new table that shows how `JSON_QUERY` foregets the "array-ness" of the array column, while `JSON_QUERY_ARRAY` enforces it:
+You can actually run a query over the new table that shows how `JSON_QUERY` forgets about the "array-ness" of the array column, while `JSON_QUERY_ARRAY` enforces it:
 
 ![Comparison query](/assets/2023-12-17-07-compare.jpg)
 
