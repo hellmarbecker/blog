@@ -138,7 +138,7 @@ PARTITIONED BY DAY
 
 This, unfortunately, fails with a screaming error message:
 
-<img src="/assets/2023-12-17-04-error.jpg" width="30%" />
+<img src="/assets/2023-12-17-04-error.jpg" width="50%" />
 
 We cannot unnest arrays of objects just like arrays of primitives! But why is that? Look at the error message more closely: Druid thinks this is a call to `UNNEST(COMPLEX<JSON>)`. So, `JSON_QUERY` doesn't know about the array nature of its output. What now?
 
