@@ -108,7 +108,7 @@ Again, what we would _like_ is a table model where each row represents a _line i
 
 ## First attempt at breaking down the line items
 
-Let's try to craft a new ingestion query that breaks down the line items using `UNNEST`. We want to unnest the line items using something like `UNNEST(JSON_QUERY(pizzas, '$')`, and then extract the individual fields into separate columns: `JSON_VALUE(p, '$.pizzaName') AS pizzaName` and so forth.
+Let's try to craft a new ingestion query that breaks down the line items using `UNNEST`. We want to unnest the line items using something like `UNNEST(JSON_QUERY(pizzas, '$'))`, and then extract the individual fields into separate columns: `JSON_VALUE(p, '$.pizzaName') AS pizzaName` and so forth.
 
 Here's the first attempt at such a query:
 
