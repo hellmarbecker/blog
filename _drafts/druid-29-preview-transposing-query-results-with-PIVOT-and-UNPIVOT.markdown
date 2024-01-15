@@ -3,7 +3,7 @@ layout: post
 title:  "Druid 29 Preview: Transposing Query Results with PIVOT and UNPIVOT"
 categories: blog apache druid imply sql tutorial
 twitter:
-  image: /assets/.jpg
+  image: /assets/2021-12-21-elf.jpg
 ---
 
 ![Druid Cookbook](/assets/2021-12-21-elf.jpg)
@@ -33,7 +33,7 @@ In this tutorial, you will
 
 _**Disclaimer:** This tutorial uses undocumented functionality and unreleased code. This blog is neither endorsed by Imply nor by the Apache Druid PMC. It merely collects the results of personal experiments. The features described here might, in the final release, work differently, or not at all. In addition, the entire build, or execution, may fail. Your mileage may vary._
 
-## The data
+## Ingesting the data
 
 The dataset is very simple and looks like this:
 
@@ -44,7 +44,9 @@ East,350000,360000
 West,415000,450000
 ```
 
-## Ingestion query
+The easiest way to get these data into Druid is with the ingestion wizard in the Druid console, using the `Paste data` input source:
+
+![Druid wizard with Paste data sample](/assets/2024-01-15-02-ingest.jpg)
 
 Run the ingestion wizard; make sure to give a meaningful name to the target datasource. Or you can paste the below SQL directly into a query window: 
 
@@ -68,7 +70,9 @@ FROM "ext"
 PARTITIONED BY ALL
 ```
 
-## select with pivot - transpose rows to columns
+## `PIVOT` - transpose rows to columns
+
+Let's represent the data in a different form. We want one column per region and per year. Here is the query for this transformation:
 
 ```sql
 SELECT *
@@ -79,11 +83,16 @@ PIVOT (
   FOR "region" IN ('East' AS east, 'Central' AS central))
 ```
 
-- needs an aggregation because it implicitly groups by the values in the pivot columns
-- can have multiple aggregations as in this example
-- to keep the column list finite, you have to give it a list of values for the pivot column
-- define aliases for the values, those will serve as column prefixes
-- you can use the generated column names in query clauses: this here is legit
+![PIVOT query](/assets/2024-01-15-03-pivot.jpg)
+
+A few things worth noting:
+
+- `PIVOT` takes a list of _aggregations over existing value columns_ to calculate the values in the final columns.
+- The aggregations are needed because `PIVOT` implicitly _groups by the values_ in the value columns.
+- The `FOR` clause lists the _pivot column_.
+- To keep the column list finite, you have to give it a list of values to filter by (like an implicit `HAVING` clause.)
+- You can define aliases for the values, those will serve as column prefixes.
+- You can use the generated column names in query clauses: this here is a legitimate query:
 
 ```sql
 SELECT east_sales_2022
@@ -94,7 +103,9 @@ PIVOT (
   FOR "region" IN ('East' AS east, 'Central' AS central))
 ```
 
-## select with unpivot - transpose columns to rows
+## `UNPIVOT` - transpose columns to rows
+
+To collect a list of column into one, transposing the columns to rows, you can use `UNPIVOT`. Here is a query that creates a table that you would probably prefer for further analytical processing:
 
 ```sql
 SELECT *
@@ -102,19 +113,21 @@ FROM "sales_data"
 UNPIVOT ( "sales" FOR "year" IN ("2022" AS 'previous', "2023" AS 'current') )
 ```
 
-- this needs no aggregation since it only reorders the values
-- you need to define two aliases:
-  - the first one, `"sales"` in the example, is the column where the _values_ end up
-  - the second one, `"year"` is where the column names go, expressed as strings
-- again, you can define alias values for the column names
+![UNPIVOT query](/assets/2024-01-15-04-unpivot.jpg)
 
-## UNPIVOT during ingestion
+- An `UNPIVOT` query needs no aggregation since it only reorders the values.
+- You need to define two aliases:
+  - the first one, `"sales"` in the example, is the column where the _values_ end up;
+  - the second one, `"year"` is where the column names are collected, expressed as strings.
+- Again, you can also define alias values for the column names.
 
-this ingesiton does not have a proper timestamp because the time information is in the column headers
+## `UNPIVOT` during ingestion
 
-can we use this to generate a proper timestamp?
+Back to the beginning of the story. As you may have noticed, the original table does not have a proper timestamp because the time information is in the column headers. Instead we just let Druid fill in a constant dummy timestamp. This is not optimal, particularly since the input data is very obviously time based!
 
-let's see with MSQ ingestion
+Can we use our new knowledge to generate a proper timestamp?
+
+Let's see how to do this using SQL based ingestion. We'll generate the timestamp column by `UNPIVOT`ing the year column headers into a single new column, and parsing that column as a timestamp: 
 
 ```sql
 REPLACE INTO "sales_data_unpivot" OVERWRITE ALL
@@ -133,14 +146,25 @@ SELECT
   "sales"
 FROM "ext"
 UNPIVOT ( "sales" FOR "year" IN ("2022", "2023" ) )
+PARTITIONED BY YEAR
+```
+
+![UNPIVOT ingestion](/assets/2024-01-15-05-unpivot-ingest.jpg)
+
+Let's check the result:
+
+![Query table with timestamp](/assets/2024-01-15-06-select.jpg)
+
+We have a proper timestamp. (You can also check the `Segments` view to verify that the data is actually partitioned by year.) 
 
 ## Conclusion
 
-- yada yada
+- `PIVOT` transposes rows to columns, aggregating values on the way.
+- `UNPIVOT` transposes columns to rows.
+- The behavior of both functions can be fine tuned by choosing suitable column aliases.
+- One case where this is especially handy is with spreadsheet data that has the time axis across.
 
 ---
 
 "[This image is taken from Page 500 of Praktisches Kochbuch f&uuml;r die gew&ouml;hnliche und feinere K&uuml;che](https://www.flickr.com/photos/mhlimages/48051262646/)" by [Medical Heritage Library, Inc.](https://www.flickr.com/photos/mhlimages/) is licensed under <a target="_blank" rel="noopener noreferrer" href="https://creativecommons.org/licenses/by-nc-sa/2.0/">CC BY-NC-SA 2.0 <img src="https://mirrors.creativecommons.org/presskit/icons/cc.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/by.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/nc.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/><img src="https://mirrors.creativecommons.org/presskit/icons/sa.svg" style="height: 1em; margin-right: 0.125em; display: inline;"/></a>.
 
-PARTITIONED BY YEAR
-```
