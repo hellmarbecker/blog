@@ -92,7 +92,7 @@ A few things worth noting:
 - The `FOR` clause lists the _pivot column_.
 - To keep the column list finite, you have to give it a list of values to filter by (like an implicit `HAVING` clause.)
 - You can define aliases for the values, those will serve as column prefixes.
-- You can use the generated column names in query clauses: this here is a legitimate query:
+- You can use the generated column names in query clauses -- this here is a legitimate query:
 
 ```sql
 SELECT east_sales_2022
