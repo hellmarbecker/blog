@@ -12,7 +12,7 @@ Imagine that you are tasked with getting a spreadsheet of sales data into Druid 
 
 ![Raw data in table format](/assets/2024-01-15-01-rawdata-table.png)
 
-You've got the sales figures in the cells, and the regions down and the years across. While you _can_ work with the data in this form in Druid, this may not be your best option. And Druid 29 brings two new SQL functions that can help with transforming the data into a format that is better suited for analytics. Let's see how that works!
+You've got the sales figures in the cells, and the regions down and the years across. While you _can_ work with the data in this form in Druid, this may not be your best option. Druid 29 brings two new SQL functions that can help with transforming the data into a format that is better suited for analytics. Let's see how that works!
 
 ## Getting set up
 
