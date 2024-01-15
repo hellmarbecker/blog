@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Druid 29 Preview: Transposing Query Results with PIVOT and UNPIVOT"
+title:  "Druid 29 Preview: Transposing Data with PIVOT and UNPIVOT"
 categories: blog apache druid imply sql tutorial
 twitter:
   image: /assets/2021-12-21-elf.jpg
