@@ -105,7 +105,7 @@ PIVOT (
 
 ## `UNPIVOT` - transpose columns to rows
 
-To collect a list of column into one, transposing the columns to rows, you can use `UNPIVOT`. Here is a query that creates a format that you would probably prefer for further analytical processing:
+To collect a list of columns into one, transposing the columns to rows, you can use `UNPIVOT`. Here is a query that creates a format that you would probably prefer for further analytical processing:
 
 ```sql
 SELECT *
