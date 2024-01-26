@@ -17,7 +17,9 @@ an incomplete, poorly curated list, in no particular order
 - [Tijo Thomas on Medium](https://tijothomas21.medium.com/)
 - [Gautam Goswami](https://gautambangalore.medium.com/)
 - [Adam Whitter](https://awhitter.hashnode.dev/)
-
+- [Shani Cohen explains how to write a Druid extension](https://medium.com/israeli-tech-radar/improved-performance-using-apache-druids-aggregation-extensions-956545731828)
+- [Iceberg ingestion by SeriousGeek](https://medium.com/@seriousgeek/apache-druid-on-ice-ingesting-apache-iceberg-tables-into-apache-druid-223df5642737)
+  
 ## Stream Processing in General
 
 - [Dunith Dhanushka's Medium blog](https://medium.com/event-driven-utopia)
