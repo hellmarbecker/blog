@@ -27,4 +27,49 @@ What I see often in my customer project is that organizations are running Kafka 
 
 - mention the topics to be manually created
 
-- 
+## MirrorMaker 2 configuration 
+
+Create a configuration file `mm.properties` following this template: 
+
+```properties
+
+# MirrorMaker 2 configuration 
+
+clusters = source, destination 
+
+source.bootstrap.servers = stream1.redbus.com:9092, stream2.redbus.com:9092, stream3.redbus.com:9092, stream4.redbus.com:9092 
+
+destination.bootstrap.servers = <BOOTSTRAP SERVER ID>.ap-south-1.aws.confluent.cloud:9092 
+destination.security.protocol=SASL_SSL 
+destination.sasl.mechanism=PLAIN 
+destination.sasl.jaas.config=org.apache.kafka.common.security.plain.PlainLoginModule required username='<API KEY>' password='<API SECRET>'; 
+
+source->destination.enabled = true 
+
+source->destination.topics = digitalfingerprintdata,mriprodstream,primoDataStream 
+
+############################# Internal Topic Settings  ############################# 
+# The replication factor for mm2 internal topics "heartbeats", "destination.checkpoints.internal" and 
+# "mm2-offset-syncs.destination.internal" 
+# For anything other than development testing, a value greater than 1 is recommended to ensure availability such as 3. 
+checkpoints.topic.replication.factor=1
+heartbeats.topic.replication.factor=1
+offset-syncs.topic.replication.factor=1 
+
+# The replication factor for connect internal topics "mm2-configs.destination.internal", "mm2-offsets.destination.internal" and 
+# "mm2-status.destination.internal" 
+# For anything other than development testing, a value greater than 1 is recommended to ensure availability such as 3. 
+offset.storage.replication.factor=1
+status.storage.replication.factor=1 
+config.storage.replication.factor=1 
+```
+
+note, the replication factors are 1 because only one broker
+
+## How to run MirrorMaker 2
+
+```bash
+bin/connect-mirror-maker.sh mm.properties 
+```
+
+This will mirror all 3 topics into topics in Confluent Cloud with the prefix source.*.  
