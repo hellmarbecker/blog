@@ -71,7 +71,7 @@ Below the timestamp level, there is _secondary partitioning_, which is usually i
 
 With multi-dimension range partitioning, Druid achieves the same functionality as a ***composite index***. In an RDBMS, you would use a composite index whenever you have a combination of columns that you use to filter or group by in most of the queries that you typically run.
 
-That being said, because we use bitmap indexes on all columns, we also achieve composite index functionality by margin bitmap indexes across columns.
+That being said, because we use bitmap indexes on all columns, we also achieve composite index functionality by merging bitmap indexes across columns.
 
 ### How Druid implements range index functionality
 
