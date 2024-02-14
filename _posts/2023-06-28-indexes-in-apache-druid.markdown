@@ -65,7 +65,7 @@ If you want to achieve primary sorting by another column than time, you should s
 
 ### Secondary partitioning: Pruning and range queries
 
-Below the timestamp level, there is _secondary partitioning_, which is usually implemented as [range partitioning](/partitioning-in-druid-part-3-multi-dimension-range-partitioning/). This defines a list of dimension fields to partition by. In SQL based ingestion, this correspinds to the `CLUSTERED BY` clause. You want to order your partitioning columns first in the ingestoin query, too. Then your data will be sorted according to the partitioning columns, and like values will be grouped together physically. If you filter by the partitioning key in a query, Druid uses this information to determine which data segments to look at, even before scanning any data. This is called ***partition pruning*** and is a great way to speed up queries.
+Below the timestamp level, there is _secondary partitioning_, which is usually implemented as [range partitioning](/partitioning-in-druid-part-3-multi-dimension-range-partitioning/). This defines a list of dimension fields to partition by. In SQL based ingestion, this corresponds to the `CLUSTERED BY` clause. You want to order your partitioning columns first in the ingestion query, too. Then your data will be sorted according to the partitioning columns, and like values will be grouped together physically. If you filter by the partitioning key in a query, Druid uses this information to determine which data segments to look at, even before scanning any data. This is called ***partition pruning*** and is a great way to speed up queries.
 
 ### How Druid implements composite index functionality
 
