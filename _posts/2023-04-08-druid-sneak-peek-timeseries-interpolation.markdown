@@ -161,7 +161,7 @@ The general formula for linear interpolation has to divide by the total time ran
 
 Druid's timeseries capabilities are ever expanding.
 
-- With `DATE_EXPAND` and `UNNEST`, it is possible to generate even spaced time series.
+- With `DATE_EXPAND` and `UNNEST`, it is possible to generate evenly spaced time series.
 - Using window functions and standard interpolation algorithms, this can be used to fill in missing values.
 - Currently this is only available in Imply's release.
 
