@@ -13,7 +13,8 @@ twitter:
 
 Often my customers come to me with the requirement to extract large and/or detailed data sets from druid; they would like to store these data in a well known format for further processing by other tools. With [multi-stage query](https://druid.apache.org/docs/latest/multi-stage-query/concepts#multi-stage-query-task-engine), you can issue an asynchronous query against deep storage that handles (almost) unlimited amounts of data.
 
-However, obtaining a result is a two step process:
+However, obtaining a result is a multi step process:
+
 - First, [submit the query](https://druid.apache.org/docs/latest/api-reference/sql-api#submit-a-query-1);
 - then [poll the task endpoint](https://druid.apache.org/docs/latest/api-reference/sql-api#get-query-status) until it is done
 - and finally, [retrieve the result](https://druid.apache.org/docs/latest/api-reference/sql-api#get-query-results).
