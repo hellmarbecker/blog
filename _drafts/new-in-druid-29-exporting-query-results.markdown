@@ -9,15 +9,16 @@ twitter:
 ![Druid Cookbook](/assets/2021-12-21-elf.jpg)
 
 
-## the problem
+## The problem
 
-if you want to extract detailed data / large data from druid, you need to issue an asynchronous query (link)
+Often my customers come to me with the requirement to extract large and/or detailed data sets from druid; they would like to store these data in a well known format for further processing by other tools. With [multi-stage query](https://druid.apache.org/docs/latest/multi-stage-query/concepts#multi-stage-query-task-engine), you can issue an asynchronous query against deep storage that handles (almost) unlimited amounts of data.
 
-this is a 2 step process:
-- first start the query
-- then poll the task endpoint until it is done, and retrieve the result
+However, obtaining a result is a two step process:
+- First, [submit the query](https://druid.apache.org/docs/latest/api-reference/sql-api#submit-a-query-1);
+- then [poll the task endpoint](https://druid.apache.org/docs/latest/api-reference/sql-api#get-query-status) until it is done
+- and finally, [retrieve the result](https://druid.apache.org/docs/latest/api-reference/sql-api#get-query-results).
 
-meanwhile the data is written inside druid already. you can define a path and instruct druid to use durable storage (link) for this result, but: this is still in a druid specific format
+Meanwhile, the data that you download in step 3 has been written inside druid already. You can define a path and instruct Druid to use durable storage (link) for this result, but: this is still in a druid specific format
 
 what if we could skip that step (persisting the result) completely and send the result directly to a file in a format of our choice?
 
