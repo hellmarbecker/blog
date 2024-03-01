@@ -67,6 +67,8 @@ SELECT * FROM wikipedia
 
 when the query finishes, check the export directory and voilà - the csv file is there
 
+note: the target directory has to be empty, else you get an error message
+
 this also works for export to [S3](https://druid.apache.org/docs/latest/multi-stage-query/reference/#s3)
 
 ## Learnings
