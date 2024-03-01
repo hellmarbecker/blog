@@ -23,7 +23,7 @@ Meanwhile, the data that you download in step 3 has been written to some storage
 
 What if we could skip that step (persisting the result) completely and send the result directly to a file in a format of our choice?
 
-It turns out druid 29 can do this. For now, it is somewhat limited - it only supports csv, and can only export to local filesystem or S3. But other formats, such as Parquet, are coming.
+Druid 29 can do this. For now, it is somewhat limited - it only supports csv, and can only export to local filesystem or S3. But other formats, such as Parquet, are coming.
 
 Let's try this out with a [Druid Quickstart](https://druid.apache.org/docs/latest/tutorials/) installation!
 
