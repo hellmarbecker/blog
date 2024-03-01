@@ -18,46 +18,47 @@ However, obtaining a result is a two step process:
 - then [poll the task endpoint](https://druid.apache.org/docs/latest/api-reference/sql-api#get-query-status) until it is done
 - and finally, [retrieve the result](https://druid.apache.org/docs/latest/api-reference/sql-api#get-query-results).
 
-Meanwhile, the data that you download in step 3 has been written inside druid already. You can define a path and instruct Druid to use durable storage (link) for this result, but: this is still in a druid specific format
+Meanwhile, the data that you download in step 3 has been written to some storage location inside Druid already. You can define a path and even instruct Druid to use [durable storage](https://druid.apache.org/docs/latest/operations/durable-storage#enable-durable-storage) for query results, but: these data are is still in a Druid specific format and cannot easily be read by other tools.
 
-what if we could skip that step (persisting the result) completely and send the result directly to a file in a format of our choice?
+What if we could skip that step (persisting the result) completely and send the result directly to a file in a format of our choice?
 
-turns out druid 29 can do this. this is for now somewhat limited - it only supports csv, and only local filesystem or s3. but other formats, such as parquet, are coming
+It turns out druid 29 can do this. For now, it is somewhat limited - it only supports csv, and can only export to local filesystem or S3. But other formats, such as Parquet, are coming.
 
-let's try this out with a quickstart (link) installation
+Let's try this out with a [Druid Quickstart](https://druid.apache.org/docs/latest/tutorials/) installation!
 
-in this tutorial, you will
-- yada yada
+In this tutorial, you will
+- learn how to configure the settings for MSQ export
+- export a sample dataset.
 
-## preparation
+## Preparation
 
-we are going to export to local storage. to limit the attack surface for malicious or inexperiences users, you have to define a specific filesystem path where druid is allowed to store export files.
+We are going to export to local storage. To limit the attack surface for malicious or inexperienced users, you have to define a specific filesystem path where Druid is allowed to store export files.
 
-on your local machine, install druid 29 from the tarball
+On your local machine, install Druid 29 from the [tarball](https://druid.apache.org/downloads/).
 
-create the directory `/tmp/druid-export`
+Create a directory `/tmp/druid-export` on your local disk.
 
-edit the file `conf/druid/auto/_common/common.runtime.properties` and add the line
+In your Druid installation, edit the file `conf/druid/auto/_common/common.runtime.properties` and add the line
 
-```
+```properties
 druid.export.storage.baseDir=/tmp/druid-export
 ```
 
-at the end of the file
+at the end of the file.
 
-then start druid like so, from within your druid install directory
+Then start Druid like so, from within your Druid install directory:
 
-```
+```bash
 bin/start-druid -m5g
 ```
 
-ingest the wikipedia sample data following the instructions (link)
+Ingest the _wikipedia_ sample data following the instructions using either [classic batch](https://druid.apache.org/docs/latest/tutorials/#load-data) or [SQL ingestion](https://druid.apache.org/docs/latest/tutorials/tutorial-msq-extern).
 
-then go to the query tab
+Then go to the query tab in the Druid console.
 
-## exporting data
+## Exporting data
 
-run this query
+Run this query:
 
 ```sql
 INSERT INTO 
@@ -68,17 +69,18 @@ SELECT * FROM wikipedia
 
 ![Screenshot of running query](/assets/2024-03-01-01.jpg)
 
-when the query finishes, check the export directory and voilà - the csv file is there
+When the query finishes, check the export directory and you will find a CSV file containing the data:
 
 ![Preview of result file in a shell window](/assets/2024-03-01-02.jpg)
 
-note: the target directory has to be empty, else you get an error message
+Note: the target directory has to be empty, else you get an error message.
 
-this also works for export to [S3](https://druid.apache.org/docs/latest/multi-stage-query/reference/#s3)
+This also works for export to [S3](https://druid.apache.org/docs/latest/multi-stage-query/reference/#s3).
 
 ## Learnings
 
-- yada yada
+- With MSQ, you can now export query results directly to external storage.
+- This is a new feature in Druid 29. It is currently limited to CSV format and either local storage or S3, but expect more options to be added soon.
 
 ---
 
