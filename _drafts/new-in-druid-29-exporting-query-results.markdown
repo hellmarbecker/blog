@@ -65,7 +65,11 @@ AS CSV
 SELECT * FROM wikipedia
 ```
 
+![Screenshot of running query](/assets/2024-03-01-01.jpg)
+
 when the query finishes, check the export directory and voilà - the csv file is there
+
+![Preview of result file in a shell window](/assets/2024-03-01-02.jpg)
 
 note: the target directory has to be empty, else you get an error message
 
