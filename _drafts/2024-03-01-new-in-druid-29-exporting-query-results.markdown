@@ -55,7 +55,7 @@ bin/start-druid -m5g
 
 Ingest the _wikipedia_ sample data following the instructions using either [classic batch](https://druid.apache.org/docs/latest/tutorials/#load-data) or [SQL ingestion](https://druid.apache.org/docs/latest/tutorials/tutorial-msq-extern).
 
-Then go to the query tab in the Druid console.
+Then go to the `Query` tab in the Druid console.
 
 ## Exporting data
 
