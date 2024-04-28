@@ -44,6 +44,8 @@ This tutorial can be done using the [Druid 29.0.1 quickstart](https://druid.apac
 
 First of all, let's create a very simple data set.
 
+![Ingestion](/assets/2024-04-28-02-ingest.png)
+
 The table I am going to use has but four rows of data. There is a column _color_, which can be either a string, or _NULL_.
 
 Here is the Druid SQL to create the sample data set:
@@ -66,5 +68,11 @@ SELECT
 FROM "ext"
 PARTITIONED BY ALL
 ```
+
+If you ingest this data set and list the entire table, you should get something like this:
+
+![Select all data](/assets/2024-04-28-03-select-star.png)
+
+Note the _NULL_ value in the _color_ column.
 
 
