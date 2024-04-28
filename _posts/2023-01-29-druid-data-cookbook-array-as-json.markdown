@@ -130,7 +130,7 @@ The group by behavior is what we expect from an MVD!
 
 - Array fields can now be ingested as nested JSON columns into Druid.
 - However, one cannot `GROUP BY` a JSON column.
-- Individual elements can be extracted using JSON Path expressions, bu for now there is no way to iterate over all the fields or array elements.
+- Individual elements can be extracted using JSON Path expressions, but for now there is no way to iterate over all the fields or array elements.
 - As a workaround, you can parse the JSON array into a multi-value dimension and use existing Druid functionality to unnest it.  
 
 ---
