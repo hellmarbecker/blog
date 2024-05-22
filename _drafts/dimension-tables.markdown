@@ -1,0 +1,5 @@
+- tables that appear in the druid schema but exists mainly in memory
+- data is persisted in a format that is similar to segments but that is actually snapshots
+- you declare a key column and a timestamp and then the latest value for a key is used
+- there's a special type of supervisor called `UPDATE_TASK`
+- support in the web console is currently limited
