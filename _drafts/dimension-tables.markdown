@@ -3,3 +3,6 @@
 - you declare a key column and a timestamp and then the latest values for a key are used
 - there's a special type of supervisor called `UPDATE_TASK`
 - support in the web console is currently limited
+- if you change the supervisor spec you need to go to S3 and delete all snapshot files
+- implydata druid PR 2521 has setup instructions: https://github.com/implydata/druid/pull/2521
+- 
