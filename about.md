@@ -39,4 +39,4 @@ permalink: /about/
 - TDWI 2023, Munich ([link to conference agenda](https://www.tdwi-konferenz.de/tdwi-2023/programm/konferenzprogramm#item-6549))
 - Big Data Europe 2023, Vilnius ([slides](https://noti.st/hellmarbecker/BCCqzW/building-an-event-analytics-pipeline-with-kafka-ksqldb-and-druid), [video](https://www.youtube.com/watch?v=5khiYXBMhxE))
 - DevDays Europe 2024, Vilnius ([slides](https://noti.st/hellmarbecker/faz1Qj/lets-do-data-lineage-in-kafka-flink-and-druid-by-tracking-aircraft))
-- Berlin Buzzwords 2024
+- Berlin Buzzwords 2024 ([slides](https://noti.st/hellmarbecker/uLo4dU/lets-do-data-lineage-in-kafka-flink-and-druid-by-tracking-aircraft), [video](https://www.youtube.com/watch?v=hYUutCo3YgY))
