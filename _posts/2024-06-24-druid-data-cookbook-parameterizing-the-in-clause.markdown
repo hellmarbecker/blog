@@ -48,7 +48,7 @@ curl --location 'http://localhost:8888/druid/v2/sql' \
 
 or you can use Postman:
 
-![Postman query](/assets/2024-06-24-01-postman.jpg)
+![Postman query](/assets/2024-06-24-01-postman.png)
 
 Let's make the query a bit more complex. We want to count the rows for more than one channel with a simple `GROUP BY` and an `IN` clause: 
 
@@ -66,7 +66,7 @@ Let's make the query a bit more complex. We want to count the rows for more than
 
 Alas, this fails.
 
-![Failing Postman query](/assets/2024-06-24-02-postman2.jpg)
+![Failing Postman query](/assets/2024-06-24-02-postman2.png)
 
 And until Druid 29, you would have to work around this problem because `ARRAY`s as parameters weren't really supported.
 
@@ -97,7 +97,7 @@ We'll pass the list of channels as an `ARRAY` type parameter and use `SCALAR_IN_
 
 The query works and returns the expected result:
 
-![Successful Postman query](/assets/2024-06-24-03-postman-final.jpg)
+![Successful Postman query](/assets/2024-06-24-03-postman-final.png)
 
 ## Conclusion
 
