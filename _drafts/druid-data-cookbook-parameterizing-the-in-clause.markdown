@@ -50,7 +50,7 @@ or you can use Postman:
 
 ![Postman query](/assets/2024-06-24-01-postman.jpg)
 
-Now, let's make the query a bit more complex. We want to count the rows for more than one channel with a simple `GROUP BY` and an `IN` clause: 
+Let's make the query a bit more complex. We want to count the rows for more than one channel with a simple `GROUP BY` and an `IN` clause: 
 
 ```json
 {
@@ -72,18 +72,36 @@ And until Druid 29, you would have to work around this problem because `ARRAY`s 
 
 ## Two new features in Druid
 
-- array as parameter
-- planning in clauses as array selection
-- scalar_in_array
+Druid 30 brings two new features that help us here:
 
-## now let's make it work
+- Druid 30 supports passing `ARRAY`s as parameters. (https://github.com/apache/druid/pull/16274) The way to do this is to specify a type of `"ARRAY"` and to use a JSON array as the value.
+- There is a new `SCALAR_IN_ARRAY` function that checks for presence of a particular value in an array. In fact, a conventional `IN` filter would internally use this functionality if the number of elements in the list is large enough. (https://github.com/apache/druid/pull/16306)
 
-proper attempt
+With that, we have everything to make the query work.
+
+## Now, let's make it work
+
+We'll pass the list of channels as an `ARRAY` type parameter and use `SCALAR_IN_ARRAY` in place of `IN`:
+
+```json
+{
+    "query": "SELECT channel, COUNT(*) FROM wikipedia WHERE SCALAR_IN_ARRAY(channel, ?) GROUP BY 1",
+    "parameters": [
+        {
+            "type": "ARRAY",
+            "value": ["#en.wikipedia", "#de.wikipedia", "#fr.wikipedia"]
+        }
+    ]
+}
+```
+
+The query works and returns the expected result:
+
+![Successful Postman query](/assets/2024-06-24-03-postman-final.jpg)
 
 ## Conclusion
 
-- yada yada
-
+We've learned that a simple `IN` filter cannot be parameterized through the Druid REST API. However, Druid 30 introduces an alternative because it supports array parameters. With array parameters and the new `SCALAR_IN_ARRAY` function, you can efficiently parameterize filter lists through the SQL REST API.
 
 ---
 
