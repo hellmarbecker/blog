@@ -12,12 +12,7 @@ Let's look at a neat new feature in Druid 30 that makes using the API more flexi
 
 For this tutorial, download a fresh copy of [Druid 30](https://druid.apache.org/downloads/). Run a local [quickstart](https://druid.apache.org/docs/latest/tutorials/) instance and ingest the _Wikipedia_ sample data as per [this tutorial](https://druid.apache.org/docs/latest/tutorials/tutorial-msq-extern).
 
-
-## The problem
-
-
-
-### Recap: Parameters in the query API
+## Recap: Parameters in the query API
 
 Druid is typically queried through a REST API; the payload is documented [here](https://druid.apache.org/docs/latest/api-reference/sql-api#request-body). The API supports parameterizing queries, which is frequently used by programming language specific clients that create a wrapper layer around the API calls.
 
@@ -55,12 +50,27 @@ or you can use Postman:
 
 ![Postman query](/assets/2024-06-24-01-postman.jpg)
 
+Now, let's make the query a bit more complex. We want to count the rows for more than one channel with a simple `GROUP BY` and an `IN` clause: 
 
-ingest the data: https://druid.apache.org/docs/latest/tutorials/tutorial-msq-extern
+```json
+{
+    "query": "SELECT COUNT(*) FROM wikipedia WHERE channel IN ?",
+    "parameters": [
+        {
+            "type": "VARCHAR",
+            "value": "(#en.wikipedia, #de.wikipedia, #fr.wikipedia)"
+        }
+    ]
+}
+```
 
-naive attempt, show how it fails (fabrice example)
+Alas, this fails.
 
-## two new features in druid
+![Failing Postman query](/assets/2024-06-24-02-postman2.jpg)
+
+And until Druid 29, you would have to work around this problem because `ARRAY`s as parameters weren't really supported.
+
+## Two new features in Druid
 
 - array as parameter
 - planning in clauses as array selection
