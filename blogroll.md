@@ -19,6 +19,7 @@ an incomplete, poorly curated list, in no particular order
 - [Adam Whitter](https://awhitter.hashnode.dev/)
 - [Shani Cohen explains how to write a Druid extension](https://medium.com/israeli-tech-radar/improved-performance-using-apache-druids-aggregation-extensions-956545731828)
 - [Iceberg ingestion by SeriousGeek](https://medium.com/@seriousgeek/apache-druid-on-ice-ingesting-apache-iceberg-tables-into-apache-druid-223df5642737)
+- [DeepBI's blog](https://www.deep.bi/blog) has some good Druid related content recently (2024) 
   
 ## Stream Processing in General
 
