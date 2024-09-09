@@ -1,0 +1,36 @@
+---
+layout: post
+title:  "Table Based Lookups in Imply Polaris"
+categories: blog imply sql datamodel warehouse tutorial
+twitter:
+  image: /assets/2021-12-21-elf.jpg
+---
+
+yada yada
+
+## Recap: Lookups in Apache Druid
+
+yada yada
+
+## Lookups based on Druid Segments
+
+this is available only in Polaris
+
+big advantage: any (string) column can be either key or value. also more memory efficient
+
+## How to do it in practice
+
+model the dimension table
+- has to be partition by all
+- has to be all string columns
+- has to fit in a single segment
+
+model the fact table
+- make sure the (foreign) key column is a string too or else you will need a cast in the lookup
+
+create the lookup in Polaris GUI
+
+## How to visualize lookup data in Pivot
+
+- use the `LOOKUP(..., 'lookup_name[key_column][value_column]')` in dimension definitions
+- unlike a regular Kimball model, you can also model measures by aggregating over a LOOKUP expression
