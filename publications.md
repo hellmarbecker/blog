@@ -6,6 +6,10 @@ permalink: /publications/
 
 Articles, blog posts, videos, and podcasts, published outside this blog
 
+## 2024
+
+- [Let's Do Data Lineage in Kafka, Flink and Druid by Tracking Aircraft!](https://www.youtube.com/watch?v=hYUutCo3YgY), Talk at [Berlin Buzzwords 2024](https://2024.berlinbuzzwords.de/)
+
 ## 2023
 
 - Meetup Talk at Wolt: [Building a Streaming Analytics Pipeline with Kafka and Druid](https://www.youtube.com/watch?v=ZPhccig03Mg)
