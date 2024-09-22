@@ -29,7 +29,7 @@ A common problem in data that we ingest into Druid is that we may encounter arra
 
 Each member has a name and some other attributes. But what if I want to get a list of all the teams that Bob is a member of? I'd need to extract an array of the relevant subfields only. How do I do this in Druid?
 
-The naïve approach would be to write some expression like `JSON_VALUE("members", '$[*].name')`. But unfortunately, Druid does not support wildcard syntax in JSONPath expressions. So if seems that we are stuck. Or are we?
+The naïve approach would be to write some expression like `JSON_VALUE("members", '$[*].name')`. Unfortunately, Druid does not support wildcard syntax in JSONPath expressions. So if seems that we are stuck. Or are we?
 
 ## Loading some data
 
