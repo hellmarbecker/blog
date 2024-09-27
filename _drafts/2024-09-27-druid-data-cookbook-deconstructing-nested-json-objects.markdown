@@ -87,7 +87,7 @@ It returns one row for each leaf element in the `org` object.
 
 In the next step, let's feed these values back into `JSON_VALUE`.
 
-(This will really only work with Druid 30 or better. In earler versions, `JSON_PATH` required a string literal as its second element, limiting its flexibility.)
+(This will really only work with Druid 30 or better. In earlier versions, `JSON_PATHS` required a string literal as its second element, limiting its flexibility.)
 
 ## Some query examples
 
