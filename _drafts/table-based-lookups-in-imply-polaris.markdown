@@ -12,6 +12,8 @@ yada yada
 
 yada yada
 
+I wrote about this in [an earlier blog](/2021/10/14/druid-data-modeling-special-lookups-and-multi-value-dimensions/)
+
 ## Lookups based on Druid Segments
 
 this is available only in Polaris
