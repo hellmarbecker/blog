@@ -21,11 +21,15 @@ The last option is particularly interesting because the source of the lookup can
 
 ## Lookups based on Druid Segments
 
-this is available only in Polaris
+With the September release, users can configure their own lookups in Polaris. These lookups are built directly on top of Polaris tables, and they are different from all other types of lookups. These _segment based lookups_ are now available in Polaris by default, although they can be enabled in Imply Hybrid and Imply Enterprise by installing a specific extension that is part of the commercial software release of Imply.
 
-big advantage: any (string) column can be either key or value. also more memory efficient
+The big advantage of segment based lookups: any (string) column can be either key or value. This means the address example above could be implemented using just one lookup structure. Segment based lookups are also more memory efficient, and by being integrated with the Polaris (or Druid) table schema the entire structure becomes more maintainable.
 
 ## How to do it in practice
+
+Let's look at a practical example. I am going to generate a data set that has [ISO country codes](https://en.wikipedia.org/wiki/ISO_3166-1) in it, and I want to enrich these data with country names by means of a lookup list I downloaded [here](https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/refs/heads/master/all/all.csv).
+
+
 
 model the dimension table
 - has to be partition by all
