@@ -29,12 +29,44 @@ The big advantage of segment based lookups: any (string) column can be either ke
 
 Let's look at a practical example. I am going to generate a data set that has [ISO country codes](https://en.wikipedia.org/wiki/ISO_3166-1) in it, and I want to enrich these data with country names by means of a lookup list I downloaded [here](https://raw.githubusercontent.com/lukes/ISO-3166-Countries-with-Regional-Codes/refs/heads/master/all/all.csv).
 
+Then I generated some data using this little script:
 
+```python
+import json
+import time
+from faker import Faker
 
-model the dimension table
-- has to be partition by all
-- has to be all string columns
-- has to fit in a single segment
+fake = Faker()
+location_fields = ["latitude", "longitude", "place_name", "two-letter_country_code", "timezone"]
+
+for i in range(100):
+    place = fake.location_on_land()
+    rec = dict(zip(location_fields, place))
+    rec["timestamp"] = int(time.time())
+    print(json.dumps(rec))
+```
+
+and I ran it like so:
+
+```bash
+python3 ./gendata.py >data.json
+```
+
+And I uploaded those two files as data sources to Polaris.
+
+### Modeling the dimension table
+
+The dimension table has to fulfill a few requirements to be eligible as a lookup source:
+
+- all fields that you want to use in the lookup have to be string columns
+- the table has to be `PARTITIONED BY ALL`
+- and it has to fit in a single segment (it should be less than 4GB in size).
+
+So, when ingesting the data from _all.csv_ into my table _countries_:
+
+- I make sure that I lock every column into a declaration as string
+  ![Declare string columns](/assets/2024-10-05-01-string-columns.jpg)
+- 
 
 model the fact table
 - make sure the (foreign) key column is a string too or else you will need a cast in the lookup
