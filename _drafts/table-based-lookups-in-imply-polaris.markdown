@@ -6,7 +6,7 @@ twitter:
   image: /assets/2021-12-21-elf.jpg
 ---
 
-yada yada
+Imply's [Polaris](https://imply.io/imply-fully-managed-dbaas-polaris/) service has a new feature: [Lookups](https://docs.imply.io/polaris/lookups/). Lookups in Polaris provide a convenient way to model dimension tables in a star schema, and they are more flexible and less resource hungry than the lookups you know from open source Druid. Let's take a closer look!
 
 ## Recap: Lookups in Apache Druid
 
