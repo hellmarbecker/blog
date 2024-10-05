@@ -64,11 +64,13 @@ The dimension table has to fulfill a few requirements to be eligible as a lookup
 
 So, when ingesting the data from _all.csv_ into my table _countries_:
 
-- I make sure that I lock every column into a declaration as string
-  ![Declare string columns](/assets/2024-10-05-01-string-columns.jpg)
+- I make sure that I lock every column into a declaration as string. In Polaris, by default all table columns have a type of `Auto`, but you can override this by declaring the respective column explicitly
+
+![Declare string columns](/assets/2024-10-05-01-string-columns.jpg)
+
 - 
 
-model the fact table
+### Modeling the fact table
 - make sure the (foreign) key column is a string too or else you will need a cast in the lookup
 
 create the lookup in Polaris GUI
