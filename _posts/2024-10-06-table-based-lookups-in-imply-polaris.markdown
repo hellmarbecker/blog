@@ -86,7 +86,13 @@ The fact table is a regular Polaris table. Just make sure the (foreign) key colu
 
 ## How to query data using lookups
 
-Compared to regular Druid lookups, the syntax has been extended. In addition to the lookup name, you specify the key and value columns in square brackets using the syntax `LOOKUP(..., 'lookup_name[key_column][value_column]')`. For the example table, this query will do nicely:
+Compared to regular Druid lookups, the syntax has been extended. In addition to the lookup name, you specify the key and value columns in square brackets using the syntax 
+
+```
+LOOKUP(..., 'lookup_name[key_column][value_column]')
+```
+ 
+For the example table, this query will do nicely:
 
 ```sql
 SELECT 
