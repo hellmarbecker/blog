@@ -64,7 +64,7 @@ The dimension table has to fulfill a few requirements to be eligible as a lookup
 
 So, when ingesting the data from _all.csv_ into table _countries_:
 
-- Make sure that I lock every column into a declaration as string. In Polaris, by default all table columns have a type of `Auto`, but you can override this by declaring the respective column explicitly.
+- Make sure to lock every column into a declaration as string. In Polaris, by default all table columns have a type of `Auto`, but you can override this by declaring the respective column explicitly.
 
 <img src="/assets/2024-10-06-01-string-columns.png" width="30%" />
 
