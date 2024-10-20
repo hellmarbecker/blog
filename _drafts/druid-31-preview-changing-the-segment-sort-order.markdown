@@ -4,6 +4,8 @@ title:  "Druid 31 Preview: Changing the Segment Sort Order"
 categories: blog apache druid imply sql ingestion tutorial
 ---
 
+![Query context with sort flag](/assets/2024-10-20-04-context2.png)
+
 Up until Druid 30, data in a Druid segment was always sorted by time. But this is about to change. Druid 31 comes with an experimental option to change the segment sort order. With [Druid Summit 2024](https://druidsummit.org/) and the announcement of Druid 31 around the corner, let's take a look at this new feature.
 
 This blog is based on the public documentation of [this pull request](https://github.com/apache/druid/pull/16849). 
@@ -58,7 +60,11 @@ PARTITIONED BY DAY
 
 Run this query to get the reference table.
 
-Then duplicate the query tab to create a copy of the query. In the copy, change the table name from _wikipedia-time_ to _wikipedia-channel_ and add a clustering clause `CLUSTERED BY channel, page, __time`:
+We are now going to sort by _channel_ instead of time first. Because _channel_ is relatively low cardinality, this should make the resulting table smaller.
+
+The sort order in SQL based ingestion is controls by the `CLUSTERED BY` clause, which also (and primarily) is used for secondary partitioning. So the next step will be to add a clustering clause to the ingestion query. 
+
+Duplicate the query tab to create a copy of the query. In the copy, change the table name from _wikipedia-time_ to _wikipedia-channel_ and add a clustering clause `CLUSTERED BY channel, page, __time`:
 
 ![query with clustering](/assets/2024-10-20-02-channel.png)
 
@@ -74,7 +80,18 @@ And in the editor window that opens, enter
 }
 ```
 
-and hit `Save`.
+and hit `Save`. Then run this ingestion query, too.
 
-Then run this ingestion query, too.
+Let's look at the result:
 
+![Size comparison](/assets/2024-10-20-05-size.png)
+
+The table that got sorted by _channel_ first is about 4 percent smaller!
+
+In a real life scenario, you could expect even greater space savings.
+
+## Conclusion
+
+- Starting with Druid 31, you can sort segments by a column other than the primary timestamp.
+- This is still experimental and is enabled by a context flag.
+- With alternative segment sorting enabled, the sort order in SQL ingestion is governed by the `CLUSTERED BY` clause.
