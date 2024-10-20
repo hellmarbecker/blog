@@ -62,7 +62,7 @@ Run this query to get the reference table.
 
 We are now going to sort by _channel_ instead of time first. Because _channel_ is relatively low cardinality, this should make the resulting table smaller.
 
-The sort order in SQL based ingestion is controls by the `CLUSTERED BY` clause, which also (and primarily) is used for secondary partitioning. So the next step will be to add a clustering clause to the ingestion query. 
+Sort order in SQL based ingestion is controlled by the `CLUSTERED BY` clause, which also (and primarily) is used for secondary partitioning. So the next step will be to add a clustering clause to the ingestion query. 
 
 Duplicate the query tab to create a copy of the query. In the copy, change the table name from _wikipedia-time_ to _wikipedia-channel_ and add a clustering clause `CLUSTERED BY channel, page, __time`:
 
