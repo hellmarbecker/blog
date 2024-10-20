@@ -29,7 +29,7 @@ Why would you want to change the segment sort order? This is mainly about data c
 
 For instance, [range partitioning of data](/2022/01/25/partitioning-in-druid-part-3-multi-dimension-range-partitioning/) is now becoming the gold standard for batch ingestion. In fact, [Imply's Polaris service](https://imply.io/imply-fully-managed-dbaas-polaris/) offers range partitioning for both batch and streaming ingestion. (This is done by ingesting data into dynamic partitions first and running a preconfigured [autocompaction](https://druid.apache.org/docs/latest/data-management/automatic-compaction) job in the background that makes sure all data is partitioned according to the configured settings. You can do this in open source Druid too, but you have to configure it yourself.) In most cases, if you decide to _partition_ your data by a set of columns, it would also make sense to _order_ them by the same criteria.
 
-This is currently an experimental feature and not all query types are guaranteed to work with alternative segment sort order. Also not that segments written with alternative sort order cannot be processed by older Druid version.
+This is currently an experimental feature and not all query types are guaranteed to work with alternative segment sort order. Also not that segments written with alternative sort order cannot be processed by older Druid versions.
 
 ## Lab
 
