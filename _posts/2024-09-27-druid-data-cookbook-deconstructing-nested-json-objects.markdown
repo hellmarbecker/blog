@@ -38,7 +38,7 @@ Our data looks like this:
 }
 ```
 
-Note how there are `name` fields at the first nesting leel of `org`, but also at the `members`level.
+Note how there are `name` fields at the first nesting level of `org`, but also at the `members`level.
 
 Here's the full dataset in [jsonl](https://www.atatus.com/glossary/jsonl/) format:
 
