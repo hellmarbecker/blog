@@ -10,7 +10,7 @@ Up until Druid 30, data in a Druid segment was always sorted by time. But this i
 
 This blog is based on the public documentation of [this pull request](https://github.com/apache/druid/pull/16849). 
 
-This is a sneak peek into Druid 29 functionality. In order to use the new functions, you can (as of the time of writing) [build Druid](https://druid.apache.org/docs/latest/development/build.html) from the Druid 31 branch:
+This is a sneak peek into Druid 31 functionality. In order to use the new functions, you can (as of the time of writing) [build Druid](https://druid.apache.org/docs/latest/development/build.html) from the Druid 31 branch:
 
 ```bash
 git clone https://github.com/apache/druid.git
